@@ -1,18 +1,25 @@
 <template>
   <div>
     <h1>Products</h1>
-    <div class="products-grid">
-      <div v-for="product in products" :key="product.id" class="product-item">
-        <img :src="product.imageLink" :alt="product.name" />
-        <h3>{{ product.name }}</h3>
-        <p>{{ product.description }}</p>
-        <p>
-          <strong>{{ product.price | currency }}</strong>
-        </p>
-        <router-link :to="`/products/${product.slug}`">
-          <h2>{{ product.name }}</h2>
-        </router-link>
-        <button @click="addToCart(product)">Add to Cart</button>
+    <div v-for="product in products" :key="product.id" class="mdc-card demo-card">
+      <div
+        class="mdc-card__media mdc-card__media--16-9"
+        :style="{ backgroundImage: `url(${product.image})` }"
+      ></div>
+
+      <div class="mdc-card-wrapper__text-section">
+        <div class="demo-card__title">Card title</div>
+        <div class="demo-card__subhead">Secondary text</div>
+      </div>
+      <div class="mdc-card__actions">
+        <button class="mdc-button mdc-card__action mdc-card__action--button mdc-ripple-upgraded">
+          <span class="mdc-button__label">Action 1</span>
+          <div class="mdc-button__ripple"></div>
+        </button>
+        <button class="mdc-button mdc-card__action mdc-card__action--button mdc-ripple-upgraded">
+          <span class="mdc-button__label">Action 2</span>
+          <div class="mdc-button__ripple"></div>
+        </button>
       </div>
     </div>
   </div>
@@ -42,22 +49,4 @@ const addToCart = (product) => {
 }
 </script>
 
-<style scoped>
-/* Simple styling for grid */
-.products-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1rem;
-}
-
-.product-item {
-  border: 1px solid #ddd;
-  padding: 1rem;
-  text-align: center;
-}
-
-.product-item img {
-  max-width: 100%;
-  height: auto;
-}
-</style>
+<style scoped></style>
