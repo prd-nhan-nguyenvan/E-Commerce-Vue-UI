@@ -5,6 +5,8 @@ import SignUpView from '@/views/SignUpView.vue'
 import DashboardView from '@/views/DashboardView.vue'
 import ProductDetailView from '@/views/products/ProductDetailView.vue'
 
+import CategoryViewList from '@/views/admin/category/ListView.vue'
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -25,7 +27,14 @@ const router = createRouter({
       component: ProductDetailView
     },
     { path: '/login', name: 'Login', component: LoginView },
-    { path: '/signup', name: 'signup', component: SignUpView }
+    { path: '/signup', name: 'signup', component: SignUpView },
+
+    {
+      path: '/admin',
+      name: 'Admin',
+      meta: { requiresAuth: true },
+      children: [{ path: 'category', name: 'Category', component: CategoryViewList }]
+    }
   ]
 })
 

@@ -20,3 +20,13 @@ export const getProduct = async (slug: string) => {
     throw error
   }
 }
+
+export const getAllCategories = async () => {
+  try {
+    const response = await api.products.productsCategoriesList()
+    return response.data
+  } catch (error) {
+    console.error({ error })
+    throw error
+  }
+}
