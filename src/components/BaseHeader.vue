@@ -17,7 +17,9 @@
                 >
               </li>
               <li class="navbar__item">
-                <span class="navbar__link" v-if="userStore.name">{{ userStore.name }}</span>
+                <span class="navbar__link" v-if="userStore.first_name">{{
+                  userStore.first_name
+                }}</span>
                 <router-link
                   :to="{ name: 'login' }"
                   class="navbar__link navbar__link--is-active"
