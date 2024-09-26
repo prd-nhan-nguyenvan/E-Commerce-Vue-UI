@@ -27,3 +27,12 @@ export const login = async (loginData: Login): Promise<TokenRefresh> => {
     }
   }
 }
+
+export const logout = () => {
+  // Remove the access and refresh tokens from local storage
+  localStorage.removeItem('accessToken')
+  localStorage.removeItem('refreshToken')
+
+  // Optionally, you can also redirect the user to the login page or refresh the app
+  console.log('User logged out successfully')
+}
