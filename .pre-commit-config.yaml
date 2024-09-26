@@ -2,7 +2,7 @@
 # See https://pre-commit.com/hooks.html for more hooks
 ci:
   # TODO: This currently fails with "command not found"
-  skip: [terraform_fmt, terraform_validate]
+  skip: [terraform_fmt, terraform_validate, pnpm-lock.yaml]
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
