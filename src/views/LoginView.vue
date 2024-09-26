@@ -10,7 +10,7 @@
         required
         aria-label="Password"
       />
-      <button type="submit" :disabled="loading">Login</button>
+      <vm-button type="submit" :disabled="loading">Login</vm-button>
       <p v-if="loading">Logging in...</p>
       <p v-if="error">{{ error }}</p>
     </form>
@@ -52,24 +52,3 @@ const handleLogin = async () => {
 
 onMounted(logout)
 </script>
-
-<style scoped>
-/* Optional: Add some basic styling */
-input {
-  margin-bottom: 10px;
-  padding: 8px;
-  width: 100%;
-}
-
-button {
-  padding: 10px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-button:disabled {
-  background-color: #ccc; /* Disabled state */
-}
-</style>
