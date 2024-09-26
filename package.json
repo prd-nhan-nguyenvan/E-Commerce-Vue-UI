@@ -10,7 +10,8 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --build --force",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
-    "format": "prettier --write src/"
+    "format": "prettier --write src/",
+    "update-api": "npx swagger-typescript-api -p http://127.0.0.1:8000/swagger/?format=openapi -o . -n src/services/api.ts "
   },
   "dependencies": {
     "pinia": "^2.1.7",

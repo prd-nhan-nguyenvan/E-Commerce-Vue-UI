@@ -1,12 +1,11 @@
 import { api } from '.'
 
-import type { TokenObtainPair, TokenRefresh } from './api'
+import type { Login, TokenRefresh } from './api'
 
-export const login = async (loginData: TokenObtainPair): Promise<TokenRefresh> => {
+export const login = async (loginData: Login): Promise<TokenRefresh> => {
   try {
     // Make the login request
     const response = await api.auth.authLoginCreate(loginData)
-
     // Log the full response for debugging
     console.log({ response })
 

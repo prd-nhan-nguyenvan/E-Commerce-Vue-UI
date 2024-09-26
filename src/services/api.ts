@@ -22,9 +22,10 @@ export interface ChangePassword {
   new_password: string
 }
 
-export interface TokenObtainPair {
+export interface Login {
   /**
    * Email
+   * @format email
    * @minLength 1
    */
   email: string
@@ -510,15 +511,15 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description Takes a set of user credentials and returns an access and refresh JSON web token pair to prove the authentication of those credentials.
+     * No description
      *
      * @tags auth
      * @name AuthLoginCreate
      * @request POST:/auth/login/
      * @secure
      */
-    authLoginCreate: (data: TokenObtainPair, params: RequestParams = {}) =>
-      this.request<TokenObtainPair, any>({
+    authLoginCreate: (data: Login, params: RequestParams = {}) =>
+      this.request<Login, any>({
         path: `/auth/login/`,
         method: 'POST',
         body: data,
