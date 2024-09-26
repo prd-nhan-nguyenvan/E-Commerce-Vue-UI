@@ -21,7 +21,10 @@
     "@material/drawer": "^14.0.0",
     "@material/icon-button": "^14.0.0",
     "@material/list": "^14.0.0",
+    "core-js": "^3.38.1",
+    "moment": "^2.30.1",
     "pinia": "^2.1.7",
+    "swiper": "^11.1.14",
     "vue": "^3.4.29",
     "vue-router": "^4.3.3",
     "vue3-material": "^1.0.8"

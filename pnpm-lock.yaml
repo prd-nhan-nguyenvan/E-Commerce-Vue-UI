@@ -28,9 +28,18 @@ importers:
       '@material/list':
         specifier: ^14.0.0
         version: 14.0.0
+      core-js:
+        specifier: ^3.38.1
+        version: 3.38.1
+      moment:
+        specifier: ^2.30.1
+        version: 2.30.1
       pinia:
         specifier: ^2.1.7
         version: 2.2.2(typescript@5.4.5)(vue@3.5.8(typescript@5.4.5))
+      swiper:
+        specifier: ^11.1.14
+        version: 11.1.14
       vue:
         specifier: ^3.4.29
         version: 3.5.8(typescript@5.4.5)
@@ -1083,6 +1092,12 @@ packages:
         integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==
       }
 
+  core-js@3.38.1:
+    resolution:
+      {
+        integrity: sha512-OP35aUorbU3Zvlx7pjsFdu1rGNnD4pgw/CWoYzRY3t2EzoVT7shKHY1dlAy3f41cGIO7ZDPQimhGFTlEYkG/Hw==
+      }
+
   cross-spawn@7.0.3:
     resolution:
       {
@@ -1574,6 +1589,12 @@ packages:
       }
     engines: { node: '>=16 || 14 >=14.17' }
 
+  moment@2.30.1:
+    resolution:
+      {
+        integrity: sha512-uEmtNhbDOrWPFS+hdjFCBfy9f2YoyzRpwcl+DqpC6taX21FzsTLQVbMV/W7PzNSX6x/bhC1zA3c2UQ5NzH6how==
+      }
+
   ms@2.1.3:
     resolution:
       {
@@ -1879,6 +1900,13 @@ packages:
         integrity: sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==
       }
     engines: { node: '>=8' }
+
+  swiper@11.1.14:
+    resolution:
+      {
+        integrity: sha512-VbQLQXC04io6AoAjIUWuZwW4MSYozkcP9KjLdrsG/00Q/yiwvhz9RQyt0nHXV10hi9NVnDNy1/wv7Dzq1lkOCQ==
+      }
+    engines: { node: '>= 4.7.0' }
 
   synckit@0.9.1:
     resolution:
@@ -2819,6 +2847,8 @@ snapshots:
 
   concat-map@0.0.1: {}
 
+  core-js@3.38.1: {}
+
   cross-spawn@7.0.3:
     dependencies:
       path-key: 3.1.1
@@ -3132,6 +3162,8 @@ snapshots:
     dependencies:
       brace-expansion: 2.0.1
 
+  moment@2.30.1: {}
+
   ms@2.1.3: {}
 
   muggle-string@0.4.1: {}
@@ -3290,6 +3322,8 @@ snapshots:
   supports-color@7.2.0:
     dependencies:
       has-flag: 4.0.0
+
+  swiper@11.1.14: {}
 
   synckit@0.9.1:
     dependencies:

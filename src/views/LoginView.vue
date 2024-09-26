@@ -1,19 +1,16 @@
 <template>
-  <div>
-    <h2>Login</h2>
-    <form @submit.prevent="handleLogin">
-      <input v-model="email" type="email" placeholder="Email" required aria-label="Email" />
-      <input
-        v-model="password"
-        type="password"
-        placeholder="Password"
-        required
-        aria-label="Password"
-      />
-      <vm-button type="submit" :disabled="loading">Login</vm-button>
-      <p v-if="loading">Logging in...</p>
-      <p v-if="error">{{ error }}</p>
-    </form>
+  <div class="account">
+    <h1 class="account__title">Login</h1>
+    <div class="account__form">
+      <form @submit.prevent="handleLogin">
+        <input type="email" class="txt" placeholder="Email" v-model="email" />
+        <input type="password" class="txt" placeholder="Password" v-model="password" />
+        <div class="error" v-if="error">
+          {{ error }}
+        </div>
+        <button type="submit" :disabled="loading" class="btn btn--brand w--100">Login</button>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -52,3 +49,43 @@ const handleLogin = async () => {
 
 onMounted(logout)
 </script>
+<style scoped>
+/* General layout */
+.account {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #f4f4f4;
+  height: 100%;
+}
+
+/* Form container */
+.account__form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Input fields */
+.txt {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  transition: border 0.2s;
+}
+
+.txt:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.error {
+  color: red;
+  margin-top: -5px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+</style>
