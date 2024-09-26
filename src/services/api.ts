@@ -171,6 +171,11 @@ export interface Product {
    */
   stock: number
   /**
+   * Image
+   * @format uri
+   */
+  image?: string | null
+  /**
    * Created at
    * @format date-time
    */

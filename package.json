@@ -14,6 +14,8 @@
     "update-api": "npx swagger-typescript-api -p http://127.0.0.1:8000/swagger/?format=openapi -o . -n src/services/api.ts "
   },
   "dependencies": {
+    "@material/button": "^14.0.0",
+    "@material/card": "^14.0.0",
     "pinia": "^2.1.7",
     "vue": "^3.4.29",
     "vue-router": "^4.3.3"
