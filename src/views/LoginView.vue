@@ -18,8 +18,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { login } from '@/services/auth.service'
+import { ref, onMounted } from 'vue'
+import { login, logout } from '@/services/auth.service'
 import { useRouter } from 'vue-router' // Import useRouter for navigation
 
 const email = ref('')
@@ -49,6 +49,8 @@ const handleLogin = async () => {
     loading.value = false // Reset loading state
   }
 }
+
+onMounted(logout)
 </script>
 
 <style scoped>
