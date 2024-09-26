@@ -17,13 +17,17 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { login, logout } from '@/services/auth.service'
-import { useRouter } from 'vue-router' // Import useRouter for navigation
+import { getUserProfile } from '@/services/user.service'
+import { useUserStore } from '@/stores/user'
+
+import { useRouter } from 'vue-router'
 
 const email = ref('')
 const password = ref('')
 const error = ref('')
 const loading = ref(false) // Loading state
 const router = useRouter() // Get the router instance
+const userStore = useUserStore() // Use Pinia store
 
 const handleLogin = async () => {
   error.value = '' // Clear any previous error
@@ -34,9 +38,13 @@ const handleLogin = async () => {
       email: email.value,
       password: password.value
     })
-    console.log('Tokens:', tokens)
+    try {
+      const userProfile = await getUserProfile()
+      userStore.setUser(userProfile)
+    } catch (error) {
+      throw new Error(error)
+    }
 
-    // Redirect to the desired page on successful login
     router.push('/dashboard') // Change to your actual route
     email.value = '' // Clear email input
     password.value = '' // Clear password input

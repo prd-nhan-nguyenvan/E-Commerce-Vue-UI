@@ -17,7 +17,11 @@
                 >
               </li>
               <li class="navbar__item">
-                <router-link :to="{ name: 'login' }" class="navbar__link navbar__link--is-active"
+                <span class="navbar__link" v-if="userStore.name">{{ userStore.name }}</span>
+                <router-link
+                  :to="{ name: 'login' }"
+                  class="navbar__link navbar__link--is-active"
+                  v-else
                   >Login</router-link
                 >
               </li>
@@ -31,6 +35,9 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useUserStore } from '@/stores/user'
+
+const userStore = useUserStore()
 
 const isBasketDropDown = ref(true)
 const isAccountDropDown = ref(false)

@@ -1,35 +1,25 @@
-import { login } from '@/services/auth.service'
-import { defineStore, acceptHMRUpdate } from 'pinia'
+import type { UserProfile } from './../services/api'
+import { defineStore } from 'pinia'
 
-export const useUserStore = defineStore({
-  id: 'user',
-  state: () => ({
-    name: 'Eduardo',
-    isAdmin: true
+interface UserState {
+  name: string | undefined
+}
+
+export const useUserStore = defineStore('user', {
+  state: (): UserState => ({
+    name: undefined
   }),
-
   actions: {
-    logout() {
-      this.$patch({
-        name: '',
-        isAdmin: false
-      })
+    setUser(userProfile: UserProfile) {
+      this.name = userProfile.first_name
     },
+    clearUser() {
+      this.name = undefined
 
-    /**
-     * Attempt to login a user
-     */
-    async login(email: string, password: string) {
-      const userData = await login({ email: email, password: password })
-
-      this.$patch({
-        name: user,
-        ...userData
-      })
+      // Remove from localStorage or sessionStorage
+      localStorage.removeItem('user_name')
+      localStorage.removeItem('access_token')
+      localStorage.removeItem('refresh_token')
     }
   }
 })
-
-if (import.meta.hot) {
-  import.meta.hot.accept(acceptHMRUpdate(useUserStore, import.meta.hot))
-}
