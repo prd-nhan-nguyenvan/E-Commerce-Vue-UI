@@ -10,6 +10,9 @@ importers:
       pinia:
         specifier: ^2.2.2
         version: 2.2.2(typescript@5.4.5)(vue@3.5.9(typescript@5.4.5))
+      sweetalert2:
+        specifier: ^11.14.1
+        version: 11.14.1
       vue:
         specifier: ^3.5.9
         version: 3.5.9(typescript@5.4.5)
@@ -1682,6 +1685,12 @@ packages:
       }
     engines: { node: '>=8' }
 
+  sweetalert2@11.14.1:
+    resolution:
+      {
+        integrity: sha512-xadhfcA4STGMh8nC5zHFFWURhRpWc4zyI3GdMDFH/m3hGWZeQQNWhX9xcG4lI9gZYsi/IlazKbwvvje3juL3Xg==
+      }
+
   synckit@0.9.1:
     resolution:
       {
@@ -2810,6 +2819,8 @@ snapshots:
   supports-color@7.2.0:
     dependencies:
       has-flag: 4.0.0
+
+  sweetalert2@11.14.1: {}
 
   synckit@0.9.1:
     dependencies:

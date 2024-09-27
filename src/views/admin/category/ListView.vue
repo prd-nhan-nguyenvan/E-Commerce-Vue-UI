@@ -117,9 +117,10 @@
 import { useCategoryStore } from '@/stores/category'
 import { onMounted, computed, ref } from 'vue'
 import type { Category } from '@/services/api'
+import Swal from 'sweetalert2'
 
 const categoryStore = useCategoryStore()
-const { fetchCategories, deleteCategory } = categoryStore
+const { fetchCategories } = categoryStore
 
 const categories = computed(() => categoryStore.categories)
 const loading = computed(() => categoryStore.loading)
@@ -141,13 +142,25 @@ const resetForm = () => {
 
 const saveCategory = async () => {
   if (!newCategory.value.name || !newCategory.value.description) {
-    alert('Please fill out all fields')
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: 'Please fill out all fields!'
+    })
     return
   }
 
   await categoryStore.addCategory(newCategory.value)
-  resetForm() // Clear form after submission
-  showForm.value = false // Hide form after saving
+
+  Swal.fire({
+    icon: 'success',
+    title: 'Category Added',
+    text: 'The new category has been added successfully!',
+    timer: 2000
+  })
+
+  resetForm()
+  showForm.value = false
 }
 
 const editFieldCategory = (category) => {
@@ -165,6 +178,29 @@ const updateCategory = async (category) => {
   await categoryStore.updateCategory(category) // Assuming you have an updateCategory method
   category.isEditing = false // Exit editing mode after saving
 }
+
+const deleteCategory = async (categoryId: string) => {
+  Swal.fire({
+    title: 'Are you sure?',
+    text: "You won't be able to revert this!",
+    icon: 'warning',
+    showCancelButton: true,
+    cancelButtonText: 'Cancel',
+    confirmButtonText: 'Yes, delete it!'
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      // Perform the delete action
+      await categoryStore.deleteCategory(categoryId)
+      Swal.fire({
+        title: 'Deleted!',
+        text: 'The category has been deleted.',
+        icon: 'success',
+        timer: 2000
+      })
+    }
+  })
+}
+
 onMounted(() => {
   fetchCategories()
 })

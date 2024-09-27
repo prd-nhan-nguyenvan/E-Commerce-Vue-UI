@@ -124,10 +124,9 @@ export interface Category {
   slug?: string
   /**
    * Description
-   * @minLength 1
    * @maxLength 1000
    */
-  description: string
+  description?: string | null
 }
 
 export interface Product {
