@@ -1,50 +1,95 @@
 <template>
-  <footer class="footer">
-    <span class="scroll__top" @click="goTop" v-show="showScrollTop"></span>
+  <footer class="bg-light text-center text-lg-start">
+    <div class="container p-4">
+      <!-- Section: Social media -->
+      <section class="mb-4">
+        <!-- Facebook -->
+        <a
+          class="btn btn-primary btn-floating m-1"
+          style="background-color: #3b5998"
+          href="#!"
+          role="button"
+          ><i class="fab fa-facebook-f"></i
+        ></a>
 
-    <div class="footer__main">
-      <div class="container">
-        <div class="footer__hr"></div>
-      </div>
-      <div class="footer__team">
-        Design with &#x02665; by
-        <a href="" class="footer__copy">Nhan Nguyen </a>
-        © 2024
-      </div>
+        <!-- Twitter -->
+        <a
+          class="btn btn-primary btn-floating m-1"
+          style="background-color: #55acee"
+          href="#!"
+          role="button"
+          ><i class="fab fa-twitter"></i
+        ></a>
+
+        <!-- Instagram -->
+        <a
+          class="btn btn-primary btn-floating m-1"
+          style="background-color: #ac2bac"
+          href="#!"
+          role="button"
+          ><i class="fab fa-instagram"></i
+        ></a>
+      </section>
+      <!-- Section: Social media -->
+
+      <!-- Section: Links -->
+      <section class="">
+        <div class="row">
+          <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
+            <h5 class="text-uppercase">About Us</h5>
+
+            <p>
+              We provide high-quality products and services that aim to improve your day-to-day
+              life. Stay connected with us for updates.
+            </p>
+          </div>
+
+          <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+            <h5 class="text-uppercase">Quick Links</h5>
+
+            <ul class="list-unstyled mb-0">
+              <li>
+                <a href="#!" class="text-dark">Home</a>
+              </li>
+              <li>
+                <a href="#!" class="text-dark">Products</a>
+              </li>
+              <li>
+                <a href="#!" class="text-dark">About Us</a>
+              </li>
+              <li>
+                <a href="#!" class="text-dark">Contact</a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+            <h5 class="text-uppercase">Support</h5>
+
+            <ul class="list-unstyled mb-0">
+              <li>
+                <a href="#!" class="text-dark">Help Center</a>
+              </li>
+              <li>
+                <a href="#!" class="text-dark">FAQs</a>
+              </li>
+              <li>
+                <a href="#!" class="text-dark">Privacy Policy</a>
+              </li>
+              <li>
+                <a href="#!" class="text-dark">Terms & Conditions</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+      <!-- Section: Links -->
     </div>
-    <div class="overlay" :class="{ 'overlay--is-active': showSideBar }"></div>
+
+    <!-- Copyright -->
+    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)">
+      © 2024 Copyright:
+      <a class="text-dark" href="#">YourWebsite.com</a>
+    </div>
   </footer>
 </template>
-
-<script setup lang="ts">
-import { ref, onMounted } from 'vue'
-
-defineProps('showSideBar')
-const showScrollTop = ref(false)
-const scrollTimeout = ref(null)
-
-const handleScroll = () => {
-  if (scrollTimeout.value) return
-
-  console.log('user scrolled')
-
-  scrollTimeout.value = setTimeout(() => {
-    showScrollTop.value = window.scrollY > 200
-
-    clearTimeout(scrollTimeout)
-    scrollTimeout.value = 0
-  }, 150)
-}
-const goTop = () => {
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth'
-  })
-}
-
-onMounted(() => {
-  document.addEventListener('scroll', handleScroll)
-})
-</script>
-
-<style></style>

@@ -12,9 +12,19 @@ const handleSidebar = (showSideBar) => {
 </script>
 
 <template>
-  <BaseHeader @show-sidebar="handleSidebar" />
-  <div class="main">
-    <router-view />
+  <div class="d-flex flex-column min-vh-100">
+    <BaseHeader @show-sidebar="handleSidebar" />
+
+    <div class="flex-grow-1 main">
+      <router-view />
+    </div>
+    <BaseFooter :showSideBar="isShowSideBar" />
   </div>
-  <BaseFooter :showSideBar="isShowSideBar" />
 </template>
+
+<style scoped>
+.main {
+  padding: 20px;
+  /* Add custom styles for the main content area if needed */
+}
+</style>

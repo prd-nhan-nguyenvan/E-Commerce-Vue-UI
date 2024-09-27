@@ -1,15 +1,58 @@
 <template>
-  <div class="account">
-    <h1 class="account__title">Login</h1>
-    <div class="account__form">
-      <form @submit.prevent="handleLogin">
-        <input type="email" class="txt" placeholder="Email" v-model="email" />
-        <input type="password" class="txt" placeholder="Password" v-model="password" />
-        <div class="error" v-if="error">
-          {{ error }}
+  <div class="container my-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <h1 class="text-center mb-4">Login</h1>
+
+            <form @submit.prevent="handleLogin">
+              <!-- Email Input -->
+              <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  class="form-control"
+                  placeholder="Enter your email"
+                  v-model="email"
+                  required
+                />
+              </div>
+
+              <!-- Password Input -->
+              <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input
+                  type="password"
+                  id="password"
+                  class="form-control"
+                  placeholder="Enter your password"
+                  v-model="password"
+                  required
+                />
+              </div>
+
+              <!-- Error Message -->
+              <div v-if="error" class="alert alert-danger text-center" role="alert">
+                {{ error }}
+              </div>
+
+              <!-- Submit Button -->
+              <button type="submit" :disabled="loading" class="btn btn-primary w-100">
+                <span
+                  v-if="loading"
+                  class="spinner-border spinner-border-sm"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+                <span v-if="loading">Logging in...</span>
+                <span v-else>Login</span>
+              </button>
+            </form>
+          </div>
         </div>
-        <button type="submit" :disabled="loading" class="btn btn--brand w--100">Login</button>
-      </form>
+      </div>
     </div>
   </div>
 </template>

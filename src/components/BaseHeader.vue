@@ -1,38 +1,32 @@
 <template>
-  <header class="header header--bg">
-    <div class="header__shape">
-      <div class="header__shape-inner"></div>
-    </div>
-    <div class="container">
-      <div class="navbar">
-        <div class="navbar__row">
-          <div class="header__logo">
-            <router-link :to="{ name: 'home' }" class="header__logo-img"></router-link>
-          </div>
-          <div class="navbar__items" :class="{ 'navbar__items--is-active': showSideBar }">
-            <ul class="navbar__ul">
-              <li class="navbar__item">
-                <router-link :to="{ name: 'home' }" class="navbar__link navbar__link--is-active"
-                  >Home</router-link
-                >
-              </li>
-              <li class="navbar__item">
-                <span class="navbar__link" v-if="userStore.first_name">{{
-                  userStore.first_name
-                }}</span>
-                <router-link
-                  :to="{ name: 'login' }"
-                  class="navbar__link navbar__link--is-active"
-                  v-else
-                  >Login</router-link
-                >
-              </li>
-            </ul>
-          </div>
-        </div>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarTogglerDemo01"
+        aria-controls="navbarTogglerDemo01"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+        <router-link to="home" class="nav-brand">
+          <img src="/src/assets/img/weblogo.png" alt="" width="30" height="24" />
+        </router-link>
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <router-link class="nav-link active" aria-current="page" to="home">Home</router-link>
+          </li>
+          <li class="nav-item">
+            <router-link class="nav-link" to="login">Login</router-link>
+          </li>
+        </ul>
       </div>
     </div>
-  </header>
+  </nav>
 </template>
 
 <script setup lang="ts">
