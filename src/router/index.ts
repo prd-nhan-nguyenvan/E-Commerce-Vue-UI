@@ -8,6 +8,8 @@ const DashboardView = () => import('@/views/DashboardView.vue')
 const ProductDetailView = () => import('@/views/products/ProductDetailView.vue')
 
 const CategoryListView = () => import('@/views/admin/category/ListView.vue')
+const ProductListView = () => import('@/views/admin/product/ListView.vue')
+const ProductFormView = () => import('@/views/admin/product/DetailView.vue')
 
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -35,7 +37,32 @@ export const router = createRouter({
       path: '/admin',
       name: 'Admin',
       meta: { requiresAuth: true },
-      children: [{ path: 'category', name: 'Category', component: CategoryListView }]
+      children: [
+        {
+          path: 'categories',
+          name: 'Categories',
+          component: CategoryListView,
+          meta: { requiresAuth: true }
+        },
+        {
+          path: 'products',
+          name: 'ProductList',
+          component: ProductListView,
+          meta: { requiresAuth: true }
+        },
+        {
+          path: 'products/new',
+          name: 'AddProduct',
+          component: ProductFormView,
+          meta: { requiresAuth: true }
+        },
+        {
+          path: 'products/edit/:id',
+          name: 'EditProduct',
+          component: ProductFormView,
+          meta: { requiresAuth: true }
+        }
+      ]
     }
   ]
 })

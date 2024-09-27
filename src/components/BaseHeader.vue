@@ -32,6 +32,24 @@
                 >Home</router-link
               >
             </li>
+            <li class="nav-item">
+              <router-link
+                class="nav-link"
+                :class="{ active: isActiveRoute('/admin/categories') }"
+                :to="{ name: 'Categories' }"
+                aria-current="page"
+                >Category</router-link
+              >
+            </li>
+            <li class="nav-item">
+              <router-link
+                class="nav-link"
+                :class="{ active: isActiveRoute('/admin/products') }"
+                :to="{ name: 'ProductList' }"
+                aria-current="page"
+                >Product</router-link
+              >
+            </li>
           </ul>
 
           <!-- Right Aligned Avatar or Login -->
