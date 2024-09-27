@@ -1,67 +1,65 @@
 <template>
-  <div>
-    <h2>Category Management</h2>
+  <main class="container py-4">
+    <!-- Heading and Add Button -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1 class="mb-0">Categories</h1>
+      <button @click="addCategory" class="btn btn-primary">Add Category</button>
+    </div>
 
-    <div v-if="categories">
-      <div class="mdc-data-table">
-        <table class="mdc-data-table__table" aria-label="Dessert calories">
-          <thead>
-            <tr class="mdc-data-table__header-row">
-              <th
-                class="mdc-data-table__header-cell mdc-data-table__header-cell--with-sort"
-                role="columnheader"
-                scope="col"
-                aria-sort="none"
-                data-column-id="dessert"
-              >
-                <div class="mdc-data-table__header-cell-wrapper">
-                  <div class="mdc-data-table__header-cell-label">Name</div>
-
-                  <div
-                    class="mdc-data-table__sort-status-label"
-                    aria-hidden="true"
-                    id="dessert-status-label"
-                  ></div>
-                </div>
-              </th>
-
-              <th
-                class="mdc-data-table__header-cell"
-                role="columnheader"
-                scope="col"
-                data-column-id="comments"
-              >
-                Slug
-              </th>
-            </tr>
-          </thead>
-          <tbody class="mdc-data-table__content">
-            <tr class="mdc-data-table__row" v-for="(category, index) in categories" :key="index">
-              <td class="mdc-data-table__cell">{{ category.name }}</td>
-              <td class="mdc-data-table__cell">{{ category.slug }}</td>
-            </tr>
-          </tbody>
-        </table>
+    <!-- Loading Spinner -->
+    <div v-show="loading" class="d-flex justify-content-center my-4">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
       </div>
     </div>
-    <div v-else>There is no category in database!</div>
-  </div>
+
+    <!-- Error Alert -->
+    <div v-show="error" class="alert alert-danger text-center" role="alert">
+      {{ error }}
+    </div>
+
+    <!-- Categories Table -->
+    <div v-if="categories">
+      <table class="table table-hover">
+        <thead class="table-light">
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Category Name</th>
+            <th scope="col">Description</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(category, index) in categories" :key="category.id">
+            <th scope="row">{{ index + 1 }}</th>
+            <td>{{ category.name }}</td>
+            <td>{{ category.slug }}</td>
+            <td>
+              <button @click="editCategory(category)" class="btn btn-sm btn-warning me-2">
+                Edit
+              </button>
+              <button @click="deleteCategory(category.id)" class="btn btn-sm btn-danger">
+                Delete
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { getAllCategories } from '@/services/product.service.ts'
+import { useCategoryStore } from '@/stores/category'
+import { onMounted } from 'vue'
+const categoryStore = useCategoryStore()
+const { fetchCategories, addCategory, editCategory, deleteCategory, categories, loading, error } =
+  categoryStore
 
-const categories = ref([])
+console.log(categories)
 
-const fetchCategory = async () => {
-  try {
-    const result = await getAllCategories()
-    categories.value = result
-  } catch (error) {
-    console.error('Error fetching category:', error)
-  }
-}
-
-onMounted(fetchCategory)
+onMounted(() => {
+  console.log(loading)
+  fetchCategories()
+})
 </script>
