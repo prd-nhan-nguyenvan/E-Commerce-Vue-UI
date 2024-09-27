@@ -1,4 +1,9 @@
-import { addNewCategory, getAllCategories, updateCategory } from '@/services/product.service'
+import {
+  addNewCategory,
+  deleteCategory,
+  getAllCategories,
+  updateCategory
+} from '@/services/product.service'
 import type { Category } from './../services/api'
 import { defineStore } from 'pinia'
 
