@@ -1,25 +1,20 @@
 <template>
-  <div>
-    <h1>Products</h1>
-    <div v-for="product in products" :key="product.id" class="mdc-card demo-card">
-      <div
-        class="mdc-card__media mdc-card__media--16-9"
-        :style="{ backgroundImage: `url(${product.image})` }"
-      ></div>
+  <div class="container">
+    <h1 class="mb-4">Products</h1>
+    <div v-for="product in products" :key="product.id" class="card mb-4">
+      <!-- Product Image -->
+      <img :src="product.image" class="card-img-top" alt="Product Image" />
 
-      <div class="mdc-card-wrapper__text-section">
-        <div class="demo-card__title">Card title</div>
-        <div class="demo-card__subhead">Secondary text</div>
+      <!-- Product Information -->
+      <div class="card-body">
+        <h5 class="card-title">{{ product.name }}</h5>
+        <p class="card-text">Secondary text</p>
       </div>
-      <div class="mdc-card__actions">
-        <button class="mdc-button mdc-card__action mdc-card__action--button mdc-ripple-upgraded">
-          <span class="mdc-button__label">Action 1</span>
-          <div class="mdc-button__ripple"></div>
-        </button>
-        <button class="mdc-button mdc-card__action mdc-card__action--button mdc-ripple-upgraded">
-          <span class="mdc-button__label">Action 2</span>
-          <div class="mdc-button__ripple"></div>
-        </button>
+
+      <!-- Actions -->
+      <div class="card-footer d-flex justify-content-between">
+        <button class="btn btn-primary">Action 1</button>
+        <button class="btn btn-secondary">Action 2</button>
       </div>
     </div>
   </div>

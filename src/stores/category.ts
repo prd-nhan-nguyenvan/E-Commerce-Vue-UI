@@ -21,12 +21,14 @@ export const useCategoryStore = defineStore('category', {
 
       try {
         const response = await getAllCategories()
+        console.log('API response:', response) // Log the API response
         this.categories = response
       } catch (error) {
         this.error = 'Failed to load categories'
         console.error('Error fetching categories:', error)
       } finally {
         this.loading = false
+        console.log('Loading state:', this.loading) // Log the loading state
       }
     },
 
