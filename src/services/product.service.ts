@@ -1,4 +1,5 @@
 import { api } from '.'
+import type { Category } from './api'
 
 // Fetch all products
 export const getAllProducts = async () => {
@@ -24,6 +25,38 @@ export const getProduct = async (slug: string) => {
 export const getAllCategories = async () => {
   try {
     const response = await api.products.productsCategoriesList()
+    return response.data
+  } catch (error) {
+    console.error({ error })
+    throw error
+  }
+}
+
+export const addNewCategory = async (category: Category) => {
+  try {
+    const response = await api.products.productsCategoriesCreate(category)
+    return response.data
+  } catch (error) {
+    console.error({ error })
+    throw error
+  }
+}
+
+export const updateCategory = async (categoryId: number, category: Category) => {
+  try {
+    console.log({ category })
+    const response = await api.products.productsCategoriesUpdate(categoryId, category)
+
+    return response.data
+  } catch (error) {
+    console.error({ error })
+    throw error
+  }
+}
+
+export const deleteCategory = async (categoryId: number) => {
+  try {
+    const response = await api.products.productsCategoriesDelete(categoryId)
     return response.data
   } catch (error) {
     console.error({ error })

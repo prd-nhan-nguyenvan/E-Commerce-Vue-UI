@@ -1,32 +1,76 @@
 <template>
-  <div>
-    <h2>Login</h2>
-    <form @submit.prevent="handleLogin">
-      <input v-model="email" type="email" placeholder="Email" required aria-label="Email" />
-      <input
-        v-model="password"
-        type="password"
-        placeholder="Password"
-        required
-        aria-label="Password"
-      />
-      <button type="submit" :disabled="loading">Login</button>
-      <p v-if="loading">Logging in...</p>
-      <p v-if="error">{{ error }}</p>
-    </form>
+  <div class="container my-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <h1 class="text-center mb-4">Login</h1>
+
+            <form @submit.prevent="handleLogin">
+              <!-- Email Input -->
+              <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  class="form-control"
+                  placeholder="Enter your email"
+                  v-model="email"
+                  required
+                />
+              </div>
+
+              <!-- Password Input -->
+              <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input
+                  type="password"
+                  id="password"
+                  class="form-control"
+                  placeholder="Enter your password"
+                  v-model="password"
+                  required
+                />
+              </div>
+
+              <!-- Error Message -->
+              <div v-if="error" class="alert alert-danger text-center" role="alert">
+                {{ error }}
+              </div>
+
+              <!-- Submit Button -->
+              <button type="submit" :disabled="loading" class="btn btn-primary w-100">
+                <span
+                  v-if="loading"
+                  class="spinner-border spinner-border-sm"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+                <span v-if="loading">Logging in...</span>
+                <span v-else>Login</span>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { login, logout } from '@/services/auth.service'
-import { useRouter } from 'vue-router' // Import useRouter for navigation
+import { getUserProfile } from '@/services/user.service'
+import { useUserStore } from '@/stores/user'
+
+import { useRouter } from 'vue-router'
 
 const email = ref('')
 const password = ref('')
 const error = ref('')
 const loading = ref(false) // Loading state
 const router = useRouter() // Get the router instance
+const userStore = useUserStore() // Use Pinia store
 
 const handleLogin = async () => {
   error.value = '' // Clear any previous error
@@ -37,9 +81,13 @@ const handleLogin = async () => {
       email: email.value,
       password: password.value
     })
-    console.log('Tokens:', tokens)
+    try {
+      const userProfile = await getUserProfile()
+      userStore.setUser(userProfile)
+    } catch (error) {
+      throw new Error(error)
+    }
 
-    // Redirect to the desired page on successful login
     router.push('/dashboard') // Change to your actual route
     email.value = '' // Clear email input
     password.value = '' // Clear password input
@@ -52,24 +100,43 @@ const handleLogin = async () => {
 
 onMounted(logout)
 </script>
-
 <style scoped>
-/* Optional: Add some basic styling */
-input {
-  margin-bottom: 10px;
-  padding: 8px;
+/* General layout */
+.account {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #f4f4f4;
+  height: 100%;
+}
+
+/* Form container */
+.account__form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Input fields */
+.txt {
   width: 100%;
-}
-
-button {
   padding: 10px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  transition: border 0.2s;
 }
 
-button:disabled {
-  background-color: #ccc; /* Disabled state */
+.txt:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.error {
+  color: red;
+  margin-top: -5px;
+  margin-bottom: 10px;
+  text-align: center;
 }
 </style>

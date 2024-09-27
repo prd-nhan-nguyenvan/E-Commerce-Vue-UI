@@ -36,3 +36,24 @@ export const logout = () => {
   // Optionally, you can also redirect the user to the login page or refresh the app
   console.log('User logged out successfully')
 }
+
+export const refreshAccessToken = async (refreshToken: string) => {
+  try {
+    const response = await api.auth.authTokenRefreshCreate({
+      refresh: refreshToken
+    })
+
+    // Log the response for debugging
+    console.log('Token refresh response:', response)
+
+    // Store the new access token and refresh token (if present) in localStorage
+    const { access, refresh } = response.data
+    if (access) localStorage.setItem('accessToken', access)
+    if (refresh) localStorage.setItem('refreshToken', refresh)
+
+    return { access, refresh }
+  } catch (error) {
+    console.error('Failed to refresh access token', error)
+    throw new Error('Token refresh failed')
+  }
+}

@@ -38,17 +38,12 @@ export interface Login {
 
 export type Logout = object
 
-export interface TokenRefresh {
+export interface RefreshToken {
   /**
    * Refresh
    * @minLength 1
    */
   refresh: string
-  /**
-   * Access
-   * @minLength 1
-   */
-  access?: string
 }
 
 export interface AddToCart {
@@ -123,10 +118,15 @@ export interface Category {
   /**
    * Slug
    * @format slug
-   * @maxLength 50
+   * @minLength 1
    * @pattern ^[-a-zA-Z0-9_]+$
    */
   slug?: string
+  /**
+   * Description
+   * @maxLength 1000
+   */
+  description?: string | null
 }
 
 export interface Product {
@@ -570,15 +570,15 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description Takes a refresh type JSON web token and returns an access type JSON web token if the refresh token is valid.
+     * No description
      *
      * @tags auth
      * @name AuthTokenRefreshCreate
      * @request POST:/auth/token/refresh/
      * @secure
      */
-    authTokenRefreshCreate: (data: TokenRefresh, params: RequestParams = {}) =>
-      this.request<TokenRefresh, any>({
+    authTokenRefreshCreate: (data: RefreshToken, params: RequestParams = {}) =>
+      this.request<RefreshToken, any>({
         path: `/auth/token/refresh/`,
         method: 'POST',
         body: data,
