@@ -15,6 +15,9 @@ export const api = new Api({
         const newTokens = await refreshAccessToken(refreshToken)
         token = newTokens.access
         localStorage.setItem('accessToken', token)
+        if (newTokens.refresh) {
+          localStorage.setItem('refreshToken', newTokens.refresh)
+        }
       } catch (error) {
         console.error('Token refresh failed', error)
         // Optionally log out the user if refresh fails

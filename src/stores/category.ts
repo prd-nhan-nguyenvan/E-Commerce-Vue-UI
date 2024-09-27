@@ -53,10 +53,11 @@ export const useCategoryStore = defineStore('category', {
       }
     },
 
-    async editCategory(updatedCategory: Category) {
+    async updateCategory(updatedCategory: Category) {
       this.loading = true
       this.error = null
 
+      console.log('This is updating from store...', updateCategory)
       try {
         const response = await updateCategory(updatedCategory.id, updatedCategory)
         const index = this.categories.findIndex((category) => category.id === updatedCategory.id)

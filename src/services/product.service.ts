@@ -44,7 +44,8 @@ export const addNewCategory = async (category: Category) => {
 
 export const updateCategory = async (categoryId: number, category: Category) => {
   try {
-    const response = await api.products.productsCategoriesPartialUpdate(categoryId, category)
+    console.log({ category })
+    const response = await api.products.productsCategoriesUpdate(categoryId, category)
 
     return response.data
   } catch (error) {
