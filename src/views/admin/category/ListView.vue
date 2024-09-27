@@ -17,13 +17,23 @@
             id="categoryName"
             v-model="newCategory.name"
             class="form-control"
-            placeholder="Enter category name"
+            placeholder="Name"
+          />
+
+          <label for="categoryDescription" class="form-label">Category Description</label>
+          <input
+            type="text"
+            id="categoryDescription"
+            v-model="newCategory.description"
+            class="form-control"
+            placeholder="Description"
           />
         </div>
 
         <button @click="saveCategory" class="btn btn-success">Save</button>
       </div>
     </div>
+
     <!-- Loading Spinner -->
     <div v-if="loading" class="d-flex justify-content-center my-4">
       <div class="spinner-border" role="status">
@@ -53,9 +63,6 @@
             <td>
               <div v-if="!category.isEditing">
                 {{ category.name }}
-                <button @click="editFieldCategory(category)" class="btn btn-sm btn-warning ms-2">
-                  Edit
-                </button>
               </div>
               <div v-else>
                 <input
@@ -63,21 +70,41 @@
                   v-model="category.name"
                   class="form-control"
                   @keyup.enter="updateCategory(category)"
-                  @blur="finishEditing(category)"
                 />
-                <button @click="updateCategory(category)" class="btn btn-success btn-sm mt-2">
+              </div>
+            </td>
+            <td>
+              <div v-if="!category.isEditing">
+                {{ category.description }}
+              </div>
+
+              <div v-else>
+                <input
+                  type="text"
+                  v-model="category.description"
+                  class="form-control"
+                  @keyup.enter="updateCategory(category)"
+                />
+              </div>
+            </td>
+            <td>
+              <div v-if="!category.isEditing" class="d-flex">
+                <button @click="editFieldCategory(category)" class="btn btn-sm btn-warning me-2">
+                  Edit
+                </button>
+
+                <button @click="deleteCategory(category.id)" class="btn btn-sm btn-danger">
+                  Delete
+                </button>
+              </div>
+              <div v-else class="d-flex justify-content-start mt-2">
+                <button @click="updateCategory(category)" class="btn btn-success btn-sm me-2">
                   Save
                 </button>
-                <button @click="finishEditing(category)" class="btn btn-secondary btn-sm mt-2">
+                <button @click="finishEditing(category)" class="btn btn-secondary btn-sm">
                   Cancel
                 </button>
               </div>
-            </td>
-            <td>{{ category.slug }}</td>
-            <td>
-              <button @click="deleteCategory(category.id)" class="btn btn-sm btn-danger">
-                Delete
-              </button>
             </td>
           </tr>
         </tbody>
@@ -113,7 +140,7 @@ const resetForm = () => {
 }
 
 const saveCategory = async () => {
-  if (!newCategory.value.name) {
+  if (!newCategory.value.name || !newCategory.value.description) {
     alert('Please fill out all fields')
     return
   }
