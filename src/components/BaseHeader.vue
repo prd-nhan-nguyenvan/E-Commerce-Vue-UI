@@ -1,49 +1,87 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
+      <!-- Toggler Button for Mobile View -->
       <button
         class="navbar-toggler"
         type="button"
         data-bs-toggle="collapse"
-        data-bs-target="#navbarTogglerDemo01"
-        aria-controls="navbarTogglerDemo01"
+        data-bs-target="#navbarToggler"
+        aria-controls="navbarToggler"
         aria-expanded="false"
         aria-label="Toggle navigation"
       >
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
-        <router-link to="home" class="nav-brand">
-          <img src="/src/assets/img/weblogo.png" alt="" width="30" height="24" />
+
+      <!-- Navbar Brand (Logo) -->
+      <div class="collapse navbar-collapse" id="navbarToggler">
+        <router-link to="/" class="navbar-brand">
+          <img src="/src/assets/img/weblogo.png" alt="Logo" width="30" height="24" loading="lazy" />
         </router-link>
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <router-link class="nav-link active" aria-current="page" to="home">Home</router-link>
-          </li>
-          <li class="nav-item">
-            <router-link class="nav-link" to="login">Login</router-link>
-          </li>
-        </ul>
+
+        <!-- Navbar Links and Avatar -->
+        <div class="collapse navbar-collapse" id="navbarToggler">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <router-link
+                class="nav-link"
+                :class="{ active: isActiveRoute('/') }"
+                :to="{ name: 'home' }"
+                aria-current="page"
+                >Home</router-link
+              >
+            </li>
+          </ul>
+
+          <!-- Right Aligned Avatar or Login -->
+          <ul class="navbar-nav mb-2 mb-lg-0 ms-auto">
+            <li class="nav-item">
+              <!-- Show Login if not authenticated -->
+              <router-link
+                v-if="!first_name"
+                class="nav-link"
+                :class="{ active: isActiveRoute('/login') }"
+                :to="{ name: 'login' }"
+                >Login</router-link
+              >
+
+              <!-- Show Avatar if authenticated -->
+              <div
+                v-else
+                class="avatar bg-info text-white d-flex align-items-center justify-content-center"
+              >
+                <span>{{ first_name.charAt(0).toUpperCase() }}</span>
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </nav>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
+import { useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 
 const userStore = useUserStore()
+const first_name = computed(() => userStore.first_name)
+const route = useRoute()
 
-const isBasketDropDown = ref(true)
-const isAccountDropDown = ref(false)
-
-const showDropDownBasket = () => {
-  isAccountDropDown.value = false
-  isBasketDropDown.value = !isBasketDropDown.value
-}
-const showDropDownAccount = () => {
-  isBasketDropDown.value = false
-  isAccountDropDown.value = !isAccountDropDown.value
-}
+// Function to check active route
+const isActiveRoute = (path: string) => route.path === path
 </script>
+
+<style scoped>
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+}
+</style>
