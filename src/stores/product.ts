@@ -8,29 +8,37 @@ import {
 } from '@/services/product.service'
 import { defineStore } from 'pinia'
 
-interface ProductList {
+interface ProductPagingList {
   products: Product[]
+  count: number
+  next: string | null | undefined
+  previous: string | null | undefined
   selectedProduct: Product | null
   loading: boolean
   error: string | null
 }
 
 export const useProductStore = defineStore('product', {
-  state: (): ProductList => ({
+  state: (): ProductPagingList => ({
     products: [],
+    count: 0,
+    next: null,
+    previous: null,
     selectedProduct: null,
     loading: false,
     error: null
   }),
   actions: {
-    async fetchProducts() {
+    async fetchProducts(limit = 10, offset = 0) {
       this.loading = true
       this.error = null
 
       try {
-        const response = await getAllProducts()
-        console.log('API response:', response) // Log the API response
-        this.products = response
+        const response = await getAllProducts({ limit, offset })
+        this.products = response.results
+        this.count = response.count
+        this.next = response.next
+        this.previous = response.previous
       } catch (error) {
         this.error = 'Failed to load products'
         console.error('Error fetching products:', error)
@@ -39,6 +47,25 @@ export const useProductStore = defineStore('product', {
         console.log('Loading state:', this.loading) // Log the loading state
       }
     },
+
+    // Add a function to load the next page of products
+    async loadNextPage() {
+      if (this.next) {
+        const offset = new URL(this.next).searchParams.get('offset') || '0'
+        const limit = new URL(this.next).searchParams.get('limit') || '10'
+        await this.fetchProducts(parseInt(limit, 10), parseInt(offset, 10))
+      }
+    },
+
+    // Add a function to load the previous page of products
+    async loadPreviousPage() {
+      if (this.previous) {
+        const offset = new URL(this.previous).searchParams.get('offset') || '0'
+        const limit = new URL(this.previous).searchParams.get('limit') || '10'
+        await this.fetchProducts(parseInt(limit, 10), parseInt(offset, 10))
+      }
+    },
+
     async createProduct(product: Product) {
       this.loading = true
       this.error = null
@@ -100,6 +127,7 @@ export const useProductStore = defineStore('product', {
         this.loading = false
       }
     },
+
     // Reset the state
     resetState() {
       this.products = []

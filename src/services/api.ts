@@ -976,10 +976,29 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/products/products/
      * @secure
      */
-    productsProductsList: (params: RequestParams = {}) =>
-      this.request<Product[], any>({
+    productsProductsList: (
+      query?: {
+        /** Number of results to return per page. */
+        limit?: number
+        /** The initial index from which to return the results. */
+        offset?: number
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<
+        {
+          count: number
+          /** @format uri */
+          next?: string | null
+          /** @format uri */
+          previous?: string | null
+          results: Product[]
+        },
+        any
+      >({
         path: `/products/products/`,
         method: 'GET',
+        query: query,
         secure: true,
         type: ContentType.UrlEncoded,
         format: 'json',

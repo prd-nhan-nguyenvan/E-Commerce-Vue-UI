@@ -47,14 +47,14 @@
     </div>
 
     <!-- Categories Table -->
-    <div v-if="!loading && categories.length">
+    <div v-if="!loading && categories.length" class="table-responsive">
       <table class="table table-hover">
         <thead class="table-light">
           <tr>
             <th scope="col">#</th>
-            <th scope="col">Category Name</th>
-            <th scope="col">Description</th>
-            <th scope="col">Actions</th>
+            <th scope="col" class="text-nowrap">Category Name</th>
+            <th scope="col" class="text-nowrap">Description</th>
+            <th scope="col" class="text-nowrap">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -90,11 +90,11 @@
             <td>
               <div v-if="!category.isEditing" class="d-flex">
                 <button @click="editFieldCategory(category)" class="btn btn-sm btn-warning me-2">
-                  Edit
+                  <i class="material-icons">edit</i>
                 </button>
 
                 <button @click="deleteCategory(category.id)" class="btn btn-sm btn-danger">
-                  Delete
+                  <i class="material-icons">delete</i>
                 </button>
               </div>
               <div v-else class="d-flex justify-content-start mt-2">

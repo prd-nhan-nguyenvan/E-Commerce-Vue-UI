@@ -14,9 +14,9 @@ export interface ProductBody {
 }
 
 // Fetch all products
-export const getAllProducts = async () => {
+export const getAllProducts = async (query: { limit?: number; offset?: number }) => {
   try {
-    const response = await api.products.productsProductsList()
+    const response = await api.products.productsProductsList(query)
     return response.data // Return the product data
   } catch (error) {
     console.error('Failed to fetch products:', error)
@@ -95,7 +95,11 @@ export const getAllCategories = async () => {
 
 export const addNewCategory = async (category: Category) => {
   try {
-    const response = await api.products.productsCategoriesCreate(category)
+    const response = await api.products.productsCategoriesCreate(category, {
+      headers: {
+        'Content-Type': ContentType.Json
+      }
+    })
     return response.data
   } catch (error) {
     console.error({ error })
@@ -105,7 +109,11 @@ export const addNewCategory = async (category: Category) => {
 
 export const updateCategory = async (categoryId: number, category: Category) => {
   try {
-    const response = await api.products.productsCategoriesUpdate(categoryId, category)
+    const response = await api.products.productsCategoriesUpdate(categoryId, category, {
+      headers: {
+        'Content-Type': ContentType.Json
+      }
+    })
     return response.data
   } catch (error) {
     console.error({ error })
