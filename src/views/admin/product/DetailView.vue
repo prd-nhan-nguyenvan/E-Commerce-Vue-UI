@@ -108,7 +108,7 @@ import { ref, onMounted, computed } from 'vue'
 import { useProductStore } from '@/stores/product'
 import { useCategoryStore } from '@/stores/category'
 import { useRouter, useRoute } from 'vue-router'
-import type { Product } from '@/services/api'
+import type { ProductBody } from '@/services/product.service'
 
 const productStore = useProductStore()
 const categoryStore = useCategoryStore()
@@ -116,18 +116,9 @@ const router = useRouter()
 const route = useRoute()
 
 const isEdit = ref(false)
+const uploaded = ref(false)
 
-const productInit = ref<{
-  category: number
-  name: string
-  slug?: string
-  description: string
-  price: string
-  sell_price: string
-  on_sell?: boolean
-  stock: number
-  image?: File | null
-}>({
+const productInit = ref<ProductBody>({
   category: 0,
   name: '',
   description: '',
@@ -166,6 +157,7 @@ const handleFileUpload = (event: Event) => {
   const target = event.target as HTMLInputElement
   if (target && target.files) {
     product.value.image = target.files[0]
+    uploaded.value = true
     imageError.value = null // Clear the error if an image is uploaded
   }
 }
@@ -179,6 +171,9 @@ const submitForm = async () => {
     }
 
     if (isEdit.value) {
+      if (!uploaded.value) {
+        product.value.image = null
+      }
       await productStore.updateProduct(product.value)
     } else {
       await productStore.createProduct(product.value)
