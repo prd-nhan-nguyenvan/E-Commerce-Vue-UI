@@ -92,6 +92,10 @@
         />
       </div>
 
+      <div v-if="imageError" class="alert alert-danger">
+        {{ imageError }}
+      </div>
+
       <button type="submit" class="btn btn-primary">
         {{ isEdit ? 'Update Product' : 'Add Product' }}
       </button>
@@ -135,8 +139,8 @@ const productInit = ref<{
 })
 
 const product = computed(() => productInit.value)
-
 const categories = computed(() => categoryStore.categories)
+const imageError = ref<string | null>(null)
 
 onMounted(async () => {
   try {
@@ -162,10 +166,18 @@ const handleFileUpload = (event: Event) => {
   const target = event.target as HTMLInputElement
   if (target && target.files) {
     product.value.image = target.files[0]
+    imageError.value = null // Clear the error if an image is uploaded
   }
 }
+
 const submitForm = async () => {
   try {
+    // Validate image upload for new product
+    if (!isEdit.value && !product.value.image) {
+      imageError.value = 'An image must be uploaded for a new product.'
+      return
+    }
+
     if (isEdit.value) {
       await productStore.updateProduct(product.value)
     } else {
