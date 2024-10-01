@@ -13,18 +13,23 @@
       </div>
     </div>
 
-    <div v-if="!loading && products.length">
+    <div v-if="!loading && products.length" class="table-responsive">
       <table class="table table-hover">
         <thead class="table-light">
           <tr>
-            <th scope="col">#</th>
-            <th scope="col">Image</th>
-            <th scope="col">Product Name</th>
-            <th scope="col">Description</th>
-            <th scope="col">Category</th>
-            <th scope="col">Price</th>
-            <th scope="col">Stock</th>
-            <th scope="col">Actions</th>
+            <th scope="col" class="text-nowrap">#</th>
+            <th scope="col" class="text-nowrap">Image</th>
+            <th scope="col" class="text-nowrap">Product Name</th>
+            <th scope="col" class="text-nowrap">Slug</th>
+            <th scope="col" class="text-nowrap">Description</th>
+            <th scope="col" class="text-nowrap">Category</th>
+            <th scope="col" class="text-nowrap">Price</th>
+            <th scope="col" class="text-nowrap">Sell Price</th>
+            <th scope="col" class="text-nowrap">On Sale</th>
+            <th scope="col" class="text-nowrap">Stock</th>
+            <th scope="col" class="text-nowrap">Created At</th>
+            <th scope="col" class="text-nowrap">Updated At</th>
+            <th scope="col" class="text-nowrap">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -40,20 +45,26 @@
               />
               <span v-else>No Image</span>
             </td>
-            <td>{{ product.name }}</td>
+            <td class="text-nowrap">{{ product.name }}</td>
+            <td class="text-nowrap">{{ product.slug }}</td>
             <td>{{ product.description }}</td>
             <td>{{ getCategoryName(product.category) }}</td>
             <td>{{ formatCurrency(product.price) }}</td>
+            <td>{{ formatCurrency(product.sell_price) }}</td>
+            <td>{{ product.on_sell ? 'Yes' : 'No' }}</td>
             <td>{{ product.stock }}</td>
+            <td class="text-nowrap">{{ formatDate(product.created_at) }}</td>
+            <td class="text-nowrap">{{ formatDate(product.updated_at) }}</td>
             <td>
               <div class="d-flex">
                 <router-link
                   :to="{ name: 'EditProduct', params: { id: product.id } }"
                   class="btn btn-sm btn-warning me-2"
-                  >Edit</router-link
                 >
+                  <i class="material-icons">edit</i>
+                </router-link>
                 <button @click="deleteProduct(product.id)" class="btn btn-sm btn-danger">
-                  Delete
+                  <i class="material-icons">delete</i>
                 </button>
               </div>
             </td>
@@ -90,6 +101,10 @@ const formatCurrency = (price: string) => {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(
     parseFloat(price)
   )
+}
+const formatDate = (date) => {
+  const options = { year: 'numeric', month: 'long', day: 'numeric' }
+  return new Date(date).toLocaleDateString(undefined, options)
 }
 
 const deleteProduct = async (productId: number) => {
