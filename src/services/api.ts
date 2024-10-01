@@ -38,6 +38,29 @@ export interface Login {
 
 export type Logout = object
 
+export interface Register {
+  /**
+   * Username
+   * @minLength 1
+   * @maxLength 100
+   */
+  username: string
+  /**
+   * Email
+   * @format email
+   * @minLength 1
+   * @maxLength 254
+   */
+  email: string
+  /**
+   * Password
+   * @minLength 1
+   */
+  password: string
+  /** Role */
+  role?: 'admin' | 'user' | 'staff'
+}
+
 export interface RefreshToken {
   /**
    * Refresh
@@ -557,15 +580,35 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags auth
+     * @name AuthRegisterStaffAccountCreate
+     * @request POST:/auth/register-staff-account/
+     * @secure
+     */
+    authRegisterStaffAccountCreate: (data: Register, params: RequestParams = {}) =>
+      this.request<Register, any>({
+        path: `/auth/register-staff-account/`,
+        method: 'POST',
+        body: data,
+        secure: true,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags auth
      * @name AuthRegisterCreate
      * @request POST:/auth/register/
      * @secure
      */
-    authRegisterCreate: (params: RequestParams = {}) =>
-      this.request<void, any>({
+    authRegisterCreate: (data: Register, params: RequestParams = {}) =>
+      this.request<Register, any>({
         path: `/auth/register/`,
         method: 'POST',
+        body: data,
         secure: true,
+        format: 'json',
         ...params
       }),
 
@@ -938,6 +981,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/products/products/`,
         method: 'GET',
         secure: true,
+        type: ContentType.UrlEncoded,
         format: 'json',
         ...params
       }),
@@ -950,12 +994,43 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/products/products/
      * @secure
      */
-    productsProductsCreate: (data: Product, params: RequestParams = {}) =>
+    productsProductsCreate: (
+      data: {
+        category: number
+        /**
+         * @minLength 1
+         * @maxLength 255
+         */
+        name: string
+        /**
+         * @format slug
+         * @maxLength 50
+         * @pattern ^[-a-zA-Z0-9_]+$
+         */
+        slug?: string
+        /** @minLength 1 */
+        description: string
+        /** @format decimal */
+        price: string
+        /** @format decimal */
+        sell_price: string
+        on_sell?: boolean
+        /**
+         * @min 0
+         * @max 4294967295
+         */
+        stock: number
+        /** @format binary */
+        image?: File | null
+      },
+      params: RequestParams = {}
+    ) =>
       this.request<Product, any>({
         path: `/products/products/`,
         method: 'POST',
         body: data,
         secure: true,
+        type: ContentType.FormData,
         format: 'json',
         ...params
       }),
@@ -990,6 +1065,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/products/products/${id}/`,
         method: 'GET',
         secure: true,
+        type: ContentType.UrlEncoded,
         format: 'json',
         ...params
       }),
@@ -1002,12 +1078,44 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request PUT:/products/products/{id}/
      * @secure
      */
-    productsProductsUpdate: (id: number, data: Product, params: RequestParams = {}) =>
+    productsProductsUpdate: (
+      id: number,
+      data: {
+        category: number
+        /**
+         * @minLength 1
+         * @maxLength 255
+         */
+        name: string
+        /**
+         * @format slug
+         * @maxLength 50
+         * @pattern ^[-a-zA-Z0-9_]+$
+         */
+        slug?: string
+        /** @minLength 1 */
+        description: string
+        /** @format decimal */
+        price: string
+        /** @format decimal */
+        sell_price: string
+        on_sell?: boolean
+        /**
+         * @min 0
+         * @max 4294967295
+         */
+        stock: number
+        /** @format binary */
+        image?: File | null
+      },
+      params: RequestParams = {}
+    ) =>
       this.request<Product, any>({
         path: `/products/products/${id}/`,
         method: 'PUT',
         body: data,
         secure: true,
+        type: ContentType.FormData,
         format: 'json',
         ...params
       }),
@@ -1020,12 +1128,44 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request PATCH:/products/products/{id}/
      * @secure
      */
-    productsProductsPartialUpdate: (id: number, data: Product, params: RequestParams = {}) =>
+    productsProductsPartialUpdate: (
+      id: number,
+      data: {
+        category: number
+        /**
+         * @minLength 1
+         * @maxLength 255
+         */
+        name: string
+        /**
+         * @format slug
+         * @maxLength 50
+         * @pattern ^[-a-zA-Z0-9_]+$
+         */
+        slug?: string
+        /** @minLength 1 */
+        description: string
+        /** @format decimal */
+        price: string
+        /** @format decimal */
+        sell_price: string
+        on_sell?: boolean
+        /**
+         * @min 0
+         * @max 4294967295
+         */
+        stock: number
+        /** @format binary */
+        image?: File | null
+      },
+      params: RequestParams = {}
+    ) =>
       this.request<Product, any>({
         path: `/products/products/${id}/`,
         method: 'PATCH',
         body: data,
         secure: true,
+        type: ContentType.FormData,
         format: 'json',
         ...params
       }),
@@ -1043,6 +1183,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/products/products/${id}/`,
         method: 'DELETE',
         secure: true,
+        type: ContentType.UrlEncoded,
         ...params
       }),
 
