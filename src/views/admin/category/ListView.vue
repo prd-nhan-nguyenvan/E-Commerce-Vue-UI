@@ -179,7 +179,7 @@ const updateCategory = async (category) => {
   category.isEditing = false // Exit editing mode after saving
 }
 
-const deleteCategory = async (categoryId: string) => {
+const deleteCategory = async (categoryId: number) => {
   Swal.fire({
     title: 'Are you sure?',
     text: "You won't be able to revert this!",

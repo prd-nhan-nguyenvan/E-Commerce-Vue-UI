@@ -3,7 +3,8 @@ import {
   addNewProduct,
   getAllProducts,
   getProductById as apiGetProductById,
-  updateProduct as apiUpdateProduct
+  updateProduct as apiUpdateProduct,
+  deleteProduct as apiDeleteProduct
 } from '@/services/product.service'
 import { defineStore } from 'pinia'
 
@@ -81,6 +82,20 @@ export const useProductStore = defineStore('product', {
       } catch (error) {
         this.error = 'Failed to update product'
         console.error('Error updating product:', error)
+      } finally {
+        this.loading = false
+      }
+    },
+    async deleteProduct(productId: number) {
+      this.loading = true
+      this.error = null
+
+      try {
+        await apiDeleteProduct(productId)
+        this.products = this.products.filter((product) => product.id !== productId)
+      } catch (error) {
+        this.error = 'Failed to delete product'
+        console.error('Error deleting product:', error)
       } finally {
         this.loading = false
       }

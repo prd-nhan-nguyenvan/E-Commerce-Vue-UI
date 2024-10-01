@@ -70,6 +70,16 @@ export const updateProduct = async (productData) => {
   }
 }
 
+export const deleteProduct = async (productId: number) => {
+  try {
+    const response = await api.products.productsProductsDelete(productId)
+    return response.data
+  } catch (error) {
+    console.error({ error })
+    throw error
+  }
+}
+
 export const getAllCategories = async () => {
   try {
     const response = await api.products.productsCategoriesList()
