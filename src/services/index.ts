@@ -7,12 +7,7 @@ export const api = new Api({
   baseUrl,
   securityWorker: async () => {
     const token = localStorage.getItem('accessToken')
-
-    // Return the Authorization header if token exists
     return token ? { headers: { Authorization: `Bearer ${token}` } } : {}
   },
-  baseApiParams: {
-    headers: { 'Content-Type': ContentType.Json },
-    format: 'json'
-  }
+  baseApiParams: {}
 })

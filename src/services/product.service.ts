@@ -1,5 +1,5 @@
 import { api } from '.'
-import { ContentType, type Category, type Product } from './api'
+import { type Category, type Product } from './api'
 
 // Fetch all products
 export const getAllProducts = async () => {
@@ -24,9 +24,7 @@ export const getProduct = async (slug: string) => {
 
 export const addNewProduct = async (productData: Product) => {
   try {
-    const response = await api.products.productsProductsCreate(productData, {
-      headers: { 'Content-Type': ContentType.FormData }
-    })
+    const response = await api.products.productsProductsCreate(productData)
 
     return response.data
   } catch (error) {
@@ -45,11 +43,26 @@ export const getProductById = async (productId: number) => {
   }
 }
 
-export const updateProduct = async (productData: Product) => {
+export const updateProduct = async (productData) => {
   try {
     if (!productData.id) throw 'Require product id'
+    // Create a new FormData instance
+    const formData = new FormData()
 
-    const response = await api.products.productsProductsUpdate(productData.id, productData)
+    // Append product fields to the FormData object
+    formData.append('category', productData.category.toString())
+    formData.append('name', productData.name)
+    formData.append('description', productData.description)
+    formData.append('price', productData.price)
+    formData.append('sell_price', productData.sell_price)
+    formData.append('on_sell', productData.on_sell ? 'true' : 'false')
+    formData.append('stock', productData.stock.toString())
+
+    // Check if an image is present and append it to FormData
+    if (productData.image) {
+      formData.append('image', productData.image)
+    }
+    const response = await api.products.productsProductsPartialUpdate(productData.id, productData)
     return response.data
   } catch (err) {
     console.error(err)

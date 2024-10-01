@@ -38,7 +38,7 @@ export const useProductStore = defineStore('product', {
         console.log('Loading state:', this.loading) // Log the loading state
       }
     },
-    async addProduct(product: Product) {
+    async createProduct(product: Product) {
       this.loading = true
       this.error = null
 
@@ -73,7 +73,6 @@ export const useProductStore = defineStore('product', {
 
       try {
         const response = await apiUpdateProduct(product)
-        // Update the local products array
         const index = this.products.findIndex((p) => p.id === response.id)
         if (index !== -1) {
           this.products[index] = response

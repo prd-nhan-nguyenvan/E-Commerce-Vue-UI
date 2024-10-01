@@ -113,7 +113,17 @@ const route = useRoute()
 
 const isEdit = ref(false)
 
-const productInit = ref<Product>({
+const productInit = ref<{
+  category: number
+  name: string
+  slug?: string
+  description: string
+  price: string
+  sell_price: string
+  on_sell?: boolean
+  stock: number
+  image?: File | null
+}>({
   category: 0,
   name: '',
   description: '',
@@ -128,57 +138,42 @@ const product = computed(() => productInit.value)
 
 const categories = computed(() => categoryStore.categories)
 
-const submitForm = async () => {
+onMounted(async () => {
   try {
-    const formData = new FormData()
-
-    // Append fields to the FormData object
-    formData.append('category', product.value.category.toString())
-    formData.append('name', product.value.name)
-    formData.append('description', product.value.description)
-    formData.append('price', product.value.price)
-    formData.append('sell_price', product.value.sell_price)
-    formData.append('on_sell', product.value.on_sell ? 'true' : 'false')
-    formData.append('stock', product.value.stock.toString())
-
-    // Check if an image is uploaded
-    if (product.value.image) {
-      formData.append('image', product.value.image)
+    // Fetch categories from the store or API
+    if (categories.value.length === 0) {
+      await categoryStore.fetchCategories()
     }
 
-    if (isEdit.value) {
-      await productStore.updateProduct(formData) // Ensure this handles FormData correctly
-    } else {
-      await productStore.addProduct(formData) // Ensure this handles FormData correctly
+    // Check if we are editing a product
+    const productId = route.params.id
+    if (productId) {
+      isEdit.value = true
+      // Fetch product data and populate form
+      const existingProduct = await productStore.getProductById(Number(productId))
+      Object.assign(productInit.value, existingProduct)
     }
-    await productStore.fetchProducts() // Refresh product list after adding/updating
-    router.push('/admin/products') // Navigate back to the product list
   } catch (error) {
-    console.error('Error adding/updating product:', error)
+    console.error('Error fetching data:', error)
   }
-}
+})
 
 const handleFileUpload = (event: Event) => {
   const target = event.target as HTMLInputElement
-  if (target.files && target.files.length > 0) {
-    productInit.value.image = target.files[0] // Store the uploaded file
+  if (target && target.files) {
+    product.value.image = target.files[0]
   }
 }
-
-onMounted(async () => {
-  // Fetch categories from the store or API
-  if (categories.value.length === 0) {
-    await categoryStore.fetchCategories()
+const submitForm = async () => {
+  try {
+    if (isEdit.value) {
+      await productStore.updateProduct(product.value)
+    } else {
+      await productStore.createProduct(product.value)
+    }
+    router.push({ name: 'ProductList' })
+  } catch (error) {
+    console.error('Error submitting form:', error)
   }
-
-  // Check if we are editing a product
-  const productId = route.params.id
-  console.log({ productId })
-  if (productId) {
-    isEdit.value = true
-    // Fetch product data and populate form
-    const existingProduct = await productStore.getProductById(Number(productId)) // Ensure productId is a number
-    Object.assign(productInit.value, existingProduct)
-  }
-})
+}
 </script>
