@@ -24,7 +24,7 @@ export const getAllProducts = async (query: { limit?: number; offset?: number })
   }
 }
 
-export const getProduct = async (slug: string) => {
+export const getProductBySlug = async (slug: string) => {
   try {
     const response = await api.products.productsProductsSlugRead(slug)
     return response.data
