@@ -1,5 +1,4 @@
-import { Api, ContentType } from '@/services/api'
-import { logout, refreshAccessToken } from './auth.service'
+import { Api } from '@/services/api'
 
 const baseUrl = `${import.meta.env.VITE_API_URL}`
 
