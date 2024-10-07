@@ -15,37 +15,19 @@ export const login = async (loginData: Login) => {
     return response.data
   } catch (error) {
     console.error('Login error:', error)
-
-    if (error.response) {
-      throw new Error(`Login failed: ${error.response.data.detail || 'Unknown error'}`)
-    } else {
-      throw new Error('Login failed. Please check your credentials.')
-    }
+    throw new Error('Login failed. Please check your credentials.')
   }
 }
 
-export const logout = () => {
-  localStorage.removeItem('accessToken')
-  localStorage.removeItem('refreshToken')
-
-  console.log('User logged out successfully')
-}
-
-export const refreshAccessToken = async (refreshToken: string) => {
+export const logout = async () => {
   try {
-    const response = await api.auth.authTokenRefreshCreate({
-      refresh: refreshToken
-    })
+    await api.auth.authLogoutCreate()
+    localStorage.removeItem('accessToken')
+    localStorage.removeItem('refreshToken')
 
-    console.log('Token refresh response:', response)
-
-    const { access, refresh } = response.data
-    if (access) localStorage.setItem('accessToken', access)
-    if (refresh) localStorage.setItem('refreshToken', refresh)
-
-    return { access, refresh }
-  } catch (error) {
-    console.error('Failed to refresh access token', error)
-    throw new Error('Token refresh failed')
+    console.log('User logged out successfully')
+  } catch (err) {
+    console.log('🚀 ~ logout ~ err:', err)
+    throw new Error('Logout failed...')
   }
 }

@@ -31,6 +31,5 @@ onMounted(async () => {
 <style scoped>
 .main {
   padding: 20px;
-  /* Add custom styles for the main content area if needed */
 }
 </style>
