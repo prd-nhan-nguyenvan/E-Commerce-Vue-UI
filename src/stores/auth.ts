@@ -12,14 +12,11 @@ interface authState {
 export const useAuthStore = defineStore('auth', {
   state: (): authState => ({
     user: null,
-    token: null,
+    token: localStorage.getItem('accessToken') || null,
     loading: false,
     error: ''
   }),
   actions: {
-    setUser(user: UserProfile | null) {
-      this.user = user
-    },
     setToken(token: string, refresh: string) {
       this.token = token
       localStorage.setItem('refreshToken', refresh)
@@ -33,16 +30,37 @@ export const useAuthStore = defineStore('auth', {
         console.log('🚀 AuthStore ~ login ~ response:', response)
         const { access_token, refresh_token } = response
         this.setToken(access_token, refresh_token)
-
-        // call user profile
-        const user = await apiGetUserProfile()
-        console.log('🚀 AuthStore ~ login ~ user:', user)
-        this.setUser(user)
+        await this.fetchUser()
       } catch (e) {
         console.log('🚀 AuthStore ~ login ~ e:', e)
         throw e
       } finally {
         this.loading = false
+      }
+    },
+    async fetchUser() {
+      try {
+        if (this.token) {
+          const response = await apiGetUserProfile() // Replace with your API call to get user info
+          this.user = response
+        }
+      } catch (error) {
+        console.error('Failed to load user info', error)
+        this.logout() // Optionally log out if fetching user info fails
+      }
+    },
+
+    logout() {
+      this.user = null
+      this.token = null
+      localStorage.removeItem('accessToken')
+    },
+
+    async initializeAuth() {
+      const token = localStorage.getItem('accessToken')
+      if (token) {
+        this.token = token
+        await this.fetchUser() // Load user info if token exists
       }
     }
   },
