@@ -23,6 +23,31 @@ export interface Login {
   password: string
 }
 
+export interface LoginResponse {
+  /**
+   * Access token
+   * @minLength 1
+   */
+  access_token: string
+  /** Expires in */
+  expires_in: number
+  /**
+   * Token type
+   * @minLength 1
+   */
+  token_type: string
+  /**
+   * Scope
+   * @minLength 1
+   */
+  scope: string
+  /**
+   * Refresh token
+   * @minLength 1
+   */
+  refresh_token: string
+}
+
 export interface Register {
   /**
    * Username
@@ -514,7 +539,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     authLoginCreate: (data: Login, params: RequestParams = {}) =>
-      this.request<Login, any>({
+      this.request<LoginResponse, void>({
         path: `/auth/login/`,
         method: 'POST',
         body: data,
