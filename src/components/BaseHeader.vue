@@ -82,10 +82,10 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { useUserStore } from '@/stores/user'
+import { useAuthStore } from '@/stores/auth'
 
-const userStore = useUserStore()
-const first_name = computed(() => userStore.first_name)
+const authStore = useAuthStore()
+const first_name = computed(() => authStore.user?.first_name)
 const route = useRoute()
 
 // Function to check active route

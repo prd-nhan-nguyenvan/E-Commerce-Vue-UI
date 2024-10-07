@@ -2,6 +2,6 @@
 
 <template>
   <main>
-    <h1>Dashboard View</h1>
+    <h1>Admin Dashboard</h1>
   </main>
 </template>

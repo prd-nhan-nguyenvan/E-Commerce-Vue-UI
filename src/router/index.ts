@@ -20,12 +20,6 @@ export const router = createRouter({
       component: HomeView
     },
     {
-      path: '/dashboard',
-      name: 'dashboard',
-      component: DashboardView,
-      meta: { requiresAuth: true }
-    },
-    {
       path: '/products/:slug',
       name: 'ProductDetail',
       component: ProductDetailView
@@ -38,6 +32,11 @@ export const router = createRouter({
       name: 'Admin',
       meta: { requiresAuth: true },
       children: [
+        {
+          path: '',
+          component: DashboardView,
+          meta: { requiresAuth: true }
+        },
         {
           path: 'categories',
           name: 'Categories',
