@@ -27,13 +27,9 @@ export const useAuthStore = defineStore('auth', {
       this.loading = true
       try {
         const response = await apiLogin(payload)
-        console.log('🚀 AuthStore ~ login ~ response:', response)
         const { access_token, refresh_token } = response
         this.setToken(access_token, refresh_token)
         await this.fetchUser()
-      } catch (e) {
-        console.log('🚀 AuthStore ~ login ~ e:', e)
-        throw e
       } finally {
         this.loading = false
       }
@@ -54,6 +50,7 @@ export const useAuthStore = defineStore('auth', {
       this.user = null
       this.token = null
       localStorage.removeItem('accessToken')
+      localStorage.removeItem('refreshToken')
     },
 
     async initializeAuth() {

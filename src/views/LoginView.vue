@@ -75,7 +75,7 @@ const handleLogin = async () => {
   await authStore.login({ email: email.value, password: password.value })
 
   if (authStore.isAuthenticated) {
-    route.push({ name: 'Admin' })
+    route.push({ name: 'admin' })
   }
 }
 
