@@ -22,11 +22,10 @@ export const router = createRouter({
     },
     {
       path: '/products/:slug',
-      name: 'ProductDetail',
+      name: 'productDetail', // changed to camelCase
       component: ProductDetailView
     },
     { path: '/login', name: 'login', component: LoginView },
-
     { path: '/signup', name: 'signup', component: SignUpView },
     {
       path: '/user/profile',
@@ -34,7 +33,6 @@ export const router = createRouter({
       component: ProfileView,
       meta: { requiresAuth: true }
     },
-
     {
       path: '/admin',
       meta: { requiresAuth: true },
@@ -47,25 +45,25 @@ export const router = createRouter({
         },
         {
           path: 'categories',
-          name: 'Categories',
+          name: 'categories', // changed to camelCase
           component: CategoryListView,
           meta: { requiresAuth: true }
         },
         {
           path: 'products',
-          name: 'ProductList',
+          name: 'productList', // changed to camelCase
           component: ProductListView,
           meta: { requiresAuth: true }
         },
         {
           path: 'products/new',
-          name: 'AddProduct',
+          name: 'addProduct', // changed to camelCase
           component: ProductFormView,
           meta: { requiresAuth: true }
         },
         {
           path: 'products/edit/:id',
-          name: 'EditProduct',
+          name: 'editProduct', // changed to camelCase
           component: ProductFormView,
           meta: { requiresAuth: true }
         }
