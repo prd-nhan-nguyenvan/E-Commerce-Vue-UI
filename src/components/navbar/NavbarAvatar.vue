@@ -6,7 +6,7 @@
   <!-- Avatar Dropdown -->
   <div v-else class="nav-item dropdown">
     <a
-      class="nav-link dropdown-toggle d-flex align-items-center"
+      class="nav-link d-flex align-items-center"
       href="#"
       id="avatarDropdown"
       role="button"
@@ -18,7 +18,7 @@
       </div>
     </a>
 
-    <ul class="dropdown-menu" aria-labelledby="avatarDropdown">
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="avatarDropdown">
       <!-- Profile Link -->
       <li>
         <router-link class="dropdown-item" :to="{ name: 'profile' }">Profile</router-link>
