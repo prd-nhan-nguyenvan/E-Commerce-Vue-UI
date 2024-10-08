@@ -10,3 +10,5 @@ export const api = new Api({
   },
   baseApiParams: {}
 })
+
+export * from './api'

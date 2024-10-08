@@ -1,5 +1,5 @@
 <template>
-  <ul class="navbar-nav mb-2 mb-lg-0" v-if="!first_name">
+  <ul class="navbar-nav mb-2 mb-lg-0" v-if="!isAuthenticated">
     <NavbarItem routeName="login" label="Login" />
     <NavbarItem routeName="signup" label="Sign Up" />
   </ul>
@@ -15,7 +15,7 @@
       aria-expanded="false"
     >
       <div class="avatar bg-info text-white d-flex align-items-center justify-content-center me-2">
-        <span>{{ first_name.charAt(0).toUpperCase() }}</span>
+        <span>{{ profile?.first_name?.charAt(0).toUpperCase() || 'O' }}</span>
       </div>
     </a>
 
@@ -45,8 +45,8 @@ import NavbarItem from './NavbarItem.vue'
 const authStore = useAuthStore()
 const router = useRouter()
 
-const first_name = computed(() => authStore.user?.first_name)
-
+const isAuthenticated = computed(() => authStore.isAuthenticated)
+const profile = computed(() => authStore.user)
 const logout = async () => {
   await authStore.logout() // Assuming you have a logout action in your Pinia store
   router.push({ name: 'login' }) // Redirect to login after logout
