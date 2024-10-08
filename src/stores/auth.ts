@@ -6,7 +6,7 @@ interface authState {
   user: UserProfile | null
   token: string | null
   loading: boolean
-  error: string
+  error: string | null
 }
 
 export const useAuthStore = defineStore('auth', {
@@ -30,6 +30,10 @@ export const useAuthStore = defineStore('auth', {
         const { access_token, refresh_token } = response
         this.setToken(access_token, refresh_token)
         await this.fetchUser()
+      } catch (err) {
+        console.log('🚀 ~ login ~ err:', err)
+        this.error = 'Login failed. Please try again.'
+        throw err
       } finally {
         this.loading = false
       }

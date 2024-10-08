@@ -84,7 +84,6 @@ onMounted(() => {
 })
 </script>
 <style scoped>
-/* General layout */
 .account {
   display: flex;
   flex-direction: column;
@@ -94,14 +93,12 @@ onMounted(() => {
   height: 100%;
 }
 
-/* Form container */
 .account__form {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-/* Input fields */
 .txt {
   width: 100%;
   padding: 10px;
