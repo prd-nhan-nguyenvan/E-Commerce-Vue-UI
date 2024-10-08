@@ -2,51 +2,14 @@
   <div class="container my-5">
     <div class="row justify-content-center align-items-stretch">
       <div class="col-lg-4 d-flex">
-        <div class="card mb-4 text-center flex-fill">
-          <div class="card-body">
-            <img
-              v-if="profile?.profile_picture"
-              :src="profile?.profile_picture"
-              alt="Profile Picture"
-              class="rounded-circle mb-3"
-              width="150"
-              height="150"
-            />
-            <img
-              v-else
-              src="https://isobarscience-1bfd8.kxcdn.com/wp-content/uploads/2020/09/default-profile-picture1.jpg"
-              alt="Default Profile Picture"
-              class="rounded-circle mb-3"
-              width="150"
-              height="150"
-            />
-            <div class="d-flex justify-content-center align-items-center">
-              <h5 v-if="!isEditing.name">{{ profile?.first_name }}&nbsp;</h5>
-              <input
-                v-else
-                type="text"
-                v-model="editProfile.first_name"
-                class="form-control me-2"
-                placeholder="First Name"
-              />
-              <h5 v-if="!isEditing.name">{{ profile?.last_name }}</h5>
-              <input
-                v-else
-                type="text"
-                v-model="editProfile.last_name"
-                class="form-control"
-                placeholder="Last Name"
-              />
-              <button
-                v-if="!isEditing.name && isEnableEditing"
-                class="btn btn-link"
-                @click="startEditing('name')"
-              >
-                <i class="material-icons">edit</i>
-              </button>
-            </div>
-          </div>
-        </div>
+        <PictureName
+          :isEditing="isEditing"
+          :isEnableEditing="isEnableEditing"
+          :editProfile="editProfile"
+          @startEditing="startEditing"
+          @saveChanges="saveChanges"
+          @cancelChange="cancelEdit"
+        />
       </div>
       <div class="col-lg-8 d-flex">
         <div class="card mb-4 flex-fill">
@@ -62,89 +25,29 @@
               </button>
             </div>
             <hr />
-            <div class="mb-2 d-flex align-items-center">
-              <strong>Phone: &nbsp;</strong>
-              <span v-if="!isEditing.phone">{{
-                profile?.phone_number || 'No phone number available'
-              }}</span>
-              <input
-                v-else
-                v-model="editProfile.phone_number"
-                type="text"
-                class="form-control"
-                placeholder="Enter phone number"
-                style="flex: 1"
-                @keydown.enter="saveChanges"
-                @keydown.esc="cancelEdit"
-              />
-              <button
-                v-if="!isEditing.phone && isEnableEditing"
-                class="btn btn-link"
-                @click="startEditing('phone')"
-              >
-                <i class="material-icons">edit</i>
-              </button>
-            </div>
-            <hr />
-            <div class="mb-2 d-flex align-items-center">
-              <strong>Address:&nbsp;</strong>
-              <span v-if="!isEditing.address">{{
-                profile?.address || 'No address available'
-              }}</span>
-              <input
-                v-else
-                v-model="editProfile.address"
-                type="text"
-                class="form-control"
-                placeholder="Enter address"
-                style="flex: 1"
-                @keydown.enter="saveChanges"
-                @keydown.esc="cancelEdit"
-              />
-              <button
-                v-if="!isEditing.address && isEnableEditing"
-                class="btn btn-link"
-                @click="startEditing('address')"
-              >
-                <i class="material-icons">edit</i>
-              </button>
-            </div>
-            <hr />
-            <div class="mb-2">
-              <strong>Bio:</strong>
-              <button
-                v-if="!isEditing.bio && isEnableEditing"
-                class="btn btn-link"
-                @click="startEditing('bio')"
-              >
-                <i class="material-icons">edit</i>
-              </button>
-              <p v-if="!isEditing.bio">{{ profile?.bio || 'No bio available' }}</p>
-              <textarea
-                v-else
-                v-model="editProfile.bio"
-                class="form-control"
-                rows="3"
-                placeholder="Enter bio"
-              ></textarea>
-            </div>
+            <BasicInfo
+              :editProfile="editProfile"
+              :isEditing="isEditing"
+              :isEnableEditing="isEnableEditing"
+              @startEditing="startEditing"
+            />
           </div>
         </div>
       </div>
-
-      <!-- Save Changes Button -->
-      <div
-        v-if="isEditing.name || isEditing.phone || isEditing.address || isEditing.bio"
-        class="text-center mt-3"
-      >
-        <button class="btn btn-success me-2" @click="saveChanges">Save Changes</button>
-        <button class="btn btn-secondary" @click="cancelEdit">Cancel</button>
-      </div>
+      <EditButtons
+        :isEditingActive="isEditingActive"
+        @saveChanges="saveChanges"
+        @cancelEdit="cancelEdit"
+      />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import PictureName from '@/components/profile/PictureName.vue'
+import EditButtons from '@/components/profile/EditButtons.vue'
+import BasicInfo from '@/components/profile/BasicInfo.vue'
+
 import { ref, computed, reactive, watch } from 'vue'
 import { useAuthStore } from '@/stores'
 
@@ -177,6 +80,8 @@ const isEditing = reactive({
   address: false,
   bio: false
 })
+
+const isEditingActive = computed(() => Object.values(isEditing).some((status) => status))
 
 const isEnableEditing = ref(false)
 const toggleEdit = () => {
