@@ -4,7 +4,8 @@ import {
   getAllProducts,
   getProductById as apiGetProductById,
   updateProduct as apiUpdateProduct,
-  deleteProduct as apiDeleteProduct
+  deleteProduct as apiDeleteProduct,
+  getProductBySlug as apiGetProductBySlug
 } from '@/services/product.service'
 import { defineStore } from 'pinia'
 
@@ -86,6 +87,21 @@ export const useProductStore = defineStore('product', {
 
       try {
         const response = await apiGetProductById(productId) // Assuming this API call exists
+        this.selectedProduct = response
+        return response
+      } catch (error) {
+        this.error = 'Failed to load product'
+        console.error('Error fetching product:', error)
+      } finally {
+        this.loading = false
+      }
+    },
+    async getProductBySlug(slug: string) {
+      this.loading = true
+      this.error = null
+
+      try {
+        const response = await apiGetProductBySlug(slug) // Assuming this API call exists
         this.selectedProduct = response
         return response
       } catch (error) {

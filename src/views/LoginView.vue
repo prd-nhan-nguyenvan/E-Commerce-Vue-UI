@@ -58,47 +58,30 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { login, logout } from '@/services/auth.service'
-import { getUserProfile } from '@/services/user.service'
-import { useUserStore } from '@/stores/user'
-
+import { ref, onMounted, computed } from 'vue'
+import { useAuthStore } from '@/stores'
 import { useRouter } from 'vue-router'
+
+const route = useRouter()
+const authStore = useAuthStore()
+
+const loading = computed(() => authStore.loading)
+const error = computed(() => authStore.error)
 
 const email = ref('')
 const password = ref('')
-const error = ref('')
-const loading = ref(false) // Loading state
-const router = useRouter() // Get the router instance
-const userStore = useUserStore() // Use Pinia store
 
 const handleLogin = async () => {
-  error.value = '' // Clear any previous error
-  loading.value = true // Set loading to true
+  await authStore.login({ email: email.value, password: password.value })
 
-  try {
-    const tokens = await login({
-      email: email.value,
-      password: password.value
-    })
-    try {
-      const userProfile = await getUserProfile()
-      userStore.setUser(userProfile)
-    } catch (error) {
-      throw new Error(error)
-    }
-
-    router.push('/dashboard') // Change to your actual route
-    email.value = '' // Clear email input
-    password.value = '' // Clear password input
-  } catch (err) {
-    error.value = err.message // Display the error message
-  } finally {
-    loading.value = false // Reset loading state
+  if (authStore.isAuthenticated) {
+    route.push({ name: 'admin' })
   }
 }
 
-onMounted(logout)
+onMounted(() => {
+  console.log('This is hello from login page!!!')
+})
 </script>
 <style scoped>
 /* General layout */

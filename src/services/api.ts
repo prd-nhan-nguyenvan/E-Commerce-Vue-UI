@@ -9,19 +9,6 @@
  * ---------------------------------------------------------------
  */
 
-export interface ChangePassword {
-  /**
-   * Old password
-   * @minLength 1
-   */
-  old_password: string
-  /**
-   * New password
-   * @minLength 1
-   */
-  new_password: string
-}
-
 export interface Login {
   /**
    * Email
@@ -36,7 +23,30 @@ export interface Login {
   password: string
 }
 
-export type Logout = object
+export interface LoginResponse {
+  /**
+   * Access token
+   * @minLength 1
+   */
+  access_token: string
+  /** Expires in */
+  expires_in: number
+  /**
+   * Token type
+   * @minLength 1
+   */
+  token_type: string
+  /**
+   * Scope
+   * @minLength 1
+   */
+  scope: string
+  /**
+   * Refresh token
+   * @minLength 1
+   */
+  refresh_token: string
+}
 
 export interface Register {
   /**
@@ -237,11 +247,29 @@ export interface Review {
   updated_at?: string
 }
 
+export interface ChangePassword {
+  /**
+   * Old password
+   * @minLength 1
+   */
+  old_password: string
+  /**
+   * New password
+   * @minLength 1
+   */
+  new_password: string
+}
+
 export interface UserProfile {
   /** ID */
   id?: number
   /** User */
   user?: number
+  /**
+   * Role
+   * @minLength 1
+   */
+  role?: string
   /**
    * First name
    * @maxLength 30
@@ -506,48 +534,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags auth
-     * @name AuthChangePasswordUpdate
-     * @request PUT:/auth/change-password/
-     * @secure
-     */
-    authChangePasswordUpdate: (data: ChangePassword, params: RequestParams = {}) =>
-      this.request<ChangePassword, any>({
-        path: `/auth/change-password/`,
-        method: 'PUT',
-        body: data,
-        secure: true,
-        format: 'json',
-        ...params
-      }),
-
-    /**
-     * No description
-     *
-     * @tags auth
-     * @name AuthChangePasswordPartialUpdate
-     * @request PATCH:/auth/change-password/
-     * @secure
-     */
-    authChangePasswordPartialUpdate: (data: ChangePassword, params: RequestParams = {}) =>
-      this.request<ChangePassword, any>({
-        path: `/auth/change-password/`,
-        method: 'PATCH',
-        body: data,
-        secure: true,
-        format: 'json',
-        ...params
-      }),
-
-    /**
-     * No description
-     *
-     * @tags auth
      * @name AuthLoginCreate
      * @request POST:/auth/login/
      * @secure
      */
     authLoginCreate: (data: Login, params: RequestParams = {}) =>
-      this.request<Login, any>({
+      this.request<LoginResponse, void>({
         path: `/auth/login/`,
         method: 'POST',
         body: data,
@@ -565,32 +557,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request POST:/auth/logout/
      * @secure
      */
-    authLogoutCreate: (data: Logout, params: RequestParams = {}) =>
-      this.request<Logout, any>({
+    authLogoutCreate: (params: RequestParams = {}) =>
+      this.request<void, any>({
         path: `/auth/logout/`,
         method: 'POST',
-        body: data,
         secure: true,
-        type: ContentType.Json,
-        format: 'json',
-        ...params
-      }),
-
-    /**
-     * No description
-     *
-     * @tags auth
-     * @name AuthRegisterStaffAccountCreate
-     * @request POST:/auth/register-staff-account/
-     * @secure
-     */
-    authRegisterStaffAccountCreate: (data: Register, params: RequestParams = {}) =>
-      this.request<Register, any>({
-        path: `/auth/register-staff-account/`,
-        method: 'POST',
-        body: data,
-        secure: true,
-        format: 'json',
         ...params
       }),
 
@@ -605,6 +576,24 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     authRegisterCreate: (data: Register, params: RequestParams = {}) =>
       this.request<Register, any>({
         path: `/auth/register/`,
+        method: 'POST',
+        body: data,
+        secure: true,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags auth
+     * @name AuthRegisterStaffCreate
+     * @request POST:/auth/register/staff/
+     * @secure
+     */
+    authRegisterStaffCreate: (data: Register, params: RequestParams = {}) =>
+      this.request<Register, any>({
+        path: `/auth/register/staff/`,
         method: 'POST',
         body: data,
         secure: true,
@@ -692,10 +681,29 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/orders/
      * @secure
      */
-    ordersList: (params: RequestParams = {}) =>
-      this.request<Order[], any>({
+    ordersList: (
+      query?: {
+        /** Number of results to return per page. */
+        limit?: number
+        /** The initial index from which to return the results. */
+        offset?: number
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<
+        {
+          count: number
+          /** @format uri */
+          next?: string | null
+          /** @format uri */
+          previous?: string | null
+          results: Order[]
+        },
+        any
+      >({
         path: `/orders/`,
         method: 'GET',
+        query: query,
         secure: true,
         format: 'json',
         ...params
@@ -1214,10 +1222,30 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/products/products/{product_id}/reviews/
      * @secure
      */
-    productsProductsReviewsList: (productId: string, params: RequestParams = {}) =>
-      this.request<Review[], any>({
+    productsProductsReviewsList: (
+      productId: string,
+      query?: {
+        /** Number of results to return per page. */
+        limit?: number
+        /** The initial index from which to return the results. */
+        offset?: number
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<
+        {
+          count: number
+          /** @format uri */
+          next?: string | null
+          /** @format uri */
+          previous?: string | null
+          results: Review[]
+        },
+        any
+      >({
         path: `/products/products/${productId}/reviews/`,
         method: 'GET',
+        query: query,
         secure: true,
         format: 'json',
         ...params
@@ -1243,6 +1271,42 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       })
   }
   users = {
+    /**
+     * No description
+     *
+     * @tags users
+     * @name UsersPasswordChangeUpdate
+     * @request PUT:/users/password/change/
+     * @secure
+     */
+    usersPasswordChangeUpdate: (data: ChangePassword, params: RequestParams = {}) =>
+      this.request<ChangePassword, any>({
+        path: `/users/password/change/`,
+        method: 'PUT',
+        body: data,
+        secure: true,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags users
+     * @name UsersPasswordChangePartialUpdate
+     * @request PATCH:/users/password/change/
+     * @secure
+     */
+    usersPasswordChangePartialUpdate: (data: ChangePassword, params: RequestParams = {}) =>
+      this.request<ChangePassword, any>({
+        path: `/users/password/change/`,
+        method: 'PATCH',
+        body: data,
+        secure: true,
+        format: 'json',
+        ...params
+      }),
+
     /**
      * No description
      *
