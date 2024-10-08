@@ -17,6 +17,11 @@
         width="150"
         height="150"
       />
+      <!-- Image Upload Button -->
+      <div class="mb-2" v-if="isEnableEditing">
+        <input type="file" ref="fileInput" @change="onImageChange" accept="image/*" hidden />
+        <button class="btn btn-primary" @click="triggerFileInput">Change Picture</button>
+      </div>
       <div class="d-flex justify-content-center align-items-center">
         <h5 v-if="!isEditing.name">{{ profile?.first_name }}&nbsp;</h5>
         <input
@@ -51,7 +56,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useAuthStore } from '@/stores'
 interface Props {
   isEditing: { name: boolean }
@@ -62,4 +67,23 @@ defineProps<Props>()
 
 const authStore = useAuthStore()
 const profile = computed(() => authStore.user)
+
+const fileInput = ref<HTMLInputElement | null>(null)
+
+const triggerFileInput = () => {
+  fileInput.value?.click()
+}
+
+const onImageChange = async (event: Event) => {
+  const target = event.target as HTMLInputElement
+  if (target.files && target.files[0]) {
+    const selectedFile = target.files[0]
+
+    try {
+      authStore.updateProfile({ profile_picture: selectedFile })
+    } catch (error) {
+      console.error('Error uploading image:', error)
+    }
+  }
+}
 </script>

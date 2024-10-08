@@ -3,7 +3,8 @@ import { defineStore } from 'pinia'
 import { login as apiLogin } from '@/services/auth.service'
 import {
   getUserProfile as apiGetUserProfile,
-  updateProfile as apiUpdateProfile
+  updateProfile as apiUpdateProfile,
+  type userProfileUpdateInput
 } from '@/services/user.service'
 interface authState {
   user: UserProfile | null
@@ -34,7 +35,6 @@ export const useAuthStore = defineStore('auth', {
         this.setToken(access_token, refresh_token)
         await this.fetchUser()
       } catch (err) {
-        console.log('🚀 ~ login ~ err:', err)
         this.error = 'Login failed. Please try again.'
         throw err
       } finally {
@@ -44,22 +44,21 @@ export const useAuthStore = defineStore('auth', {
     async fetchUser() {
       try {
         if (this.token) {
-          const response = await apiGetUserProfile() // Replace with your API call to get user info
+          const response = await apiGetUserProfile()
           this.user = response
         }
       } catch (error) {
         console.error('Failed to load user info', error)
-        this.logout() // Optionally log out if fetching user info fails
+        this.logout()
       }
     },
-    async updateProfile(updatedProfile: UserProfile) {
+    async updateProfile(updatedProfile: userProfileUpdateInput) {
       try {
         if (this.token) {
           const response = await apiUpdateProfile(updatedProfile)
           this.user = response
         }
       } catch (error) {
-        console.log('🚀 ~ updateProfile ~ error:', error)
         this.error = 'Oops, have a broken when update your profile!'
       }
     },
@@ -75,7 +74,7 @@ export const useAuthStore = defineStore('auth', {
       const token = localStorage.getItem('accessToken')
       if (token) {
         this.token = token
-        await this.fetchUser() // Load user info if token exists
+        await this.fetchUser()
       }
     }
   },

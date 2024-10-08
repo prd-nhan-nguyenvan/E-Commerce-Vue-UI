@@ -1320,6 +1320,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/users/profile/`,
         method: 'GET',
         secure: true,
+        type: ContentType.UrlEncoded,
         format: 'json',
         ...params
       }),
@@ -1332,12 +1333,27 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request PUT:/users/profile/
      * @secure
      */
-    usersProfileUpdate: (data: UserProfile, params: RequestParams = {}) =>
+    usersProfileUpdate: (
+      data: {
+        /** @maxLength 30 */
+        first_name?: string
+        /** @maxLength 30 */
+        last_name?: string
+        bio?: string
+        /** @format binary */
+        profile_picture?: File | null
+        /** @maxLength 15 */
+        phone_number?: string
+        address?: string
+      },
+      params: RequestParams = {}
+    ) =>
       this.request<UserProfile, any>({
         path: `/users/profile/`,
         method: 'PUT',
         body: data,
         secure: true,
+        type: ContentType.FormData,
         format: 'json',
         ...params
       }),
@@ -1350,12 +1366,27 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request PATCH:/users/profile/
      * @secure
      */
-    usersProfilePartialUpdate: (data: UserProfile, params: RequestParams = {}) =>
+    usersProfilePartialUpdate: (
+      data: {
+        /** @maxLength 30 */
+        first_name?: string
+        /** @maxLength 30 */
+        last_name?: string
+        bio?: string
+        /** @format binary */
+        profile_picture?: File | null
+        /** @maxLength 15 */
+        phone_number?: string
+        address?: string
+      },
+      params: RequestParams = {}
+    ) =>
       this.request<UserProfile, any>({
         path: `/users/profile/`,
         method: 'PATCH',
         body: data,
         secure: true,
+        type: ContentType.FormData,
         format: 'json',
         ...params
       })

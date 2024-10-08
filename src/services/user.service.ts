@@ -1,5 +1,13 @@
 import { api } from '.'
-import { ContentType, type UserProfile } from './api'
+
+export interface userProfileUpdateInput {
+  first_name?: string
+  last_name?: string
+  bio?: string
+  profile_picture?: File | null
+  phone_number?: string
+  address?: string
+}
 
 export const getUserProfile = async () => {
   try {
@@ -12,14 +20,9 @@ export const getUserProfile = async () => {
   }
 }
 
-export const updateProfile = async (profileData: UserProfile) => {
+export const updateProfile = async (profileData: userProfileUpdateInput) => {
   try {
-    const response = await api.users.usersProfilePartialUpdate(profileData, {
-      headers: {
-        'Content-Type': ContentType.Json
-      }
-    })
-
+    const response = await api.users.usersProfilePartialUpdate(profileData)
     return response.data
   } catch (error) {
     console.error(error)
