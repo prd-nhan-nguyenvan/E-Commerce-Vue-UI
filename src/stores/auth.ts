@@ -1,7 +1,10 @@
 import type { Login, UserProfile } from '@/services/api'
 import { defineStore } from 'pinia'
 import { login as apiLogin } from '@/services/auth.service'
-import { getUserProfile as apiGetUserProfile } from '@/services/user.service'
+import {
+  getUserProfile as apiGetUserProfile,
+  updateProfile as apiUpdateProfile
+} from '@/services/user.service'
 interface authState {
   user: UserProfile | null
   token: string | null
@@ -47,6 +50,17 @@ export const useAuthStore = defineStore('auth', {
       } catch (error) {
         console.error('Failed to load user info', error)
         this.logout() // Optionally log out if fetching user info fails
+      }
+    },
+    async updateProfile(updatedProfile: UserProfile) {
+      try {
+        if (this.token) {
+          const response = await apiUpdateProfile(updatedProfile)
+          this.user = response
+        }
+      } catch (error) {
+        console.log('🚀 ~ updateProfile ~ error:', error)
+        this.error = 'Oops, have a broken when update your profile!'
       }
     },
 

@@ -2,8 +2,9 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { authGuard } from './authGuard'
 
 const HomeView = () => import('@/views/HomeView.vue')
-const LoginView = () => import('@/views/LoginView.vue')
-const SignUpView = () => import('@/views/SignUpView.vue')
+const LoginView = () => import('@/views/auth/LoginView.vue')
+const SignUpView = () => import('@/views/auth/SignUpView.vue')
+const ProfileView = () => import('@/views/auth/ProfileView.vue')
 const DashboardView = () => import('@/views/DashboardView.vue')
 const ProductDetailView = () => import('@/views/products/ProductDetailView.vue')
 
@@ -25,9 +26,14 @@ export const router = createRouter({
       component: ProductDetailView
     },
     { path: '/login', name: 'login', component: LoginView },
-    { path: '/user/profile', name: 'profile', component: LoginView },
 
     { path: '/signup', name: 'signup', component: SignUpView },
+    {
+      path: '/user/profile',
+      name: 'profile',
+      component: ProfileView,
+      meta: { requiresAuth: true }
+    },
 
     {
       path: '/admin',

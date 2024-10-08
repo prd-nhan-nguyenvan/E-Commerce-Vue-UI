@@ -1,6 +1,11 @@
 import { useSystemMessageStore, useAuthStore } from '@/stores'
+import type { RouteLocationNormalized, NavigationGuardNext } from 'vue-router'
 
-export const authGuard = (to, from, next) => {
+export const authGuard = (
+  to: RouteLocationNormalized,
+  from: RouteLocationNormalized,
+  next: NavigationGuardNext
+) => {
   const authStore = useAuthStore()
   const systemMessageStore = useSystemMessageStore()
 
