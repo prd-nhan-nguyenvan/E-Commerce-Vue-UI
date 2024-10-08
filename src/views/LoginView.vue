@@ -5,7 +5,12 @@
         <div class="card">
           <div class="card-body">
             <h1 class="text-center mb-4">Login</h1>
+            <!-- Display warning message -->
+            <div v-if="message" class="alert alert-warning text-center" role="alert">
+              {{ message }}
+            </div>
 
+            <!-- Login Form -->
             <form @submit.prevent="handleLogin">
               <!-- Email Input -->
               <div class="mb-3">
@@ -58,15 +63,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
-import { useAuthStore } from '@/stores'
+import { ref, computed } from 'vue'
+import { useAuthStore, useSystemMessageStore } from '@/stores'
 import { useRouter } from 'vue-router'
 
 const route = useRouter()
 const authStore = useAuthStore()
+const systemMessageStore = useSystemMessageStore()
 
 const loading = computed(() => authStore.loading)
 const error = computed(() => authStore.error)
+const message = computed(() => systemMessageStore.message)
 
 const email = ref('')
 const password = ref('')
@@ -78,10 +85,6 @@ const handleLogin = async () => {
     route.push({ name: 'admin' })
   }
 }
-
-onMounted(() => {
-  console.log('This is hello from login page!!!')
-})
 </script>
 <style scoped>
 .account {

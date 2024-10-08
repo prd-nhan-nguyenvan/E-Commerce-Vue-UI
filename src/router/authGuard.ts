@@ -1,13 +1,20 @@
+import { useSystemMessageStore, useAuthStore } from '@/stores'
+
 export const authGuard = (to, from, next) => {
-  const isAuthenticated = !!localStorage.getItem('accessToken') // Check token presence
+  const authStore = useAuthStore()
+  const systemMessageStore = useSystemMessageStore()
+
+  systemMessageStore.clearMessage()
 
   if (to.matched.some((record) => record.meta.requiresAuth)) {
-    if (!isAuthenticated) {
-      next('/login') // Redirect to login if not authenticated
+    if (!authStore.isAuthenticated) {
+      systemMessageStore.setMessage('You must log in to access this page')
+
+      next({ path: '/login' })
     } else {
-      next() // Allow access if authenticated
+      next()
     }
   } else {
-    next() // Always allow access to non-protected routes
+    next()
   }
 }
