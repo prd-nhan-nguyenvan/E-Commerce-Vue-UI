@@ -1,7 +1,8 @@
 <template>
-  <div v-if="!first_name" class="nav-item">
-    <router-link class="nav-link" :to="{ name: 'login' }">Login</router-link>
-  </div>
+  <ul class="navbar-nav mb-2 mb-lg-0" v-if="!first_name">
+    <NavbarItem routeName="login" label="Login" />
+    <NavbarItem routeName="signup" label="Sign Up" />
+  </ul>
 
   <!-- Avatar Dropdown -->
   <div v-else class="nav-item dropdown">
@@ -38,6 +39,8 @@
 import { computed } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
+
+import NavbarItem from './NavbarItem.vue'
 
 const authStore = useAuthStore()
 const router = useRouter()
