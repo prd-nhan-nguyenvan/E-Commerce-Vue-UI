@@ -1,8 +1,8 @@
 <template>
   <div class="container my-5">
-    <div class="row justify-content-center">
-      <div class="col-lg-4">
-        <div class="card mb-4 text-center">
+    <div class="row justify-content-center align-items-stretch">
+      <div class="col-lg-4 d-flex">
+        <div class="card mb-4 text-center flex-fill">
           <div class="card-body">
             <img
               v-if="profile?.profile_picture"
@@ -20,14 +20,47 @@
               width="150"
               height="150"
             />
-            <h5>{{ profile?.first_name }} {{ profile?.last_name }}</h5>
+            <div class="d-flex justify-content-center align-items-center">
+              <h5 v-if="!isEditing.name">{{ profile?.first_name }}&nbsp;</h5>
+              <input
+                v-else
+                type="text"
+                v-model="editProfile.first_name"
+                class="form-control me-2"
+                placeholder="First Name"
+              />
+              <h5 v-if="!isEditing.name">{{ profile?.last_name }}</h5>
+              <input
+                v-else
+                type="text"
+                v-model="editProfile.last_name"
+                class="form-control"
+                placeholder="Last Name"
+              />
+              <button
+                v-if="!isEditing.name && isEnableEditing"
+                class="btn btn-link"
+                @click="startEditing('name')"
+              >
+                <i class="material-icons">edit</i>
+              </button>
+            </div>
           </div>
         </div>
       </div>
-      <div class="col-lg-8">
-        <div class="card mb-4">
+      <div class="col-lg-8 d-flex">
+        <div class="card mb-4 flex-fill">
           <div class="card-body">
-            <h4 class="">User Information</h4>
+            <div class="row align-items-center mb-3">
+              <h4 class="col">User Information</h4>
+              <button
+                class="btn btn-primary col-auto me-3"
+                @click="toggleEdit"
+                :class="{ 'btn-secondary': isEnableEditing }"
+              >
+                <i class="material-icons">{{ isEnableEditing ? 'edit_off' : 'edit' }}</i>
+              </button>
+            </div>
             <hr />
             <div class="mb-2 d-flex align-items-center">
               <strong>Phone: &nbsp;</strong>
@@ -44,7 +77,11 @@
                 @keydown.enter="saveChanges"
                 @keydown.esc="cancelEdit"
               />
-              <button v-if="!isEditing.phone" class="btn btn-link" @click="startEditing('phone')">
+              <button
+                v-if="!isEditing.phone && isEnableEditing"
+                class="btn btn-link"
+                @click="startEditing('phone')"
+              >
                 <i class="material-icons">edit</i>
               </button>
             </div>
@@ -65,7 +102,7 @@
                 @keydown.esc="cancelEdit"
               />
               <button
-                v-if="!isEditing.address"
+                v-if="!isEditing.address && isEnableEditing"
                 class="btn btn-link"
                 @click="startEditing('address')"
               >
@@ -75,7 +112,11 @@
             <hr />
             <div class="mb-2">
               <strong>Bio:</strong>
-              <button v-if="!isEditing.bio" class="btn btn-link" @click="startEditing('bio')">
+              <button
+                v-if="!isEditing.bio && isEnableEditing"
+                class="btn btn-link"
+                @click="startEditing('bio')"
+              >
                 <i class="material-icons">edit</i>
               </button>
               <p v-if="!isEditing.bio">{{ profile?.bio || 'No bio available' }}</p>
@@ -89,12 +130,15 @@
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- Save Changes Button -->
-        <div v-if="isEditing.phone || isEditing.address || isEditing.bio" class="text-center mt-3">
-          <button class="btn btn-success me-2" @click="saveChanges">Save Changes</button>
-          <button class="btn btn-secondary" @click="cancelEdit">Cancel</button>
-        </div>
+      <!-- Save Changes Button -->
+      <div
+        v-if="isEditing.name || isEditing.phone || isEditing.address || isEditing.bio"
+        class="text-center mt-3"
+      >
+        <button class="btn btn-success me-2" @click="saveChanges">Save Changes</button>
+        <button class="btn btn-secondary" @click="cancelEdit">Cancel</button>
       </div>
     </div>
   </div>
@@ -108,6 +152,8 @@ const authStore = useAuthStore()
 const profile = computed(() => authStore.user)
 
 const editProfile = ref({
+  first_name: profile.value?.first_name || '',
+  last_name: profile.value?.last_name || '',
   phone_number: profile.value?.phone_number || '',
   address: profile.value?.address || '',
   bio: profile.value?.bio || ''
@@ -115,19 +161,32 @@ const editProfile = ref({
 
 watch(profile, (newProfile) => {
   if (newProfile) {
-    editProfile.value.phone_number = newProfile.phone_number || ''
-    editProfile.value.address = newProfile.address || ''
-    editProfile.value.bio = newProfile.bio || ''
+    editProfile.value = {
+      first_name: newProfile.first_name || '',
+      last_name: newProfile.last_name || '',
+      phone_number: newProfile.phone_number || '',
+      address: newProfile.address || '',
+      bio: newProfile.bio || ''
+    }
   }
 })
 
 const isEditing = reactive({
+  name: false,
   phone: false,
   address: false,
   bio: false
 })
 
-const editableFields = ['phone', 'address', 'bio'] as const
+const isEnableEditing = ref(false)
+const toggleEdit = () => {
+  isEnableEditing.value = !isEnableEditing.value
+  if (!isEnableEditing.value) {
+    resetEditing() // Reset editing when disabling
+  }
+}
+
+const editableFields = ['name', 'phone', 'address', 'bio'] as const
 
 const startEditing = (field: string) => {
   if (editableFields.includes(field as keyof typeof isEditing)) {
@@ -136,10 +195,8 @@ const startEditing = (field: string) => {
 }
 
 const saveChanges = async () => {
-  console.log('Calling...')
   await authStore.updateProfile(editProfile.value)
   resetEditing()
-  console.log('Finish!!!')
 }
 
 const cancelEdit = () => {
@@ -147,11 +204,14 @@ const cancelEdit = () => {
 }
 
 const resetEditing = () => {
+  isEditing.name = false
   isEditing.phone = false
   isEditing.address = false
   isEditing.bio = false
 
   editProfile.value = {
+    first_name: profile.value?.first_name || '',
+    last_name: profile.value?.last_name || '',
     phone_number: profile.value?.phone_number || '',
     address: profile.value?.address || '',
     bio: profile.value?.bio || ''
