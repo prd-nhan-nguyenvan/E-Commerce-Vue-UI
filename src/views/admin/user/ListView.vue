@@ -37,9 +37,12 @@
             <td>{{ user.is_active ? 'Yes' : 'No' }}</td>
             <td>
               <div class="d-flex">
-                <button class="btn btn-sm btn-secondary me-2">
+                <router-link
+                  class="btn btn-sm btn-secondary me-2"
+                  :to="{ name: 'userDetail', params: { id: user.id } }"
+                >
                   <i class="material-icons">visibility</i>
-                </button>
+                </router-link>
                 <button class="btn btn-sm btn-danger">
                   <i class="material-icons">block</i>
                 </button>
