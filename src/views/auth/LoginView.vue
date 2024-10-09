@@ -5,7 +5,12 @@
         <div class="card">
           <div class="card-body">
             <h1 class="text-center mb-4">Login</h1>
+            <!-- Display warning message -->
+            <div v-if="message" class="alert alert-warning text-center" role="alert">
+              {{ message }}
+            </div>
 
+            <!-- Login Form -->
             <form @submit.prevent="handleLogin">
               <!-- Email Input -->
               <div class="mb-3">
@@ -58,33 +63,30 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
-import { useAuthStore } from '@/stores'
+import { ref, computed, onMounted } from 'vue'
+import { useAuthStore, useSystemMessageStore } from '@/stores'
 import { useRouter } from 'vue-router'
 
-const route = useRouter()
+const router = useRouter()
 const authStore = useAuthStore()
+const systemMessageStore = useSystemMessageStore()
 
 const loading = computed(() => authStore.loading)
 const error = computed(() => authStore.error)
+const message = computed(() => systemMessageStore.message)
 
 const email = ref('')
 const password = ref('')
 
 const handleLogin = async () => {
   await authStore.login({ email: email.value, password: password.value })
-
+  const next = String(router.currentRoute.value.query.next) || 'home'
   if (authStore.isAuthenticated) {
-    route.push({ name: 'admin' })
+    router.push(next)
   }
 }
-
-onMounted(() => {
-  console.log('This is hello from login page!!!')
-})
 </script>
 <style scoped>
-/* General layout */
 .account {
   display: flex;
   flex-direction: column;
@@ -94,14 +96,12 @@ onMounted(() => {
   height: 100%;
 }
 
-/* Form container */
 .account__form {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-/* Input fields */
 .txt {
   width: 100%;
   padding: 10px;

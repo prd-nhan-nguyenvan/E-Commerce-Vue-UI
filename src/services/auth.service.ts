@@ -1,6 +1,6 @@
-import { api } from '.'
+import { api, ContentType } from '.'
 
-import type { Login } from './api'
+import type { Login, Register } from './api'
 
 export const login = async (loginData: Login) => {
   try {
@@ -29,5 +29,19 @@ export const logout = async () => {
   } catch (err) {
     console.log('🚀 ~ logout ~ err:', err)
     throw new Error('Logout failed...')
+  }
+}
+
+export const signup = async (registerData: Register) => {
+  try {
+    const response = await api.auth.authRegisterCreate(registerData, {
+      headers: {
+        'Content-Type': ContentType.Json
+      }
+    })
+    return response.data
+  } catch (err: any) {
+    console.error(err)
+    throw err.error
   }
 }

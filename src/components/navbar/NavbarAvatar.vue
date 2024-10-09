@@ -1,12 +1,13 @@
 <template>
-  <div v-if="!first_name" class="nav-item">
-    <router-link class="nav-link" :to="{ name: 'login' }">Login</router-link>
-  </div>
+  <ul class="navbar-nav mb-2 mb-lg-0" v-if="!isAuthenticated">
+    <NavbarItem routeName="login" label="Login" />
+    <NavbarItem routeName="signup" label="Sign Up" />
+  </ul>
 
   <!-- Avatar Dropdown -->
   <div v-else class="nav-item dropdown">
     <a
-      class="nav-link dropdown-toggle d-flex align-items-center"
+      class="nav-link d-flex align-items-center"
       href="#"
       id="avatarDropdown"
       role="button"
@@ -14,11 +15,11 @@
       aria-expanded="false"
     >
       <div class="avatar bg-info text-white d-flex align-items-center justify-content-center me-2">
-        <span>{{ first_name.charAt(0).toUpperCase() }}</span>
+        <span>{{ profile?.first_name?.charAt(0).toUpperCase() || 'O' }}</span>
       </div>
     </a>
 
-    <ul class="dropdown-menu" aria-labelledby="avatarDropdown">
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="avatarDropdown">
       <!-- Profile Link -->
       <li>
         <router-link class="dropdown-item" :to="{ name: 'profile' }">Profile</router-link>
@@ -39,11 +40,13 @@ import { computed } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
 
+import NavbarItem from './NavbarItem.vue'
+
 const authStore = useAuthStore()
 const router = useRouter()
 
-const first_name = computed(() => authStore.user?.first_name)
-
+const isAuthenticated = computed(() => authStore.isAuthenticated)
+const profile = computed(() => authStore.user)
 const logout = async () => {
   await authStore.logout() // Assuming you have a logout action in your Pinia store
   router.push({ name: 'login' }) // Redirect to login after logout

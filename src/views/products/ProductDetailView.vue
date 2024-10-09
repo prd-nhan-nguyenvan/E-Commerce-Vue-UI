@@ -122,7 +122,7 @@ import { useProductStore } from '@/stores/product'
 import { computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 
-import { formatCurrency, getCategoryName } from '@/helper'
+import { formatCurrency, getCategoryName } from '@/helpers'
 
 const productStore = useProductStore()
 const categoryStore = useCategoryStore()

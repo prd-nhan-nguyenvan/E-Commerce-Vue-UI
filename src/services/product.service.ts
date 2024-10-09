@@ -55,7 +55,7 @@ export const getProductById = async (productId: number) => {
   }
 }
 
-export const updateProduct = async (productData) => {
+export const updateProduct = async (productData: any) => {
   try {
     if (!productData.id) {
       throw new Error('Product ID is required')
@@ -89,6 +89,16 @@ export const getAllCategories = async () => {
     return response.data
   } catch (error) {
     console.error({ error })
+    throw error
+  }
+}
+
+export const getCategoryById = async (id: number) => {
+  try {
+    const response = await api.products.productsCategoriesRead(id)
+    return response.data
+  } catch (error) {
+    console.log(error)
     throw error
   }
 }

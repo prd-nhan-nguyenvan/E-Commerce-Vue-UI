@@ -11,5 +11,11 @@ module.exports = {
   ],
   parserOptions: {
     ecmaVersion: 'latest'
-  }
+  },
+  'vue/no-mutating-props': [
+    'error',
+    {
+      shallowOnly: false
+    }
+  ]
 }

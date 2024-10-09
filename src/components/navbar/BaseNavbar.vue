@@ -16,8 +16,8 @@
       <NavbarBrand />
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <NavbarItem routeName="home" label="Home" />
-        <NavbarItem routeName="Categories" label="Category" />
-        <NavbarItem routeName="ProductList" label="Product" />
+        <NavbarItem routeName="categories" label="Category" />
+        <NavbarItem routeName="products" label="Product" />
       </ul>
       <NavbarAvatar />
     </div>
