@@ -2,8 +2,10 @@ import type { UserDetail, UserList } from '@/services'
 import { defineStore } from 'pinia'
 import {
   getUserList as apiGetAllUser,
-  getUserById as apiGetUserByID
+  getUserById as apiGetUserByID,
+  blockUser as apiBlockUser
 } from '@/services/user.service'
+import { ROLE_ADMIN } from '@/helpers'
 
 interface UserPagingList {
   users: UserList[]
@@ -78,7 +80,24 @@ export const useUserStore = defineStore('user', {
         this.loading = false
       }
     },
+    async blockUser(user: UserList) {
+      if (user.role === ROLE_ADMIN) {
+        throw new Error('Cannot block admin') // Throw an error if trying to block an admin
+      }
 
+      try {
+        const response = await apiBlockUser(user.id)
+
+        const index = this.users.findIndex((p) => p.id === user.id)
+        if (index !== -1) {
+          this.users[index].is_active = false
+        }
+        this.selectedUser = response
+      } catch (error) {
+        console.error('Error blocking user:', error)
+        throw new Error('Failed to block user. Please try again later.') // Throw a user-friendly error message
+      }
+    },
     resetState() {
       this.users = []
       this.selectedUser = null

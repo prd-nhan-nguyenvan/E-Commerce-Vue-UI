@@ -63,3 +63,22 @@ export const getUserById = async (userId: number) => {
     throw err
   }
 }
+
+export const blockUser = async (userId: number | undefined) => {
+  if (!userId) return
+  try {
+    const response = await api.users.usersPartialUpdate(
+      userId,
+      {
+        action: 'block'
+      },
+      {
+        headers: { 'Content-Type': ContentType.Json }
+      }
+    )
+    return response.data
+  } catch (err) {
+    console.error(err)
+    throw err
+  }
+}

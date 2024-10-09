@@ -33,8 +33,16 @@
             <th scope="row">{{ index + 1 }}</th>
             <td>{{ user.email }}</td>
             <td>{{ user.username }}</td>
-            <td>{{ user.role }}</td>
-            <td>{{ user.is_active ? 'Yes' : 'No' }}</td>
+            <td>
+              <span class="badge" :class="getBadgeClass(user.role)">
+                {{ user.role || 'No role available' }}
+              </span>
+            </td>
+            <td>
+              <span class="badge" :class="user.is_active ? 'bg-success' : 'bg-danger'">
+                {{ user.is_active ? 'Yes' : 'No' }}
+              </span>
+            </td>
             <td>
               <div class="d-flex">
                 <router-link
@@ -43,7 +51,7 @@
                 >
                   <i class="material-icons">visibility</i>
                 </router-link>
-                <button class="btn btn-sm btn-danger">
+                <button class="btn btn-sm btn-danger" @click="handleBlockUser(user)">
                   <i class="material-icons">block</i>
                 </button>
               </div>
@@ -58,6 +66,9 @@
 <script setup lang="ts">
 import { useUserStore } from '@/stores'
 import { onMounted, computed } from 'vue'
+import { getBadgeClass } from '@/helpers'
+import type { UserList } from '@/services'
+import Swal from 'sweetalert2'
 
 const userStore = useUserStore()
 const { fetchUsers } = userStore
@@ -65,6 +76,42 @@ const { fetchUsers } = userStore
 const users = computed(() => userStore.users)
 const loading = computed(() => userStore.loading)
 const error = computed(() => userStore.error)
+
+const handleBlockUser = async (user: UserList) => {
+  // Show a confirmation dialog
+  const confirmation = await Swal.fire({
+    title: 'Are you sure?',
+    text: "You won't be able to revert this!",
+    icon: 'warning',
+    showCancelButton: true,
+    cancelButtonText: 'Cancel',
+    confirmButtonText: 'Yes, block it!'
+  })
+
+  // Proceed if the user confirms the action
+  if (confirmation.isConfirmed) {
+    try {
+      await userStore.blockUser(user) // Attempt to block the user
+
+      // Show success message if blocking is successful
+      Swal.fire({
+        title: 'Blocked!',
+        text: `${user.username} is blocked!`,
+        icon: 'success',
+        timer: 2000,
+        showConfirmButton: false
+      })
+    } catch (error: any) {
+      // Show error message if an error occurs during the blocking process
+      Swal.fire({
+        title: 'Error!',
+        text: `Failed to block ${user.username}: ${error.message || 'Please try again later.'}`,
+        icon: 'error',
+        confirmButtonText: 'Okay'
+      })
+    }
+  }
+}
 
 onMounted(() => {
   fetchUsers()
