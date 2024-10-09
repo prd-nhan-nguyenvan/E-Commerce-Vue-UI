@@ -11,6 +11,7 @@ const ProductDetailView = () => import('@/views/products/ProductDetailView.vue')
 const CategoryListView = () => import('@/views/admin/category/ListView.vue')
 const ProductListView = () => import('@/views/admin/product/ListView.vue')
 const ProductFormView = () => import('@/views/admin/product/DetailView.vue')
+const ChangePasswordView = () => import('@/views/auth/ChangePasswordView.vue')
 
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -31,6 +32,12 @@ export const router = createRouter({
       path: '/user/profile',
       name: 'profile',
       component: ProfileView,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/user/password/change',
+      name: 'changePassword',
+      component: ChangePasswordView,
       meta: { requiresAuth: true }
     },
     {

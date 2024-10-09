@@ -16,6 +16,9 @@
           <div class="card-body">
             <div class="row align-items-center mb-3">
               <h4 class="col">User Information</h4>
+              <router-link class="btn btn-primary col-auto me-3" :to="{ name: 'changePassword' }">
+                Change Password
+              </router-link>
               <button
                 class="btn btn-primary col-auto me-3"
                 @click="toggleEdit"

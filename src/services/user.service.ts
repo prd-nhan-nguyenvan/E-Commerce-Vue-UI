@@ -1,4 +1,4 @@
-import { api } from '.'
+import { api, ContentType, type ChangePassword } from '.'
 
 export interface userProfileUpdateInput {
   first_name?: string
@@ -27,5 +27,19 @@ export const updateProfile = async (profileData: userProfileUpdateInput) => {
   } catch (error) {
     console.error(error)
     throw error
+  }
+}
+
+export const changePassword = async (changePassData: ChangePassword) => {
+  try {
+    const response = await api.users.usersPasswordChangeUpdate(changePassData, {
+      headers: {
+        'Content-Type': ContentType.Json
+      }
+    })
+    return response.data
+  } catch (err: any) {
+    console.error(err)
+    throw err.error
   }
 }

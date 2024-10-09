@@ -63,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useAuthStore, useSystemMessageStore } from '@/stores'
 import { useRouter } from 'vue-router'
 
@@ -85,6 +85,10 @@ const handleLogin = async () => {
     route.push({ name: 'admin' })
   }
 }
+
+onMounted(() => {
+  authStore.logout()
+})
 </script>
 <style scoped>
 .account {
