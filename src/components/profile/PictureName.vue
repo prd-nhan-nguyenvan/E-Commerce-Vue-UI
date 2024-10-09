@@ -51,6 +51,9 @@
           <i class="material-icons">edit</i>
         </button>
       </div>
+      <div class="mb-2">
+        <strong class="fst-italic fw-normal">{{ profile?.username }}</strong>
+      </div>
     </div>
   </div>
 </template>

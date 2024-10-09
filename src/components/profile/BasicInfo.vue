@@ -1,4 +1,10 @@
 <template>
+  <!-- Email -->
+  <div class="mb-2 d-flex align-items-center">
+    <strong>Email:&nbsp;</strong>
+    <span>{{ profile?.email }}</span>
+  </div>
+  <hr />
   <!-- Phone -->
   <div class="mb-2 d-flex align-items-center">
     <strong>Phone:&nbsp;</strong>
