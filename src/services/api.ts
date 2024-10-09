@@ -271,6 +271,17 @@ export interface UserProfile {
    */
   role?: string
   /**
+   * Email
+   * @format email
+   * @minLength 1
+   */
+  email?: string
+  /**
+   * Username
+   * @minLength 1
+   */
+  username?: string
+  /**
    * First name
    * @maxLength 30
    */
