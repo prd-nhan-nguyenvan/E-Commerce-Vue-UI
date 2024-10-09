@@ -43,3 +43,23 @@ export const changePassword = async (changePassData: ChangePassword) => {
     throw err.error
   }
 }
+
+export const getUserList = async (query: { limit?: number; offset?: number }) => {
+  try {
+    const response = await api.users.usersList(query)
+    return response.data
+  } catch (error) {
+    console.error('Failed to fetch users:', error)
+    throw error
+  }
+}
+
+export const getUserById = async (userId: number) => {
+  try {
+    const response = await api.users.usersRead(userId)
+    return response.data
+  } catch (err) {
+    console.error(err)
+    throw err
+  }
+}

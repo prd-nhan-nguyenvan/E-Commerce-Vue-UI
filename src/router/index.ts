@@ -13,6 +13,7 @@ const CategoryListView = () => import('@/views/admin/category/ListView.vue')
 const ListView = () => import('@/views/admin/product/ListView.vue')
 const ProductFormView = () => import('@/views/admin/product/DetailView.vue')
 const ChangePasswordView = () => import('@/views/auth/ChangePasswordView.vue')
+const UserListView = () => import('@/views/admin/user/ListView.vue')
 
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -74,6 +75,12 @@ export const router = createRouter({
           name: 'editProduct',
           component: ProductFormView,
           meta: { requiresAuth: true, role: [ROLE_ADMIN, ROLE_STAFF] } // Explicitly set role for editing products
+        },
+        {
+          path: 'users',
+          name: 'userManagement',
+          component: UserListView,
+          meta: { requiresAuth: true, role: [ROLE_ADMIN] } // Explicitly set role for editing products
         }
       ]
     }
