@@ -67,7 +67,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useAuthStore, useSystemMessageStore } from '@/stores'
 import { useRouter } from 'vue-router'
 
-const route = useRouter()
+const router = useRouter()
 const authStore = useAuthStore()
 const systemMessageStore = useSystemMessageStore()
 
@@ -80,15 +80,11 @@ const password = ref('')
 
 const handleLogin = async () => {
   await authStore.login({ email: email.value, password: password.value })
-
+  const next = String(router.currentRoute.value.query.next) || 'home'
   if (authStore.isAuthenticated) {
-    route.push({ name: 'admin' })
+    router.push(next)
   }
 }
-
-onMounted(() => {
-  authStore.logout()
-})
 </script>
 <style scoped>
 .account {

@@ -17,7 +17,7 @@
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <NavbarItem routeName="home" label="Home" />
         <NavbarItem routeName="categories" label="Category" />
-        <NavbarItem routeName="productList" label="Product" />
+        <NavbarItem routeName="products" label="Product" />
       </ul>
       <NavbarAvatar />
     </div>

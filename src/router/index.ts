@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { authGuard } from './authGuard'
+import { ALL_ROLE, ROLE_ADMIN, ROLE_STAFF } from '@/helpers'
 
 const HomeView = () => import('@/views/HomeView.vue')
 const LoginView = () => import('@/views/auth/LoginView.vue')
@@ -23,7 +24,7 @@ export const router = createRouter({
     },
     {
       path: '/products/:slug',
-      name: 'productDetail', // changed to camelCase
+      name: 'productDetail',
       component: ProductDetailView
     },
     { path: '/login', name: 'login', component: LoginView },
@@ -32,47 +33,47 @@ export const router = createRouter({
       path: '/user/profile',
       name: 'profile',
       component: ProfileView,
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true, role: ALL_ROLE }
     },
     {
       path: '/user/password/change',
       name: 'changePassword',
       component: ChangePasswordView,
-      meta: { requiresAuth: true }
+      meta: { requiresAuth: true, role: ALL_ROLE }
     },
     {
       path: '/admin',
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, role: [ROLE_ADMIN, ROLE_STAFF] },
       children: [
         {
           name: 'admin',
           path: '',
           component: DashboardView,
-          meta: { requiresAuth: true }
+          meta: { requiresAuth: true, role: [ROLE_ADMIN, ROLE_STAFF] } // Explicitly set role for admin
         },
         {
           path: 'categories',
-          name: 'categories', // changed to camelCase
+          name: 'categories',
           component: CategoryListView,
-          meta: { requiresAuth: true }
+          meta: { requiresAuth: true, role: [ROLE_ADMIN, ROLE_STAFF] } // Explicitly set role for categories
         },
         {
           path: 'products',
-          name: 'productList', // changed to camelCase
+          name: 'products',
           component: ProductListView,
-          meta: { requiresAuth: true }
+          meta: { requiresAuth: true, role: [ROLE_ADMIN, ROLE_STAFF] } // Explicitly set role for products
         },
         {
           path: 'products/new',
-          name: 'addProduct', // changed to camelCase
+          name: 'addProduct',
           component: ProductFormView,
-          meta: { requiresAuth: true }
+          meta: { requiresAuth: true, role: [ROLE_ADMIN, ROLE_STAFF] } // Explicitly set role for adding products
         },
         {
           path: 'products/edit/:id',
-          name: 'editProduct', // changed to camelCase
+          name: 'editProduct',
           component: ProductFormView,
-          meta: { requiresAuth: true }
+          meta: { requiresAuth: true, role: [ROLE_ADMIN, ROLE_STAFF] } // Explicitly set role for editing products
         }
       ]
     }

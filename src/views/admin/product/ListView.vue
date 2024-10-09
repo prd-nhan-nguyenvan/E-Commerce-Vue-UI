@@ -2,7 +2,7 @@
   <main class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h1 class="mb-0">Products</h1>
-      <router-link :to="{ name: 'AddProduct' }" class="btn btn-primary"
+      <router-link :to="{ name: 'addProduct' }" class="btn btn-primary"
         >Add New Product</router-link
       >
     </div>
@@ -67,6 +67,7 @@
             <td>{{ product.description }}</td>
             <td>{{ getCategoryName(product.category) }}</td>
             <td>{{ formatCurrency(product.price) }}</td>
+            params:
             <td>{{ formatCurrency(product.sell_price) }}</td>
             <td>{{ product.on_sell ? 'Yes' : 'No' }}</td>
             <td>{{ product.stock }}</td>
@@ -75,7 +76,7 @@
             <td>
               <div class="d-flex">
                 <router-link
-                  :to="{ name: 'EditProduct', params: { id: product.id } }"
+                  :to="{ name: 'editProduct', params: { id: product.id } }"
                   class="btn btn-sm btn-warning me-2"
                 >
                   <i class="material-icons">edit</i>
@@ -182,7 +183,7 @@ const deleteProduct = async (productId: number) => {
   })
 }
 
-const goToPage = async (page) => {
+const goToPage = async (page: number) => {
   currentPage.value = page
   const offset = (page - 1) * productsPerPage.value
   await productStore.fetchProducts(productsPerPage.value, offset)

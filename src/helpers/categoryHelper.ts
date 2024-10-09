@@ -1,8 +1,8 @@
-import { useCategoryStore } from '@/stores/category'
+import { getCategoryById } from '@/services/product.service'
 
-const categoryStore = useCategoryStore()
+export const getCategoryName = async (categoryId: number | undefined) => {
+  if (!categoryId) return 'Unknown'
 
-export const getCategoryName = (categoryId: number | undefined) => {
-  const category = categoryStore.categories.find((c) => c.id === categoryId)
+  const category = await getCategoryById(categoryId)
   return category ? category.name : 'Unknown'
 }
