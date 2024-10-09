@@ -16,8 +16,8 @@
       <NavbarBrand />
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <NavbarItem routeName="home" label="Home" />
-        <NavbarItem routeName="categories" label="Category" />
-        <NavbarItem routeName="products" label="Product" />
+        <NavbarItem routeName="categories" label="Category" :roles="ADMIN_STAFF_ROLE" />
+        <NavbarItem routeName="products" label="Product" :roles="ADMIN_STAFF_ROLE" />
       </ul>
       <NavbarAvatar />
     </div>
@@ -28,4 +28,6 @@
 import NavbarAvatar from '@/components/navbar/NavbarAvatar.vue'
 import NavbarItem from '@/components/navbar/NavbarItem.vue'
 import NavbarBrand from '@/components/navbar/NavbarBrand.vue'
+
+import { ADMIN_STAFF_ROLE } from '@/helpers'
 </script>
