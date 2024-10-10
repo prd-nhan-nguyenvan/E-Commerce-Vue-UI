@@ -1385,6 +1385,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         is_active?: string
         /** A search term. */
         search?: string
+        /** Which field to use when ordering the results. */
+        ordering?: string
         /** Number of results to return per page. */
         limit?: number
         /** The initial index from which to return the results. */
