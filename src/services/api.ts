@@ -1379,6 +1379,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     usersList: (
       query?: {
+        /** email */
+        email?: string
+        /** is_active */
+        is_active?: string
+        /** A search term. */
+        search?: string
         /** Number of results to return per page. */
         limit?: number
         /** The initial index from which to return the results. */
