@@ -9,6 +9,15 @@ export interface userProfileUpdateInput {
   address?: string
 }
 
+export interface userListQuery {
+  email?: string
+  is_active?: string
+  search?: string
+  ordering?: string
+  limit?: number
+  offset?: number
+}
+
 export const getUserProfile = async () => {
   try {
     const response = await api.users.usersProfileRead()
@@ -44,7 +53,7 @@ export const changePassword = async (changePassData: ChangePassword) => {
   }
 }
 
-export const getUserList = async (query: { limit?: number; offset?: number }) => {
+export const getUserList = async (query?: userListQuery) => {
   try {
     const response = await api.users.usersList(query)
     return response.data

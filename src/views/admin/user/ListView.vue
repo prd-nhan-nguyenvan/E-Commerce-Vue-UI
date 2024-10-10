@@ -2,6 +2,18 @@
   <main class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h1 class="mb-0">Users</h1>
+      <div class="input-group w-50">
+        <input
+          type="text"
+          v-model="searchQuery"
+          @input="debouncedSearch"
+          placeholder="Search users..."
+          class="form-control"
+        />
+        <button class="btn btn-outline-primary d-flex align-items-center" @click="handleSearch">
+          <i class="material-icons">search</i>
+        </button>
+      </div>
     </div>
 
     <div v-if="loading" class="d-flex justify-content-center my-4">
@@ -75,18 +87,25 @@
 import Pagination from '@/components/utils/Pagination.vue'
 
 import { useUserStore } from '@/stores'
-import { onMounted, computed } from 'vue'
-import { getBadgeClass } from '@/helpers'
+import { onMounted, computed, ref, watch } from 'vue'
+import { debounce, getBadgeClass } from '@/helpers'
 import type { UserList } from '@/services'
 import Swal from 'sweetalert2'
 import { usePagination } from '@/composables/usePagination'
+import type { userListQuery } from '@/services/user.service'
 
 const userStore = useUserStore()
 const { fetchUsers } = userStore
 
+const searchQuery = ref('')
+
 const users = computed(() => userStore.users)
 const loading = computed(() => userStore.loading)
 const error = computed(() => userStore.error)
+
+const query = computed<userListQuery>(() => ({
+  search: searchQuery.value
+}))
 
 const handleBlockUser = async (user: UserList) => {
   // Show a confirmation dialog
@@ -124,13 +143,29 @@ const handleBlockUser = async (user: UserList) => {
   }
 }
 
+const handleSearch = async () => {
+  if (!searchQuery) {
+    return
+  }
+
+  await userStore.fetchUsers(query.value)
+}
+
+const debouncedSearch = debounce(handleSearch, 300) // Adjust the delay as needed
+
+// Use the debounced search function in your template
+watch(searchQuery, debouncedSearch)
+
 const { goToPage, loadPrevious, loadNext, currentPage, totalPages, setTotalCount } = usePagination(
-  userStore.fetchUsers,
+  (query) => userStore.fetchUsers(query),
   5 // Number of users per page
 )
 
+watch([searchQuery, currentPage], async () => {
+  await goToPage(currentPage.value, { search: searchQuery.value })
+})
 onMounted(async () => {
-  await fetchUsers()
+  await userStore.fetchUsers()
   setTotalCount(userStore.count)
 })
 </script>

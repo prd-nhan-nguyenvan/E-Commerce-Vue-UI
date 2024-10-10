@@ -3,7 +3,8 @@ import { defineStore } from 'pinia'
 import {
   getUserList as apiGetAllUser,
   getUserById as apiGetUserByID,
-  blockUser as apiBlockUser
+  blockUser as apiBlockUser,
+  type userListQuery
 } from '@/services/user.service'
 import { ROLE_ADMIN } from '@/helpers'
 
@@ -28,12 +29,12 @@ export const useUserStore = defineStore('user', {
     error: null
   }),
   actions: {
-    async fetchUsers(limit = 10, offset = 0) {
+    async fetchUsers(query?: userListQuery) {
       this.loading = true
       this.error = null
 
       try {
-        const response = await apiGetAllUser({ limit, offset })
+        const response = await apiGetAllUser(query)
         this.users = response.results
         this.count = response.count
         this.next = response.next
@@ -50,18 +51,30 @@ export const useUserStore = defineStore('user', {
     // Add a function to load the next page of products
     async loadNextPage() {
       if (this.next) {
-        const offset = new URL(this.next).searchParams.get('offset') || '0'
-        const limit = new URL(this.next).searchParams.get('limit') || '10'
-        await this.fetchUsers(parseInt(limit, 10), parseInt(offset, 10))
+        const query: userListQuery = {
+          limit: parseInt(new URL(this.next).searchParams.get('limit') || '10'),
+          offset: parseInt(new URL(this.next).searchParams.get('offset') || '0'),
+          ordering: new URL(this.next).searchParams.get('ordering') || '',
+          search: new URL(this.next).searchParams.get('search') || '',
+          email: new URL(this.next).searchParams.get('email') || '',
+          is_active: new URL(this.next).searchParams.get('is_active') || ''
+        }
+        await this.fetchUsers(query)
       }
     },
 
     // Add a function to load the previous page of products
     async loadPreviousPage() {
       if (this.previous) {
-        const offset = new URL(this.previous).searchParams.get('offset') || '0'
-        const limit = new URL(this.previous).searchParams.get('limit') || '10'
-        await this.fetchUsers(parseInt(limit, 10), parseInt(offset, 10))
+        const query: userListQuery = {
+          limit: parseInt(new URL(this.previous).searchParams.get('limit') || '10'),
+          offset: parseInt(new URL(this.previous).searchParams.get('offset') || '0'),
+          ordering: new URL(this.previous).searchParams.get('ordering') || '',
+          search: new URL(this.previous).searchParams.get('search') || '',
+          email: new URL(this.previous).searchParams.get('email') || '',
+          is_active: new URL(this.previous).searchParams.get('is_active') || ''
+        }
+        await this.fetchUsers(query)
       }
     },
 
@@ -86,13 +99,12 @@ export const useUserStore = defineStore('user', {
       }
 
       try {
-        const response = await apiBlockUser(user.id)
+        await apiBlockUser(user.id)
 
         const index = this.users.findIndex((p) => p.id === user.id)
         if (index !== -1) {
           this.users[index].is_active = false
         }
-        this.selectedUser = response
       } catch (error) {
         console.error('Error blocking user:', error)
         throw new Error('Failed to block user. Please try again later.') // Throw a user-friendly error message
