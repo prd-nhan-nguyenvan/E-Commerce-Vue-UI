@@ -60,15 +60,26 @@
         </tbody>
       </table>
     </div>
+    <Pagination
+      :currentPage="currentPage"
+      :totalPages="totalPages"
+      :loading="loading"
+      @previous="loadPrevious"
+      @next="loadNext"
+      @goToPage="goToPage"
+    />
   </main>
 </template>
 
 <script setup lang="ts">
+import Pagination from '@/components/utils/Pagination.vue'
+
 import { useUserStore } from '@/stores'
 import { onMounted, computed } from 'vue'
 import { getBadgeClass } from '@/helpers'
 import type { UserList } from '@/services'
 import Swal from 'sweetalert2'
+import { usePagination } from '@/composables/usePagination'
 
 const userStore = useUserStore()
 const { fetchUsers } = userStore
@@ -113,7 +124,13 @@ const handleBlockUser = async (user: UserList) => {
   }
 }
 
-onMounted(() => {
-  fetchUsers()
+const { goToPage, loadPrevious, loadNext, currentPage, totalPages, setTotalCount } = usePagination(
+  userStore.fetchUsers,
+  5 // Number of users per page
+)
+
+onMounted(async () => {
+  await fetchUsers()
+  setTotalCount(userStore.count)
 })
 </script>
