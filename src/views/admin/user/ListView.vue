@@ -10,7 +10,7 @@
           placeholder="Search users..."
           class="form-control"
         />
-        <button class="btn btn-outline-primary d-flex align-items-center" @click="handleSearch">
+        <button class="btn btn-outline-primary d-flex align-items-center" @click="debouncedSearch">
           <i class="material-icons">search</i>
         </button>
       </div>
@@ -33,9 +33,31 @@
         <thead class="table-light">
           <tr>
             <th scope="col">#</th>
-            <th scope="col" class="text-nowrap">Email</th>
+            <th scope="col" class="text-nowrap">
+              Email
+              <button
+                class="btn btn-link p-0 ms-2"
+                @click="handleSort('email')"
+                aria-label="Sort by Email"
+              >
+                <i class="material-icons" v-if="orderFields === '-email'">north</i>
+                <i class="material-icons" v-else-if="orderFields === 'email'">south</i>
+                <i class="material-icons" v-else>sort</i>
+              </button>
+            </th>
             <th scope="col" class="text-nowrap">Username</th>
-            <th scope="col" class="text-nowrap">Role</th>
+            <th scope="col" class="text-nowrap">
+              Role
+              <button
+                class="btn btn-link p-0 ms-2"
+                @click="handleSort('role')"
+                aria-label="Sort by Email"
+              >
+                <i class="material-icons" v-if="orderFields === '-role'">north</i>
+                <i class="material-icons" v-else-if="orderFields === 'role'">south</i>
+                <i class="material-icons" v-else>sort</i>
+              </button>
+            </th>
             <th scope="col" class="text-nowrap">Active</th>
             <th scope="col" class="text-nowrap">Actions</th>
           </tr>
@@ -85,7 +107,6 @@
 
 <script setup lang="ts">
 import Pagination from '@/components/utils/Pagination.vue'
-
 import { useUserStore } from '@/stores'
 import { onMounted, computed, ref, watch } from 'vue'
 import { debounce, getBadgeClass } from '@/helpers'
@@ -95,20 +116,22 @@ import { usePagination } from '@/composables/usePagination'
 import type { userListQuery } from '@/services/user.service'
 
 const userStore = useUserStore()
-const { fetchUsers } = userStore
 
 const searchQuery = ref('')
+const orderFields = ref('')
+const recordPerPage = ref(5)
 
 const users = computed(() => userStore.users)
 const loading = computed(() => userStore.loading)
 const error = computed(() => userStore.error)
 
 const query = computed<userListQuery>(() => ({
-  search: searchQuery.value
+  search: searchQuery.value,
+  ordering: orderFields.value,
+  limit: recordPerPage.value
 }))
 
 const handleBlockUser = async (user: UserList) => {
-  // Show a confirmation dialog
   const confirmation = await Swal.fire({
     title: 'Are you sure?',
     text: "You won't be able to revert this!",
@@ -118,12 +141,9 @@ const handleBlockUser = async (user: UserList) => {
     confirmButtonText: 'Yes, block it!'
   })
 
-  // Proceed if the user confirms the action
   if (confirmation.isConfirmed) {
     try {
-      await userStore.blockUser(user) // Attempt to block the user
-
-      // Show success message if blocking is successful
+      await userStore.blockUser(user)
       Swal.fire({
         title: 'Blocked!',
         text: `${user.username} is blocked!`,
@@ -132,7 +152,6 @@ const handleBlockUser = async (user: UserList) => {
         showConfirmButton: false
       })
     } catch (error: any) {
-      // Show error message if an error occurs during the blocking process
       Swal.fire({
         title: 'Error!',
         text: `Failed to block ${user.username}: ${error.message || 'Please try again later.'}`,
@@ -143,29 +162,29 @@ const handleBlockUser = async (user: UserList) => {
   }
 }
 
-const handleSearch = async () => {
-  if (!searchQuery) {
-    return
-  }
-
+const debouncedSearch = debounce(async () => {
   await userStore.fetchUsers(query.value)
+}, 300)
+
+watch(query, debouncedSearch)
+
+const handleSort = (field: string) => {
+  orderFields.value = orderFields.value === field ? `-${field}` : field
+
+  debouncedSearch()
 }
 
-const debouncedSearch = debounce(handleSearch, 300) // Adjust the delay as needed
-
-// Use the debounced search function in your template
-watch(searchQuery, debouncedSearch)
-
 const { goToPage, loadPrevious, loadNext, currentPage, totalPages, setTotalCount } = usePagination(
-  (query) => userStore.fetchUsers(query),
-  5 // Number of users per page
+  (paginationQuery) => userStore.fetchUsers(paginationQuery),
+  recordPerPage.value
 )
 
-watch([searchQuery, currentPage], async () => {
-  await goToPage(currentPage.value, { search: searchQuery.value })
+watch([currentPage], async () => {
+  await goToPage(currentPage.value, { ...query.value })
 })
+
 onMounted(async () => {
-  await userStore.fetchUsers()
+  await userStore.fetchUsers(query.value)
   setTotalCount(userStore.count)
 })
 </script>
