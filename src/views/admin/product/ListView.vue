@@ -1,7 +1,7 @@
 <template>
-  <main class="container py-4">
+  <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-      <h1 class="mb-0">Products</h1>
+      <h1 class="h3">Products</h1>
       <router-link :to="{ name: 'addProduct' }" class="btn btn-primary"
         >Add New Product</router-link
       >
@@ -31,27 +31,44 @@
         </select>
         <label for="recordsPerPage">Records per page:</label>
       </div>
-      <table class="table table-hover">
-        <thead class="table-light">
+      <table class="table table-striped table-hover">
+        <thead class="table-dark">
           <tr>
             <th scope="col" class="text-nowrap">#</th>
+            <th scope="col" class="text-nowrap">Actions</th>
             <th scope="col" class="text-nowrap">Image</th>
-            <th scope="col" class="text-nowrap">Product Name</th>
-            <th scope="col" class="text-nowrap">Slug</th>
+            <th scope="col" class="text-nowrap">Name</th>
             <th scope="col" class="text-nowrap">Description</th>
             <th scope="col" class="text-nowrap">Category</th>
             <th scope="col" class="text-nowrap">Price</th>
             <th scope="col" class="text-nowrap">Sell Price</th>
-            <th scope="col" class="text-nowrap">On Sale</th>
+            <th scope="col" class="text-nowrap">On Sell</th>
             <th scope="col" class="text-nowrap">Stock</th>
             <th scope="col" class="text-nowrap">Created At</th>
             <th scope="col" class="text-nowrap">Updated At</th>
-            <th scope="col" class="text-nowrap">Actions</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(product, index) in products" :key="product.id">
             <th scope="row">{{ index + 1 }}</th>
+            <td>
+              <div class="d-flex justify-content-center">
+                <router-link
+                  :to="{ name: 'editProduct', params: { id: product.id } }"
+                  class="btn btn-sm btn-outline-warning me-2"
+                  title="Edit Product"
+                >
+                  <i class="material-icons">edit</i>
+                </router-link>
+                <button
+                  @click="product.id !== undefined && deleteProduct(product.id)"
+                  class="btn btn-sm btn-outline-danger"
+                  title="Delete Product"
+                >
+                  <i class="material-icons">delete</i>
+                </button>
+              </div>
+            </td>
             <td>
               <img
                 v-if="product.image"
@@ -63,28 +80,27 @@
               <span v-else>No Image</span>
             </td>
             <td class="text-nowrap">{{ product.name }}</td>
-            <td class="text-nowrap">{{ product.slug }}</td>
-            <td>{{ product.description }}</td>
+            <td
+              class="text-truncate"
+              style="
+                max-width: 300px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+              "
+            >
+              {{ product.description }}
+            </td>
             <td>{{ getCategoryName(product.category) }}</td>
             <td>{{ formatCurrency(product.price) }}</td>
-            params:
             <td>{{ formatCurrency(product.sell_price) }}</td>
             <td>{{ product.on_sell ? 'Yes' : 'No' }}</td>
             <td>{{ product.stock }}</td>
-            <td class="text-nowrap">{{ formatDate(product.created_at) }}</td>
-            <td class="text-nowrap">{{ formatDate(product.updated_at) }}</td>
-            <td>
-              <div class="d-flex">
-                <router-link
-                  :to="{ name: 'editProduct', params: { id: product.id } }"
-                  class="btn btn-sm btn-warning me-2"
-                >
-                  <i class="material-icons">edit</i>
-                </router-link>
-                <button @click="deleteProduct(product.id)" class="btn btn-sm btn-danger">
-                  <i class="material-icons">delete</i>
-                </button>
-              </div>
+            <td class="text-nowrap">
+              {{ product.created_at ? formatDate(product.created_at) : 'N/A' }}
+            </td>
+            <td class="text-nowrap">
+              {{ product.updated_at ? formatDate(product.updated_at) : 'N/A' }}
             </td>
           </tr>
         </tbody>
@@ -118,7 +134,7 @@
     </div>
 
     <div v-if="!loading && !products.length" class="alert alert-info">No products available.</div>
-  </main>
+  </div>
 </template>
 <script setup lang="ts">
 import { useProductStore } from '@/stores/product'
@@ -156,8 +172,8 @@ const formatCurrency = (price: string) => {
     parseFloat(price)
   )
 }
-const formatDate = (date) => {
-  const options = { year: 'numeric', month: 'long', day: 'numeric' }
+const formatDate = (date: string | Date) => {
+  const options = { year: 'numeric' as const, month: 'long' as const, day: 'numeric' as const }
   return new Date(date).toLocaleDateString(undefined, options)
 }
 

@@ -1084,6 +1084,14 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     productsProductsList: (
       query?: {
+        /** category */
+        category?: string
+        /** price */
+        price?: string
+        /** Which field to use when ordering the results. */
+        ordering?: string
+        /** A search term. */
+        search?: string
         /** Number of results to return per page. */
         limit?: number
         /** The initial index from which to return the results. */
@@ -1365,6 +1373,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         secure: true,
         type: ContentType.Json,
         format: 'json',
+        ...params
+      })
+  }
+  search = {
+    /**
+     * No description
+     *
+     * @tags search
+     * @name SearchUserList
+     * @request GET:/search/user/
+     * @secure
+     */
+    searchUserList: (params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/search/user/`,
+        method: 'GET',
+        secure: true,
         ...params
       })
   }
