@@ -1,7 +1,11 @@
 import type { Product } from '@/services'
 import { defineStore } from 'pinia'
 
-export interface CartItem extends Product {
+interface EnhancedProduct extends Product {
+  id: number
+  slug: string
+}
+export interface CartItem extends EnhancedProduct {
   quantity: number
 }
 
@@ -10,7 +14,7 @@ export const useCartStore = defineStore('cart', {
     items: [] as Array<CartItem>
   }),
   actions: {
-    addToCart(item: Product) {
+    addToCart(item: EnhancedProduct) {
       const existingItem = this.items.find((cartItem) => cartItem.id === item.id)
       if (existingItem) {
         existingItem.quantity++
