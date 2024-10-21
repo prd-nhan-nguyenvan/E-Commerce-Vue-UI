@@ -766,7 +766,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         {
           /** @example "Authentication credentials were not provided." */
           detail?: string
-        } | void
+        }
       >({
         path: `/carts/`,
         method: 'GET',
