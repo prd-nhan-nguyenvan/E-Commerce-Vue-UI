@@ -3,8 +3,7 @@ import { defineStore } from 'pinia'
 
 import { login as apiLogin } from '@/services/auth.service'
 import {
-  getUserProfile as apiGetUserProfile,
-  updateProfile as apiUpdateProfile
+    getUserProfile as apiGetUserProfile, updateProfile as apiUpdateProfile
 } from '@/services/user.service'
 import { useCartStore } from '@/stores'
 
