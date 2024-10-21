@@ -1,4 +1,4 @@
-import { api, type AddToCart } from '.'
+import { AddToCart, api, type } from './'
 
 export const addToCart = async (addToCartData: AddToCart) => {
   try {
