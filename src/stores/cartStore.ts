@@ -1,10 +1,8 @@
 import { defineStore } from 'pinia'
 
 import {
-  addToCart as addToCartService,
-  fetchCart as fetchCartService,
-  removeFromCart as removeFromCartService,
-  updateQuantity as updateQuantityService
+    addToCart as addToCartService, fetchCart as fetchCartService,
+    removeFromCart as removeFromCartService, updateQuantity as updateQuantityService
 } from '@/services/cart.service'
 import { getProductById } from '@/services/product.service'
 
