@@ -19,11 +19,9 @@
   </div>
 </template>
 <script setup lang="ts">
-import { useProductStore } from '@/stores/product'
-import { useCategoryStore } from '@/stores/category'
-import { computed, onMounted, ref } from 'vue'
+import { useCategoryStore, useProductStore } from '@/stores'
+import { computed, onMounted } from 'vue'
 import ProductCard from './components/ProductCard.vue'
-import Swal from 'sweetalert2'
 
 const productStore = useProductStore()
 const categoryStore = useCategoryStore()
@@ -31,11 +29,7 @@ const categoryStore = useCategoryStore()
 const { fetchProducts } = productStore
 const { fetchCategories } = categoryStore
 
-const recordsOptions = [5, 10, 20, 50]
-
 const products = computed(() => productStore.products)
-
-// Methods
 
 onMounted(() => {
   console.log('Loading Products...')

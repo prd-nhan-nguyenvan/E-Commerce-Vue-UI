@@ -115,7 +115,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
-import { useProductStore } from '@/stores/product'
+import { useProductStore } from '@/stores/productStore'
 import { useCategoryStore } from '@/stores/category'
 import { useRouter, useRoute } from 'vue-router'
 import type { ProductBody } from '@/services/product.service'

@@ -117,8 +117,7 @@
 </template>
 
 <script setup lang="ts">
-import { useCategoryStore } from '@/stores/category'
-import { useProductStore } from '@/stores/product'
+import { useCategoryStore, useProductStore } from '@/stores'
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
