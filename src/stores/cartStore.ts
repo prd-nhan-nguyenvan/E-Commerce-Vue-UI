@@ -4,6 +4,8 @@ import {
   fetchCart as fetchCartService,
   removeFromCart as removeFromCartService
 } from '@/services/cart.service'
+
+import { getProductById } from '@/services/product.service'
 import { defineStore } from 'pinia'
 
 interface EnhancedProduct extends Product {
@@ -22,11 +24,20 @@ export const useCartStore = defineStore('cart', {
     async fetchCart() {
       try {
         const response = await fetchCartService()
-        console.log('Fetched cart:', response)
-        this.items = response.map((item: any) => ({
-          ...item.product,
-          quantity: item.quantity
-        }))
+        const items = response.items ?? []
+
+        // get product details for each item
+        const productPromises = items.map((item) => getProductById(item.id as number))
+
+        const products = await Promise.all(productPromises)
+        this.items = products.map((product, index) => {
+          return {
+            ...product,
+            id: product.id as number,
+            slug: product.slug as string,
+            quantity: items[index].quantity ?? 0
+          }
+        })
       } catch (error) {
         console.error('Failed to fetch cart:', error)
         throw new Error('Failed to fetch cart')
@@ -38,8 +49,7 @@ export const useCartStore = defineStore('cart', {
           product_id: item.id,
           quantity: 1
         }
-        const response = await addToCartService(addToCartData)
-        console.log('Added to cart:', response)
+        await addToCartService(addToCartData)
 
         const existingItem = this.items.find((cartItem) => cartItem.id === item.id)
         if (existingItem) {

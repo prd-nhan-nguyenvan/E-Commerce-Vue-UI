@@ -6,6 +6,7 @@ import {
   updateProfile as apiUpdateProfile,
   type userProfileUpdateInput
 } from '@/services/user.service'
+import { useCartStore } from '.'
 interface authState {
   user: UserProfile | null
   token: string | null
@@ -46,6 +47,9 @@ export const useAuthStore = defineStore('auth', {
         if (this.token) {
           const response = await apiGetUserProfile()
           this.user = response
+
+          const cartStore = useCartStore()
+          await cartStore.fetchCart()
         }
       } catch (error) {
         console.error('Failed to load user info', error)
