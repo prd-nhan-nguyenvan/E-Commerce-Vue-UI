@@ -28,10 +28,12 @@
       <div
         class="card-footer d-flex justify-content-between align-items-center pt-3 px-0 pb-0 mt-auto border-0 bg-white"
       >
-        <a href="#!" class="btn btn-primary shadow-0">Add to cart</a>
-        <a href="#!" class="btn btn-outline-secondary border-0 icon-hover">
-          <i class="fas fa-heart fa-lg text-secondary"></i>
-        </a>
+        <button href="#!" class="btn btn-primary shadow-0" @click="addToCart(product)">
+          Add to cart
+        </button>
+        <button href="#!" class="btn btn-outline-secondary border-0 icon-hover">
+          <i class="material-icons">favorite_border</i>
+        </button>
       </div>
     </div>
   </div>
@@ -39,13 +41,16 @@
 
 <script setup lang="ts">
 import type { Product } from '@/services'
-
+import { formatCurrency } from '@/helpers'
+import { useCartStore } from '@/stores'
 defineProps<{
   product: Product
 }>()
 
-const formatCurrency = (price: number) => {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price)
+const cartStore = useCartStore()
+
+const addToCart = (product: Product) => {
+  cartStore.addToCart(product)
 }
 </script>
 

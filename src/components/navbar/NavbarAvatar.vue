@@ -20,14 +20,15 @@
     </a>
 
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="avatarDropdown">
-      <!-- Profile Link -->
       <li>
         <router-link class="dropdown-item" :to="{ name: 'profile' }">Profile</router-link>
+      </li>
+      <li>
+        <router-link class="dropdown-item" :to="{ name: 'cart' }">My cart</router-link>
       </li>
 
       <li><hr class="dropdown-divider" /></li>
 
-      <!-- Logout Button -->
       <li>
         <button @click="logout" class="dropdown-item">Logout</button>
       </li>

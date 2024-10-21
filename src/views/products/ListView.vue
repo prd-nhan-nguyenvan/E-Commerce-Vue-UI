@@ -13,7 +13,7 @@
         :key="product.id"
         class="col-lg-3 col-md-4 col-sm-6 mb-4 d-flex align-items-stretch"
       >
-        <ProductCart :product="product" />
+        <ProductCard :product="product" />
       </div>
     </div>
   </div>
@@ -22,7 +22,7 @@
 import { useProductStore } from '@/stores/product'
 import { useCategoryStore } from '@/stores/category'
 import { computed, onMounted, ref } from 'vue'
-import ProductCart from './components/ProductCart.vue'
+import ProductCard from './components/ProductCard.vue'
 import Swal from 'sweetalert2'
 
 const productStore = useProductStore()
