@@ -35,8 +35,8 @@
     </ul>
 
     <!-- Cart total -->
-    <p v-if="cartItems.length > 0" class="fw-bold">
-      Total: {{ formatCurrency(String(cartTotal)) }}
+    <p v-if="cartItems.length > 0" class="fw-bold text-end">
+      Subtotal ({{ countItems }} items): {{ formatCurrency(String(cartTotal)) }}
     </p>
   </div>
 </template>
@@ -50,6 +50,7 @@ import { formatCurrency } from '@/helpers'
 const cartStore = useCartStore()
 const cartItems = computed(() => cartStore.cartItems)
 const cartTotal = computed(() => cartStore.cartTotal)
+const countItems = computed(() => cartStore.countItems)
 
 const removeFromCart = (itemId: number) => {
   cartStore.removeFromCart(itemId)
