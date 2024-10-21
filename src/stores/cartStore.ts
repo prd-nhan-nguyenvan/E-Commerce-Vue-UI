@@ -1,4 +1,9 @@
 import type { Product } from '@/services'
+import {
+  addToCart as addToCartService,
+  fetchCart as fetchCartService,
+  removeFromCart as removeFromCartService
+} from '@/services/cart.service'
 import { defineStore } from 'pinia'
 
 interface EnhancedProduct extends Product {
@@ -14,12 +19,37 @@ export const useCartStore = defineStore('cart', {
     items: [] as Array<CartItem>
   }),
   actions: {
-    addToCart(item: EnhancedProduct) {
-      const existingItem = this.items.find((cartItem) => cartItem.id === item.id)
-      if (existingItem) {
-        existingItem.quantity++
-      } else {
-        this.items.push({ ...item, quantity: 1 })
+    async fetchCart() {
+      try {
+        const response = await fetchCartService()
+        console.log('Fetched cart:', response)
+        this.items = response.map((item: any) => ({
+          ...item.product,
+          quantity: item.quantity
+        }))
+      } catch (error) {
+        console.error('Failed to fetch cart:', error)
+        throw new Error('Failed to fetch cart')
+      }
+    },
+    async addToCart(item: EnhancedProduct) {
+      try {
+        const addToCartData = {
+          product_id: item.id,
+          quantity: 1
+        }
+        const response = await addToCartService(addToCartData)
+        console.log('Added to cart:', response)
+
+        const existingItem = this.items.find((cartItem) => cartItem.id === item.id)
+        if (existingItem) {
+          existingItem.quantity++
+        } else {
+          this.items.push({ ...item, quantity: 1 })
+        }
+      } catch (error) {
+        console.error('Failed to add to cart:', error)
+        throw new Error('Failed to add to cart')
       }
     },
     removeFromCart(itemId: number) {
