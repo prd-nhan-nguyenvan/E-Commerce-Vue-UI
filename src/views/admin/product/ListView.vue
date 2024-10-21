@@ -1,26 +1,39 @@
 <template>
   <div class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <h1 class="h3">Products</h1>
-      <div class="d-flex">
-        <div class="d-flex">
-          <input
-            class="form-control me-2"
-            type="search"
-            placeholder="Search"
-            aria-label="Search"
-            v-model="searchTerm"
-          />
-          <button class="btn btn-outline-success" type="submit" @click="handleSearch">
-            Search
-          </button>
+    <div class="row mb-4 justify-content-between">
+      <div class="col-md-4">
+        <h1 class="h3">Products</h1>
+      </div>
+      <div class="col-md-8">
+        <div class="d-flex justify-content-end">
+          <div class="d-flex justify-content-end me-1">
+            <label for="product-search" class="visually-hidden">Search Products</label>
+            <input
+              id="product-search"
+              class="form-control"
+              type="search"
+              placeholder="Search Products"
+              aria-label="Search Products"
+              v-model="searchTerm"
+            /><button class="btn btn-outline-success" type="submit" @click="handleSearch">
+              <i class="material-icons">search</i>
+            </button>
+          </div>
+          <div class="btn-group" role="group" aria-label="Product actions">
+            <router-link
+              :to="{ name: 'addProduct' }"
+              class="btn btn-primary d-flex align-items-center"
+            >
+              <i class="material-icons me-1">add</i> Add Product
+            </router-link>
+            <button
+              @click="handleBulkImportProducts"
+              class="btn btn-outline-success d-flex align-items-center"
+            >
+              <i class="material-icons me-1">file_upload</i> Bulk Import
+            </button>
+          </div>
         </div>
-        <router-link :to="{ name: 'addProduct' }" class="btn btn-primary me-2"
-          >Add New Product</router-link
-        >
-        <button @click="handleBulkImportProducts" class="btn btn-outline-success">
-          Bulk Import Products
-        </button>
       </div>
     </div>
 
