@@ -41,6 +41,7 @@ export const useCartStore = defineStore('cart', {
         const price = Number(item.on_sell ? item.sell_price : item.price)
         return total + item.quantity * price
       }, 0),
+    countItems: (state) => state.items.reduce((total, item) => total + item.quantity, 0),
     cartItems: (state) => state.items
   }
 })
