@@ -38,7 +38,6 @@ export const useProductStore = defineStore('product', {
 
       try {
         const response = await getAllProducts({ limit, offset })
-        console.log('🚀 ~ fetchProducts ~ response:', response)
 
         this.products = response.results
         this.count = response.count
@@ -49,7 +48,6 @@ export const useProductStore = defineStore('product', {
         console.error('Error fetching products:', error)
       } finally {
         this.loading = false
-        console.log('Loading state:', this.loading) // Log the loading state
       }
     },
 
@@ -59,7 +57,6 @@ export const useProductStore = defineStore('product', {
 
       try {
         const response = await apiSearchProducts(query)
-        console.log('🚀 ~ searchProducts ~ response:', response)
         this.products = response.results
         this.count = response.count
         this.next = response.next
@@ -71,7 +68,6 @@ export const useProductStore = defineStore('product', {
         this.loading = false
       }
     },
-    // Add a function to load the next page of products
     async loadNextPage() {
       if (this.next) {
         const offset = new URL(this.next).searchParams.get('offset') || '0'

@@ -293,7 +293,6 @@ const handleBulkImportProducts = () => {
         }
         try {
           const response = await productStore.bulkImportProduct(productFile) // Adjust according to your API call
-          console.log('🚀 ~ input.onchange= ~ response:', response)
           Swal.fire({
             title: 'Success!',
             text: 'Products imported successfully.',
@@ -325,10 +324,7 @@ const handleSearch = () => {
   productStore.searchProducts(query)
 }
 onMounted(() => {
-  console.log('Loading Products...')
   fetchProducts()
-
-  console.log('Loading Categories...')
   fetchCategories()
 })
 </script>

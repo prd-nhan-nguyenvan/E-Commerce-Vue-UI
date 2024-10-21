@@ -26,17 +26,12 @@ import ProductCard from './components/ProductCard.vue'
 const productStore = useProductStore()
 const categoryStore = useCategoryStore()
 
-const { fetchProducts } = productStore
-const { fetchCategories } = categoryStore
-
 const products = computed(() => productStore.products)
 
 onMounted(() => {
-  console.log('Loading Products...')
-  fetchProducts()
+  productStore.fetchProducts()
 
-  console.log('Loading Categories...')
-  fetchCategories()
+  categoryStore.fetchCategories()
 })
 </script>
 

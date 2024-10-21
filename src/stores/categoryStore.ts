@@ -26,14 +26,12 @@ export const useCategoryStore = defineStore('category', {
 
       try {
         const response = await getAllCategories()
-        console.log('API response:', response)
         this.categories = response
       } catch (error) {
         this.error = 'Failed to load categories'
         console.error('Error fetching categories:', error)
       } finally {
         this.loading = false
-        console.log('Loading state:', this.loading)
       }
     },
 
@@ -56,7 +54,6 @@ export const useCategoryStore = defineStore('category', {
       this.loading = true
       this.error = null
       if (!updatedCategory.id) return
-      console.log('This is updating from store...', updateCategory)
       try {
         const response = await updateCategory(updatedCategory.id, updatedCategory)
         const index = this.categories.findIndex((category) => category.id === updatedCategory.id)

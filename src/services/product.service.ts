@@ -123,7 +123,7 @@ export const getCategoryById = async (id: number) => {
     const response = await api.products.productsCategoriesRead(id)
     return response.data
   } catch (error) {
-    console.log(error)
+    console.error(error)
     throw error
   }
 }

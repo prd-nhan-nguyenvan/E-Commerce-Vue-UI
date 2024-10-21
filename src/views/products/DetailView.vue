@@ -156,8 +156,6 @@ onMounted(async () => {
   }
 })
 
-console.log('🚀 ~ categoryName ~ categoryName:', categoryName)
-
 onMounted(async () => {
   await categoryStore.fetchCategories()
   try {

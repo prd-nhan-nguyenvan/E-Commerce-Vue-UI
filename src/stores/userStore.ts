@@ -44,7 +44,6 @@ export const useUserStore = defineStore('user', {
         console.error('Error fetching products:', error)
       } finally {
         this.loading = false
-        console.log('Loading state:', this.loading) // Log the loading state
       }
     },
 
