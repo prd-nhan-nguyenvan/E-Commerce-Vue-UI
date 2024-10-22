@@ -43,9 +43,10 @@
         </tr>
       </tbody>
     </table>
-    <p v-if="cartItems.length > 0" class="fw-bold text-end">
-      Subtotal ({{ countItems }} items): {{ formatCurrency(String(cartTotal)) }}
-    </p>
+    <div v-if="cartItems.length > 0" class="d-flex justify-content-end align-items-center mt-3">
+      <span class="me-3 fw-bold">Subtotal ({{ countItems }} items):</span>
+      <span class="h4 text-primary">{{ formatCurrency(String(cartTotal)) }}</span>
+    </div>
   </div>
 </template>
 
