@@ -28,7 +28,7 @@
       <div
         class="card-footer d-flex justify-content-between align-items-center pt-3 px-0 pb-0 mt-auto border-0 bg-white"
       >
-        <button href="#!" class="btn btn-primary shadow-0" @click="addToCart(product)">
+        <button href="#!" class="btn btn-primary shadow-0" @click="addToCartHelper(product)">
           Add to cart
         </button>
         <button href="#!" class="btn btn-outline-secondary border-0 icon-hover">
@@ -41,26 +41,11 @@
 
 <script setup lang="ts">
 import { formatCurrency } from '@/helpers'
-import { useAuthStore, useCartStore } from '@/stores'
-import { useRouter } from 'vue-router'
 import type { EnhancedProduct } from '@/services/product.service'
-
+import { addToCartHelper } from '@/helpers'
 defineProps<{
   product: EnhancedProduct
 }>()
-
-const cartStore = useCartStore()
-
-const router = useRouter()
-const authStore = useAuthStore()
-
-const addToCart = (product: EnhancedProduct) => {
-  if (!authStore.isAuthenticated) {
-    router.push({ name: 'login', query: { redirect: router.currentRoute.value.fullPath } })
-  } else {
-    cartStore.addToCart(product)
-  }
-}
 </script>
 
 <style scoped>
