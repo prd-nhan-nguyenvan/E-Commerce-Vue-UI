@@ -1,8 +1,7 @@
 <template>
   <div class="container mt-4">
     <h2>Your Cart</h2>
-
-    <p v-if="cartItems.length === 0" class="text-center text-muted">Your cart is empty.</p>
+    <div v-if="cartItems.length === 0" class="alert alert-info">Your cart is empty.</div>
 
     <table v-else class="table mb-3">
       <thead>
@@ -56,6 +55,7 @@ import type { CartItem } from '@/stores/types'
 import { computed } from 'vue'
 
 import { formatCurrency } from '@/helpers'
+import Swal from 'sweetalert2'
 
 const cartStore = useCartStore()
 const cartItems = computed(() => cartStore.cartItems)
@@ -63,7 +63,24 @@ const cartTotal = computed(() => cartStore.cartTotal)
 const countItems = computed(() => cartStore.countItems)
 
 const removeFromCart = (itemId: number) => {
-  cartStore.removeFromCart(itemId)
+  Swal.fire({
+    title: 'Are you sure?',
+    text: 'Do you want to remove this item from your cart?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, remove it!',
+    cancelButtonText: 'No, keep it'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      cartStore.removeFromCart(itemId)
+      Swal.fire({
+        title: 'Removed!',
+        text: 'The item has been removed from your cart.',
+        icon: 'success',
+        timer: 1000
+      })
+    }
+  })
 }
 
 const decreaseQuantity = (item: CartItem) => {
