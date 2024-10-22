@@ -2,15 +2,14 @@ import { defineStore } from 'pinia'
 
 import {
   addToCart as addToCartService,
-  fetchCart as fetchCartService
+  fetchCart as fetchCartService,
+  removeFromCart as removeFromCartService,
+  updateQuantity as updateQuantityService
 } from '@/services/cart.service'
 import { getProductById } from '@/services/product.service'
 
 import type { EnhancedProduct } from '@/services/product.service'
-
-export interface CartItem extends EnhancedProduct {
-  quantity: number
-}
+import type { CartItem } from '@/stores/types'
 
 export const useCartStore = defineStore('cart', {
   state: () => ({
@@ -58,16 +57,28 @@ export const useCartStore = defineStore('cart', {
         throw new Error('Failed to add to cart')
       }
     },
-    removeFromCart(itemId: number) {
-      this.items = this.items.filter((item) => item.id !== itemId)
+    async removeFromCart(itemId: number) {
+      try {
+        await removeFromCartService(String(itemId))
+        this.items = this.items.filter((item) => item.id !== itemId)
+      } catch (error) {
+        console.error('Failed to remove from cart:', error)
+        throw new Error('Failed to remove from cart')
+      }
     },
     clearCart() {
       this.items = []
     },
-    updateQuantity(id: number, quantity: number) {
-      const item = this.items.find((item) => item.id === id)
-      if (item) {
-        item.quantity = quantity
+    async updateQuantity(id: number, quantity: number) {
+      try {
+        await updateQuantityService(String(id), quantity)
+        const item = this.items.find((item) => item.id === id)
+        if (item) {
+          item.quantity = quantity
+        }
+      } catch (error) {
+        console.error('Failed to update quantity:', error)
+        throw new Error('Failed to update quantity')
       }
     }
   },

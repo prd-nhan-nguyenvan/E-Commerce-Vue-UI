@@ -1,40 +1,49 @@
-<!-- src/components/Cart.vue -->
 <template>
   <div class="container mt-4">
     <h2>Your Cart</h2>
 
-    <!-- Show message if cart is empty -->
     <p v-if="cartItems.length === 0" class="text-center text-muted">Your cart is empty.</p>
 
-    <!-- Display cart items using list group -->
-    <ul v-else class="list-group mb-3">
-      <li
-        v-for="item in cartItems"
-        :key="item.id"
-        class="list-group-item d-flex justify-content-between align-items-center"
-      >
-        <!-- Item name and price with quantity control buttons -->
-        <div class="d-flex align-items-center">
-          <!-- Item details -->
-          <router-link
-            :to="{ name: 'productDetail', params: { slug: item.slug } }"
-            class="text-decoration-none text-dark"
-          >
-            <div class="me-3">{{ item.name }} - {{ formatCurrency(item.price) }}</div>
-          </router-link>
-          <!-- Quantity controls -->
-          <div class="input-group input-group-sm me-3" style="width: 120px">
-            <button class="btn btn-outline-secondary" @click="decreaseQuantity(item)">-</button>
-            <input type="text" class="form-control text-center" :value="item.quantity" disabled />
-            <button class="btn btn-outline-secondary" @click="increaseQuantity(item)">+</button>
-          </div>
-        </div>
-        <!-- Remove button -->
-        <button class="btn btn-sm btn-danger" @click="removeFromCart(item.id)">Remove</button>
-      </li>
-    </ul>
-
-    <!-- Cart total -->
+    <table v-else class="table mb-3">
+      <thead>
+        <tr>
+          <th scope="col">Product</th>
+          <th scope="col">Price</th>
+          <th scope="col">Quantity</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in cartItems" :key="item.id">
+          <td>
+            <router-link
+              :to="{ name: 'productDetail', params: { slug: item.slug } }"
+              class="text-decoration-none text-dark"
+            >
+              <span class="fw-bold">{{ item.name }}</span> <br />
+              <!-- Product thumbnail -->
+              <img
+                :src="item.image ?? ''"
+                :alt="item.name"
+                class="img-fluid"
+                style="max-width: 100px"
+              />
+            </router-link>
+          </td>
+          <td>{{ formatCurrency(item.price) }}</td>
+          <td>
+            <div class="input-group input-group-sm" style="width: 120px">
+              <button class="btn btn-outline-secondary" @click="decreaseQuantity(item)">-</button>
+              <input type="text" class="form-control text-center" :value="item.quantity" disabled />
+              <button class="btn btn-outline-secondary" @click="increaseQuantity(item)">+</button>
+            </div>
+          </td>
+          <td>
+            <button class="btn btn-sm btn-danger" @click="removeFromCart(item.id)">Remove</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
     <p v-if="cartItems.length > 0" class="fw-bold text-end">
       Subtotal ({{ countItems }} items): {{ formatCurrency(String(cartTotal)) }}
     </p>
@@ -42,7 +51,8 @@
 </template>
 
 <script setup lang="ts">
-import { useCartStore, type CartItem } from '@/stores'
+import { useCartStore } from '@/stores'
+import type { CartItem } from '@/stores/types'
 import { computed } from 'vue'
 
 import { formatCurrency } from '@/helpers'
