@@ -1,17 +1,11 @@
-import type { Product } from '@/services'
 import {
   addToCart as addToCartService,
-  fetchCart as fetchCartService,
-  removeFromCart as removeFromCartService
+  fetchCart as fetchCartService
 } from '@/services/cart.service'
 
-import { getProductById } from '@/services/product.service'
+import { getProductById, type EnhancedProduct } from '@/services/product.service'
 import { defineStore } from 'pinia'
 
-interface EnhancedProduct extends Product {
-  id: number
-  slug: string
-}
 export interface CartItem extends EnhancedProduct {
   quantity: number
 }

@@ -21,7 +21,7 @@
 <script setup lang="ts">
 import { useCategoryStore, useProductStore } from '@/stores'
 import { computed, onMounted } from 'vue'
-import ProductCard from './components/ProductCard.vue'
+import ProductCard from '@/views/products/components/ProductCard.vue'
 
 const productStore = useProductStore()
 const categoryStore = useCategoryStore()

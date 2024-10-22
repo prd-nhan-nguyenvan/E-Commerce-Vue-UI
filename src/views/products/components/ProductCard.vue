@@ -40,23 +40,32 @@
 </template>
 
 <script setup lang="ts">
-import type { Product } from '@/services'
 import { formatCurrency } from '@/helpers'
-import { useCartStore } from '@/stores'
+import { useAuthStore, useCartStore } from '@/stores'
+import { useRouter } from 'vue-router'
+import type { EnhancedProduct } from '@/services/product.service'
+
 defineProps<{
-  product: Product
+  product: EnhancedProduct
 }>()
 
 const cartStore = useCartStore()
 
-const addToCart = (product: Product) => {
-  cartStore.addToCart(product)
+const router = useRouter()
+const authStore = useAuthStore()
+
+const addToCart = (product: EnhancedProduct) => {
+  if (!authStore.isAuthenticated) {
+    router.push({ name: 'login', query: { redirect: router.currentRoute.value.fullPath } })
+  } else {
+    cartStore.addToCart(product)
+  }
 }
 </script>
 
 <style scoped>
 .image-container {
-  height: 250px; /* Set your desired fixed height */
+  height: 250px;
   overflow: hidden;
 }
 

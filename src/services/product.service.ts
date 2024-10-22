@@ -1,6 +1,10 @@
 import { api } from '.'
 import { ContentType, type Category, type Product } from './api'
 
+export interface EnhancedProduct extends Product {
+  id: number
+  slug: string
+}
 export interface ProductBody {
   category: number
   name: string
