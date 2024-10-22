@@ -2,9 +2,7 @@ import { defineStore } from 'pinia'
 
 import { ROLE_ADMIN } from '@/helpers'
 import {
-  blockUser as apiBlockUser,
-  getUserById as apiGetUserByID,
-  getUserList as apiGetAllUser
+    blockUser as apiBlockUser, getUserById as apiGetUserByID, getUserList as apiGetAllUser
 } from '@/services/user.service'
 
 import type { UserList } from '@/services'

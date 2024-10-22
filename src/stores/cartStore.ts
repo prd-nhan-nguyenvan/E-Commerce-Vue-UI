@@ -1,21 +1,24 @@
 import { defineStore } from 'pinia'
-<<<<<<< HEAD
-=======
-
-import {
-  addToCart as addToCartService,
-  fetchCart as fetchCartService
-} from '@/services/cart.service'
-import { getProductById } from '@/services/product.service'
-
-import type { EnhancedProduct } from '@/services/product.service'
->>>>>>> 6c0f78f (refactor(cart): Separate addToCart functionality into separate files)
 
 import {
     addToCart as addToCartService, fetchCart as fetchCartService,
     removeFromCart as removeFromCartService, updateQuantity as updateQuantityService
 } from '@/services/cart.service'
 import { getProductById } from '@/services/product.service'
+
+<<<<<<< HEAD
+=======
+
+import {
+  addToCart as addToCartService,
+  fetchCart as fetchCartService,
+  removeFromCart as removeFromCartService,
+  updateQuantity as updateQuantityService
+} from '@/services/cart.service'
+import { getProductById } from '@/services/product.service'
+
+import type { EnhancedProduct } from '@/services/product.service'
+>>>>>>> 6c0f78f (refactor(cart): Separate addToCart functionality into separate files)
 
 import type { EnhancedProduct } from '@/services/product.service'
 import type { CartItem } from '@/stores/types'
