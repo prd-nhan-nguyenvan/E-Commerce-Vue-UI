@@ -28,11 +28,17 @@
       <div
         class="card-footer d-flex justify-content-between align-items-center pt-3 px-0 pb-0 mt-auto border-0 bg-white"
       >
-        <button href="#!" class="btn btn-primary shadow-0" @click="addToCartHelper(product)">
+        <button
+          class="btn btn-primary ms-1"
+          @click="handleAddToCard(product)"
+          v-if="!itemQuantity(product.id)"
+        >
           Add to cart
+          <i class="fas fa-shopping-cart ms-1"></i>
         </button>
-        <button href="#!" class="btn btn-outline-secondary border-0 icon-hover">
-          <i class="material-icons">favorite_border</i>
+        <button class="btn btn-secondary ms-1" disabled v-else>
+          Already in cart
+          <i class="fas fa-check ms-1"></i>
         </button>
       </div>
     </div>
@@ -43,9 +49,19 @@
 import { formatCurrency } from '@/helpers'
 import type { EnhancedProduct } from '@/services/product.service'
 import { addToCartHelper } from '@/helpers'
+import { useRouter } from 'vue-router'
+import { useCartStore } from '@/stores'
+
 defineProps<{
   product: EnhancedProduct
 }>()
+
+const router = useRouter()
+const cartStore = useCartStore()
+const itemQuantity = (id: number) => cartStore.itemQuantity(id)
+const handleAddToCard = (product: EnhancedProduct) => {
+  addToCartHelper(product, router)
+}
 </script>
 
 <style scoped>

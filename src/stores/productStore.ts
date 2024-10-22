@@ -1,22 +1,25 @@
 import type { Product } from '@/services/api'
-import {
-  addNewProduct,
-  getAllProducts,
-  getProductById as apiGetProductById,
-  updateProduct as apiUpdateProduct,
-  deleteProduct as apiDeleteProduct,
-  getProductBySlug as apiGetProductBySlug,
-  bulkImportProduct as apiBulkImportProduct,
-  productSearch as apiSearchProducts
-} from '@/services/product.service'
 import { defineStore } from 'pinia'
 
+import {
+  addNewProduct,
+  bulkImportProduct as apiBulkImportProduct,
+  deleteProduct as apiDeleteProduct,
+  getAllProducts,
+  getProductById as apiGetProductById,
+  getProductBySlug as apiGetProductBySlug,
+  productSearch as apiSearchProducts,
+  updateProduct as apiUpdateProduct
+} from '@/services/product.service'
+
+import type { EnhancedProduct } from '@/services/product.service'
+
 interface ProductPagingList {
-  products: Product[]
+  products: EnhancedProduct[]
   count: number
   next: string | null | undefined
   previous: string | null | undefined
-  selectedProduct: Product | null
+  selectedProduct: EnhancedProduct | null
   loading: boolean
   error: string | null
 }
@@ -58,6 +61,15 @@ export const useProductStore = defineStore('product', {
       try {
         const response = await apiSearchProducts(query)
         this.products = response.results
+          .map((product: Product) => {
+            if (typeof product.id === 'number' && typeof product.slug === 'string') {
+              return {
+                ...product
+              }
+            }
+            return undefined
+          })
+          .filter((product): product is EnhancedProduct => product !== undefined)
         this.count = response.count
         this.next = response.next
         this.previous = response.previous
@@ -91,7 +103,12 @@ export const useProductStore = defineStore('product', {
 
       try {
         const response = await addNewProduct(product)
-        this.products.push(response)
+        const temptProduct: EnhancedProduct = {
+          id: response.id || 0,
+          slug: response.slug || '',
+          ...product
+        }
+        this.products.push(temptProduct)
       } catch (error) {
         this.error = 'Failed to add product'
         console.error('Failed to add product', { error })
@@ -119,9 +136,18 @@ export const useProductStore = defineStore('product', {
       this.error = null
 
       try {
-        const response = await apiGetProductById(productId) // Assuming this API call exists
-        this.selectedProduct = response
-        return response
+        const tempt = this.products.find((product) => product.id === productId)
+        if (tempt) {
+          this.selectedProduct = tempt
+        } else {
+          const response = await apiGetProductById(productId)
+          this.selectedProduct = {
+            id: response.id || 0,
+            slug: response.slug || '',
+            ...response
+          }
+        }
+        return this.selectedProduct
       } catch (error) {
         this.error = 'Failed to load product'
         console.error('Error fetching product:', error)
@@ -134,9 +160,18 @@ export const useProductStore = defineStore('product', {
       this.error = null
 
       try {
-        const response = await apiGetProductBySlug(slug) // Assuming this API call exists
-        this.selectedProduct = response
-        return response
+        const tempt = this.products.find((product) => product.slug === slug)
+        if (tempt) {
+          this.selectedProduct = tempt
+        } else {
+          const response = await apiGetProductBySlug(slug)
+          this.selectedProduct = {
+            id: response.id || 0,
+            slug: response.slug || '',
+            ...response
+          }
+        }
+        return this.selectedProduct
       } catch (error) {
         this.error = 'Failed to load product'
         console.error('Error fetching product:', error)
@@ -150,11 +185,14 @@ export const useProductStore = defineStore('product', {
 
       try {
         const response = await apiUpdateProduct(product)
-        const index = this.products.findIndex((p) => p.id === response.id)
-        if (index !== -1) {
-          this.products[index] = response
+        const index = this.products.findIndex((item) => item.id === response.id)
+        this.products[index] = {
+          id: response.id || 0,
+          slug: response.slug || '',
+          ...response
         }
-        this.selectedProduct = response // Update the selected product
+        this.selectedProduct = this.products[index]
+        return this.selectedProduct
       } catch (error) {
         this.error = 'Failed to update product'
         console.error('Error updating product:', error)

@@ -1,15 +1,16 @@
 import type { EnhancedProduct } from '@/services/product.service'
 import Swal from 'sweetalert2'
-import { useRouter } from 'vue-router'
 
 import { useAuthStore, useCartStore } from '@/stores'
 
-export const addToCartHelper = async (product: EnhancedProduct) => {
+import type { Router } from 'vue-router'
+
+export const addToCartHelper = async (product: EnhancedProduct, router: Router) => {
   const cartStore = useCartStore()
-  const router = useRouter()
   const authStore = useAuthStore()
+
   if (!authStore.isAuthenticated) {
-    router.push({ name: 'login', query: { redirect: router.currentRoute.value.fullPath } })
+    await router.push({ name: 'login', query: { redirect: router.currentRoute.value.fullPath } })
   } else {
     try {
       await cartStore.addToCart(product)

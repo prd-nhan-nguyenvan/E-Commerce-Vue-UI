@@ -1,10 +1,12 @@
+import { defineStore } from 'pinia'
+
 import {
   addToCart as addToCartService,
   fetchCart as fetchCartService
 } from '@/services/cart.service'
+import { getProductById } from '@/services/product.service'
 
-import { getProductById, type EnhancedProduct } from '@/services/product.service'
-import { defineStore } from 'pinia'
+import type { EnhancedProduct } from '@/services/product.service'
 
 export interface CartItem extends EnhancedProduct {
   quantity: number
@@ -76,6 +78,10 @@ export const useCartStore = defineStore('cart', {
         return total + item.quantity * price
       }, 0),
     countItems: (state) => state.items.reduce((total, item) => total + item.quantity, 0),
-    cartItems: (state) => state.items
+    cartItems: (state) => state.items,
+    itemQuantity: (state) => (id: number) => {
+      const item = state.items.find((item) => item.id === id)
+      return item?.quantity ?? 0
+    }
   }
 })
