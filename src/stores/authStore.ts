@@ -1,19 +1,15 @@
-import type { Login, UserProfile } from '@/services/api'
+import type { Login } from '@/services/api'
 import { defineStore } from 'pinia'
+
 import { login as apiLogin } from '@/services/auth.service'
 import {
   getUserProfile as apiGetUserProfile,
-  updateProfile as apiUpdateProfile,
-  type userProfileUpdateInput
+  updateProfile as apiUpdateProfile
 } from '@/services/user.service'
-import { useCartStore } from '.'
-interface authState {
-  user: UserProfile | null
-  token: string | null
-  loading: boolean
-  error: string | null
-}
+import { useCartStore } from '@/stores'
 
+import type { userProfileUpdateInput } from '@/services/user.service'
+import type { authState } from '@/stores/types'
 export const useAuthStore = defineStore('auth', {
   state: (): authState => ({
     user: null,

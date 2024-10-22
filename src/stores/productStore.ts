@@ -1,31 +1,22 @@
-import type { Product } from '@/services/api'
 import { defineStore } from 'pinia'
 
 import {
   addNewProduct,
   bulkImportProduct as apiBulkImportProduct,
   deleteProduct as apiDeleteProduct,
-  getAllProducts,
+  getAllProducts as apiFetchProducts,
   getProductById as apiGetProductById,
   getProductBySlug as apiGetProductBySlug,
   productSearch as apiSearchProducts,
   updateProduct as apiUpdateProduct
 } from '@/services/product.service'
 
+import type { Product } from '@/services/api'
 import type { EnhancedProduct } from '@/services/product.service'
-
-interface ProductPagingList {
-  products: EnhancedProduct[]
-  count: number
-  next: string | null | undefined
-  previous: string | null | undefined
-  selectedProduct: EnhancedProduct | null
-  loading: boolean
-  error: string | null
-}
+import type { ProductListState } from '@/stores/types'
 
 export const useProductStore = defineStore('product', {
-  state: (): ProductPagingList => ({
+  state: (): ProductListState => ({
     products: [],
     count: 0,
     next: null,
@@ -40,7 +31,7 @@ export const useProductStore = defineStore('product', {
       this.error = null
 
       try {
-        const response = await getAllProducts({ limit, offset })
+        const response = await apiFetchProducts({ limit, offset })
 
         this.products = response.results
         this.count = response.count

@@ -9,10 +9,10 @@ import {
 
 import type { UserList } from '@/services'
 import type { userListQuery } from '@/services/user.service'
-import type { UserPagingList } from './types'
+import type { UserPagingList as userStoreState } from './types'
 
 export const useUserStore = defineStore('user', {
-  state: (): UserPagingList => ({
+  state: (): userStoreState => ({
     users: [],
     selectedUser: null,
     count: 0,

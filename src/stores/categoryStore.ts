@@ -1,20 +1,17 @@
+import { defineStore } from 'pinia'
+
 import {
   addNewCategory,
   deleteCategory,
   getAllCategories,
   updateCategory
 } from '@/services/product.service'
-import type { Category } from './../services/api'
-import { defineStore } from 'pinia'
 
-interface CategoryList {
-  categories: Category[]
-  loading: boolean
-  error: string | null
-}
+import type { Category } from '@/services/api'
+import type { CategoryState } from '@/stores/types'
 
 export const useCategoryStore = defineStore('category', {
-  state: (): CategoryList => ({
+  state: (): CategoryState => ({
     categories: [],
     loading: false,
     error: null
