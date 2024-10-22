@@ -27,7 +27,7 @@ export const useCartStore = defineStore('cart', {
         const items = response.items ?? []
 
         // get product details for each item
-        const productPromises = items.map((item) => getProductById(item.id as number))
+        const productPromises = items.map((item) => getProductById(item.product as number))
 
         const products = await Promise.all(productPromises)
         this.items = products.map((product, index) => {
