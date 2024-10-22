@@ -5,7 +5,9 @@ import {
   getProductById as apiGetProductById,
   updateProduct as apiUpdateProduct,
   deleteProduct as apiDeleteProduct,
-  getProductBySlug as apiGetProductBySlug
+  getProductBySlug as apiGetProductBySlug,
+  bulkImportProduct as apiBulkImportProduct,
+  productSearch as apiSearchProducts
 } from '@/services/product.service'
 import { defineStore } from 'pinia'
 
@@ -51,6 +53,24 @@ export const useProductStore = defineStore('product', {
       }
     },
 
+    async searchProducts(query: any) {
+      this.loading = true
+      this.error = null
+
+      try {
+        const response = await apiSearchProducts(query)
+        console.log('🚀 ~ searchProducts ~ response:', response)
+        this.products = response.results
+        this.count = response.count
+        this.next = response.next
+        this.previous = response.previous
+      } catch (error) {
+        this.error = 'Failed to search products'
+        console.error('Error searching products:', error)
+      } finally {
+        this.loading = false
+      }
+    },
     // Add a function to load the next page of products
     async loadNextPage() {
       if (this.next) {
@@ -79,6 +99,21 @@ export const useProductStore = defineStore('product', {
       } catch (error) {
         this.error = 'Failed to add product'
         console.error('Failed to add product', { error })
+      } finally {
+        this.loading = false
+      }
+    },
+
+    async bulkImportProduct(productFile: any) {
+      this.loading = true
+      this.error = null
+
+      try {
+        const response = await apiBulkImportProduct(productFile)
+        return response
+      } catch (error) {
+        this.error = 'Failed to import products'
+        console.error('Error importing products:', error)
       } finally {
         this.loading = false
       }

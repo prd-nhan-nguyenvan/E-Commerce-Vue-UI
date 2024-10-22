@@ -220,6 +220,22 @@ export interface Product {
   updated_at?: string
 }
 
+export interface ProductSearchResponse {
+  /** Count */
+  count: number
+  /**
+   * Next
+   * @minLength 1
+   */
+  next?: string | null
+  /**
+   * Previous
+   * @minLength 1
+   */
+  previous?: string | null
+  results: Product[]
+}
+
 export interface Review {
   /** ID */
   id?: number
@@ -1164,6 +1180,61 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         body: data,
         secure: true,
         type: ContentType.FormData,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Products
+     * @name ProductsProductsBulkImportCreate
+     * @request POST:/products/products/bulk-import/
+     * @secure
+     */
+    productsProductsBulkImportCreate: (
+      data: {
+        /**
+         * CSV file with product data
+         * @format binary
+         */
+        file?: File
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<void, any>({
+        path: `/products/products/bulk-import/`,
+        method: 'POST',
+        body: data,
+        secure: true,
+        type: ContentType.FormData,
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Products
+     * @name ProductsProductsSearchList
+     * @request GET:/products/products/search/
+     * @secure
+     */
+    productsProductsSearchList: (
+      query?: {
+        /** Search query */
+        q?: string
+        /** Limit for pagination */
+        limit?: number
+        /** Offset for pagination */
+        offset?: number
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<ProductSearchResponse, void>({
+        path: `/products/products/search/`,
+        method: 'GET',
+        query: query,
+        secure: true,
         format: 'json',
         ...params
       }),

@@ -1,10 +1,40 @@
 <template>
   <div class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <h1 class="h3">Products</h1>
-      <router-link :to="{ name: 'addProduct' }" class="btn btn-primary"
-        >Add New Product</router-link
-      >
+    <div class="row mb-4 justify-content-between">
+      <div class="col-md-4">
+        <h1 class="h3">Products</h1>
+      </div>
+      <div class="col-md-8">
+        <div class="d-flex justify-content-end">
+          <div class="d-flex justify-content-end me-1">
+            <label for="product-search" class="visually-hidden">Search Products</label>
+            <input
+              id="product-search"
+              class="form-control"
+              type="search"
+              placeholder="Search Products"
+              aria-label="Search Products"
+              v-model="searchTerm"
+            /><button class="btn btn-outline-success" type="submit" @click="handleSearch">
+              <i class="material-icons">search</i>
+            </button>
+          </div>
+          <div class="btn-group" role="group" aria-label="Product actions">
+            <router-link
+              :to="{ name: 'addProduct' }"
+              class="btn btn-primary d-flex align-items-center"
+            >
+              <i class="material-icons me-1">add</i> Add Product
+            </router-link>
+            <button
+              @click="handleBulkImportProducts"
+              class="btn btn-outline-success d-flex align-items-center"
+            >
+              <i class="material-icons me-1">file_upload</i> Bulk Import
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div v-if="loading" class="text-center">
@@ -111,9 +141,20 @@
           <ul class="pagination justify-content-center">
             <!-- Previous Button -->
             <li class="page-item" :class="{ disabled: !previous }" @click="loadPreviousPage">
-              <span class="page-link" aria-hidden="true">&laquo;</span>
+              <span class="page-link" aria-hidden="true">
+                <i class="material-icons">arrow_back</i>
+              </span>
             </li>
-
+            <li
+              v-if="currentPage > 5"
+              :class="['page-item', { active: currentPage === 1 }]"
+              @click="goToPage(1)"
+            >
+              <span class="page-link">{{ 1 }}</span>
+            </li>
+            <li v-if="currentPage > 5" class="page-item disabled">
+              <span class="page-link">...</span>
+            </li>
             <!-- Page Numbers -->
             <li
               v-for="page in totalPages"
@@ -121,12 +162,25 @@
               :class="['page-item', { active: currentPage === page }]"
               @click="goToPage(page)"
             >
-              <span class="page-link">{{ page }}</span>
+              <span class="page-link" v-if="Math.abs(page - currentPage) < 5">{{ page }}</span>
             </li>
 
-            <!-- Next Button -->
+            <li v-if="currentPage < totalPages - 4" class="page-item disabled">
+              <span class="page-link">...</span>
+            </li>
+
+            <li
+              v-if="currentPage < totalPages - 4"
+              :class="['page-item', { active: currentPage === totalPages }]"
+              @click="goToPage(totalPages)"
+            >
+              <span class="page-link">{{ totalPages }}</span>
+            </li>
+
             <li class="page-item" :class="{ disabled: !next }" @click="loadNextPage">
-              <span class="page-link" aria-hidden="true">&raquo;</span>
+              <span class="page-link" aria-hidden="true">
+                <i class="material-icons">arrow_forward</i>
+              </span>
             </li>
           </ul>
         </nav>
@@ -141,6 +195,7 @@ import { useProductStore } from '@/stores/product'
 import { useCategoryStore } from '@/stores/category'
 import { computed, onMounted, ref } from 'vue'
 import Swal from 'sweetalert2'
+import type { ProductFile } from '@/services/product.service'
 
 const productStore = useProductStore()
 const categoryStore = useCategoryStore()
@@ -151,7 +206,7 @@ const { fetchCategories } = categoryStore
 const recordsOptions = [5, 10, 20, 50]
 
 const currentPage = ref(1)
-const productsPerPage = ref(recordsOptions[1])
+const productsPerPage = ref(recordsOptions[2])
 
 const products = computed(() => productStore.products)
 const loading = computed(() => productStore.loading)
@@ -224,6 +279,52 @@ const handleRecordsChange = () => {
   productStore.fetchProducts(productsPerPage.value, 0)
 }
 
+const handleBulkImportProducts = () => {
+  const input = document.createElement('input')
+  input.type = 'file'
+  input.accept = '.csv'
+
+  input.onchange = async (event) => {
+    const target = event.target as HTMLInputElement
+    if (target && target.files && target.files[0]) {
+      const file = target.files[0]
+      if (file) {
+        const productFile: ProductFile = {
+          file: file
+        }
+        try {
+          const response = await productStore.bulkImportProduct(productFile) // Adjust according to your API call
+          console.log('🚀 ~ input.onchange= ~ response:', response)
+          Swal.fire({
+            title: 'Success!',
+            text: 'Products imported successfully.',
+            icon: 'success',
+            timer: 2000
+          })
+        } catch (error) {
+          Swal.fire({
+            title: 'Error!',
+            text: 'There was an error importing the products.',
+            icon: 'error',
+            timer: 2000
+          })
+        }
+      }
+    }
+  }
+
+  // Trigger file input click
+  input.click()
+}
+const searchTerm = ref('')
+const handleSearch = () => {
+  const query = {
+    q: searchTerm.value,
+    limit: productsPerPage.value,
+    offset: 0
+  }
+  productStore.searchProducts(query)
+}
 onMounted(() => {
   console.log('Loading Products...')
   fetchProducts()
