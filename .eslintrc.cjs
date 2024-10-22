@@ -1,4 +1,3 @@
-/* eslint-env node */
 require('@rushstack/eslint-patch/modern-module-resolution')
 
 module.exports = {
@@ -12,10 +11,7 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 'latest'
   },
-  'vue/no-mutating-props': [
-    'error',
-    {
-      shallowOnly: false
-    }
-  ]
+  rules: {
+    'vue/no-mutating-props': 'error'
+  }
 }
