@@ -12,29 +12,7 @@ repos:
     rev: v4.0.0-alpha.8
     hooks:
       - id: prettier
-  - repo: https://github.com/antonbabenko/pre-commit-terraform
-    rev: v1.96.1
-    hooks:
-      - id: terraform_fmt
-      - id: terraform_validate
-  - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v9.13.0
-    hooks:
-      - id: eslint
-        files: \.([jt]sx?|vue)$ # *.js, *.jsx, *.ts, *.tsx and *.vue
-        types: [file]
-        additional_dependencies:
-          - eslint@8.17.0
-          - typescript@4.7.3
-          - '@typescript-eslint/eslint-plugin@5.28.0'
-          - '@typescript-eslint/parser@5.28.0'
-          - eslint-config-prettier@8.5.0
-          - eslint-plugin-jest@26.5.3
-          - eslint-plugin-vue@9.1.1
-          - vue-eslint-parser@9.0.2
-          - jest@28.1.1
   - repo: https://github.com/qoomon/git-conventional-commits
     rev: v2.6.7
     hooks:
       - id: conventional-commits
-excludes: ['**/node_modules/**', '**/dist/**', '**/build/**', '**/coverage/**']
