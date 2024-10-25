@@ -34,6 +34,7 @@
         <thead class="table-dark">
           <tr>
             <th scope="col" class="text-nowrap">#</th>
+            <th scope="col" class="text-nowrap">Action</th>
             <th scope="col" class="text-nowrap">User</th>
             <th scope="col" class="text-nowrap">Status</th>
             <th scope="col" class="text-nowrap">Total Price</th>

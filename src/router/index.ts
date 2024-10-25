@@ -26,6 +26,8 @@ const CartView = () => import('@/views/user/CartView.vue')
 const CheckoutView = () => import('@/views/user/CheckoutView.vue')
 const OrderView = () => import('@/views/user/OrderView.vue')
 
+const NotFoundView = () => import('@/views/NotFoundView.vue')
+
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -140,6 +142,11 @@ export const router = createRouter({
           meta: { requiresAuth: true, role: [ROLE_ADMIN] } // Explicitly set role for editing products
         }
       ]
+    },
+    {
+      path: '/:pathMatch(.*)*', // Catch-all route for 404
+      name: 'notFound',
+      component: NotFoundView
     }
   ]
 })
