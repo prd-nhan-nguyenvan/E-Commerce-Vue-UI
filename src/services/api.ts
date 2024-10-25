@@ -151,6 +151,11 @@ export interface Order {
   updated_at?: string
 }
 
+export interface OrderStatusUpdate {
+  /** Status */
+  status?: 'pd' | 'sb' | 'pr' | 'de' | 'cp' | 'df' | 'cn'
+}
+
 export interface AddOrderItem {
   /** Product */
   product: number
@@ -159,11 +164,6 @@ export interface AddOrderItem {
    * @min 1
    */
   quantity: number
-}
-
-export interface OrderStatusUpdate {
-  /** Status */
-  status?: 'pd' | 'sb' | 'pr' | 'de' | 'cp' | 'df' | 'cn'
 }
 
 export interface Category {
@@ -1068,76 +1068,21 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags Order
-     * @name OrdersAdminListsUpdateStatusRead
-     * @request GET:/orders/admin/lists/{order_id}/update-status/
+     * @name OrdersAdminListsUpdateStatusCreate
+     * @request POST:/orders/admin/lists/{order_id}/update-status/
      * @secure
      */
-    ordersAdminListsUpdateStatusRead: (orderId: string, params: RequestParams = {}) =>
-      this.request<Order, any>({
-        path: `/orders/admin/lists/${orderId}/update-status/`,
-        method: 'GET',
-        secure: true,
-        format: 'json',
-        ...params
-      }),
-
-    /**
-     * No description
-     *
-     * @tags Order
-     * @name OrdersAdminListsUpdateStatusUpdate
-     * @request PUT:/orders/admin/lists/{order_id}/update-status/
-     * @secure
-     */
-    ordersAdminListsUpdateStatusUpdate: (
+    ordersAdminListsUpdateStatusCreate: (
       orderId: string,
-      data: Order,
+      data: OrderStatusUpdate,
       params: RequestParams = {}
     ) =>
-      this.request<Order, any>({
+      this.request<OrderStatusUpdate, any>({
         path: `/orders/admin/lists/${orderId}/update-status/`,
-        method: 'PUT',
+        method: 'POST',
         body: data,
         secure: true,
         format: 'json',
-        ...params
-      }),
-
-    /**
-     * No description
-     *
-     * @tags Order
-     * @name OrdersAdminListsUpdateStatusPartialUpdate
-     * @request PATCH:/orders/admin/lists/{order_id}/update-status/
-     * @secure
-     */
-    ordersAdminListsUpdateStatusPartialUpdate: (
-      orderId: string,
-      data: Order,
-      params: RequestParams = {}
-    ) =>
-      this.request<Order, any>({
-        path: `/orders/admin/lists/${orderId}/update-status/`,
-        method: 'PATCH',
-        body: data,
-        secure: true,
-        format: 'json',
-        ...params
-      }),
-
-    /**
-     * No description
-     *
-     * @tags Order
-     * @name OrdersAdminListsUpdateStatusDelete
-     * @request DELETE:/orders/admin/lists/{order_id}/update-status/
-     * @secure
-     */
-    ordersAdminListsUpdateStatusDelete: (orderId: string, params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/orders/admin/lists/${orderId}/update-status/`,
-        method: 'DELETE',
-        secure: true,
         ...params
       }),
 
@@ -1263,7 +1208,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'POST',
         body: data,
         secure: true,
-        type: ContentType.Json,
         format: 'json',
         ...params
       })
