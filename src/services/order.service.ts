@@ -55,3 +55,13 @@ export const adminChangeOrderStatus = async (
     throw new Error('Failed to change order status')
   }
 }
+
+export const getOrderById = async (orderId: number) => {
+  try {
+    const response = await api.orders.ordersAdminListsRead(orderId)
+    return response.data
+  } catch (error) {
+    console.error('Failed to fetch order:', error)
+    throw new Error('Failed to fetch order')
+  }
+}

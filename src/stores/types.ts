@@ -56,6 +56,7 @@ export interface CategoryState {
 
 export interface OrderState {
   orders: Order[]
+  selectedOrder: Order | null
   loading: boolean
   error: string | null
   count: number

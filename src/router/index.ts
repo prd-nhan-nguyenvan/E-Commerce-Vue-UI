@@ -18,6 +18,7 @@ const DetailView = () => import('@/views/products/DetailView.vue')
 const ListView = () => import('@/views/admin/product/ListView.vue')
 const ProductFormView = () => import('@/views/admin/product/DetailView.vue')
 const OrderListView = () => import('@/views/admin/order/ListView.vue')
+const OrderDetailView = () => import('@/views/admin/order/DetailView.vue')
 
 const UserDetailView = () => import('@/views/admin/user/DetailView.vue')
 const UserListView = () => import('@/views/admin/user/ListView.vue')
@@ -82,7 +83,8 @@ export const router = createRouter({
         {
           path: 'orders',
           name: 'orders',
-          component: OrderView
+          component: OrderView,
+          meta: { requiresAuth: true, role: ALL_ROLE }
         }
       ]
     },
@@ -127,6 +129,12 @@ export const router = createRouter({
           name: 'adminOrders',
           component: OrderListView,
           meta: { requiresAuth: true, role: [ROLE_ADMIN, ROLE_STAFF] } // Explicitly set role for orders
+        },
+        {
+          path: 'orders/:id',
+          name: 'orderDetail',
+          component: OrderDetailView,
+          meta: { requiresAuth: true, role: ALL_ROLE }
         },
 
         {

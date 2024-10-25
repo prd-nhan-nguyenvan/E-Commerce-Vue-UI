@@ -1,4 +1,4 @@
-export const formatDate = (dateString: string) => {
+export const formatDate = (dateString: string | undefined) => {
   if (!dateString) return ''
 
   const options: Intl.DateTimeFormatOptions = {

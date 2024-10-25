@@ -4,7 +4,8 @@ import { ADMIN_STAFF_ROLE } from '@/helpers'
 import { OrderConverter } from '@/helpers/enhancedOrderHelper'
 import {
   adminChangeOrderStatus as updateOrderStatusService,
-  fetchAllOrders as fetchOrdersService
+  fetchAllOrders as fetchOrdersService,
+  getOrderById as getOrderByIdService
 } from '@/services/order.service'
 
 import { useAuthStore } from './authStore'
@@ -15,6 +16,7 @@ import type { OrderState } from './types'
 export const useOrderStore = defineStore('order', {
   state: (): OrderState => ({
     orders: [],
+    selectedOrder: null,
     loading: false,
     error: null,
     count: 0,
@@ -61,6 +63,22 @@ export const useOrderStore = defineStore('order', {
       } catch (error) {
         console.error('Failed to change order status:', error)
         throw new Error('Failed to change order status')
+      }
+    },
+    async getOrderByID(orderId: number) {
+      const tempt = this.orders.find((order) => order.id === orderId)
+      if (tempt) {
+        this.selectedOrder = tempt
+        return tempt
+      } else {
+        try {
+          const response = await getOrderByIdService(orderId)
+          this.selectedOrder = OrderConverter(response)
+          return this.selectedOrder
+        } catch (error) {
+          console.error('Failed to fetch order by id:', error)
+          throw new Error('Failed to fetch order by id')
+        }
       }
     }
   }
