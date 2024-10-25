@@ -44,16 +44,12 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(order, index) in orders" :key="order.id">
-            <td>{{ index + 1 }}</td>
-            <td>{{ order.user }}</td>
-            <td>{{ order.status }}</td>
-            <td>{{ order.total_price }}</td>
-            <td>{{ order.address }}</td>
-            <td>{{ order.items.length }}</td>
-            <td>{{ order.created_at }}</td>
-            <td>{{ order.updated_at }}</td>
-          </tr>
+          <OrderRow
+            v-for="(order, index) in orders"
+            :key="order.id"
+            :order="order"
+            :index="index"
+          />
         </tbody>
       </table>
       <!-- Pagination Controls -->
@@ -115,6 +111,7 @@
 import { useOrderStore } from '@/stores'
 import { computed, onMounted, ref } from 'vue'
 import Swal from 'sweetalert2'
+import OrderRow from '@/components/admin/order/OrderRow.vue'
 
 const orderStore = useOrderStore()
 
