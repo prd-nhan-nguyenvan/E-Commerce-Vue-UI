@@ -6,7 +6,7 @@
         <div class="card-header bg-primary text-white">
           <div class="d-flex justify-content-between">
             <div>Order ID: {{ order.id }}</div>
-            <div>Order Status: {{ order.status }}</div>
+            <div>Order Status: {{ orderStatusMap[order.status] }}</div>
             <div>Order Address: {{ order.address }}</div>
             <div>Order Date: {{ formatDate(order.created_at) }}</div>
           </div>
@@ -42,6 +42,7 @@ import Product from '@/components/products/ProductInOrder.vue'
 import { onMounted, computed } from 'vue'
 import { useOrderStore } from '@/stores'
 import { formatDate } from '@/helpers'
+import { orderStatusMap } from '@/services/order.service'
 
 const orderStore = useOrderStore()
 

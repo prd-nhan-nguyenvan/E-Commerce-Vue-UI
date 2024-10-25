@@ -1,10 +1,20 @@
 <template>
   <tr :key="order.id">
     <td class="text-center">{{ index + 1 }}</td>
+    <!-- Action -->
+    <td>
+      <router-link
+        :to="{ name: 'orderDetail', params: { id: order.id } }"
+        class="btn btn-sm btn-primary"
+      >
+        <i class="material-icons">visibility</i>
+      </router-link>
+    </td>
+
     <td>{{ user?.email }}</td>
     <td>
       <span class="badge" :class="getStatusColor(order.status as OrderStatus)"
-        >{{ getEnumKeyByValue(order.status) }}
+        >{{ getOrderStatusLabel(order.status) }}
       </span>
     </td>
     <td class="text-end">{{ formatCurrency(order.total_price) }}</td>
@@ -22,18 +32,13 @@ import { onMounted, ref } from 'vue'
 import type { UserDetail } from '@/services'
 import type { Order } from '@/stores/types'
 import { OrderStatus } from '@/services/order.service'
-import { formatCurrency, formatDate, getStatusColor } from '@/helpers'
+import { formatCurrency, formatDate, getStatusColor, getOrderStatusLabel } from '@/helpers'
 
 interface Props {
   order: Order
   index: number
 }
 
-function getEnumKeyByValue(value: string): string | undefined {
-  return Object.keys(OrderStatus)
-    .find((key) => OrderStatus[key as keyof typeof OrderStatus] === value)
-    ?.toLocaleLowerCase()
-}
 const props = defineProps<Props>()
 
 const orderStore = useOrderStore()

@@ -56,9 +56,11 @@ export const useOrderStore = defineStore('order', {
         this.goToPage(Number(this.previous), limit)
       }
     },
-    async updateOrderStatus(orderId: string, status: OrderStatus) {
+    async updateOrderStatus(orderId: string, status: OrderStatus, isAdmin: boolean = false) {
       try {
-        const response = await updateOrderStatusService(orderId, status)
+        const response = await updateOrderStatusService(orderId, status, isAdmin)
+        if (this.selectedOrder && this.selectedOrder.id === Number(orderId))
+          this.selectedOrder.status = response.status ? response.status : this.selectedOrder.status
         return response
       } catch (error) {
         console.error('Failed to change order status:', error)

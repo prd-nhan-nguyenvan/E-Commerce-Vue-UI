@@ -20,3 +20,9 @@ export const getStatusColor = (status: OrderStatus | '') => {
       return 'bg-secondary'
   }
 }
+
+export const getOrderStatusLabel = (value: string): string | undefined => {
+  return Object.keys(OrderStatus)
+    .find((key) => OrderStatus[key as keyof typeof OrderStatus] === value)
+    ?.toLocaleLowerCase()
+}
