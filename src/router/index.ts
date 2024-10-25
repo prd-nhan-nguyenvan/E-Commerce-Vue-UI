@@ -22,6 +22,7 @@ const UserListView = () => import('@/views/admin/user/ListView.vue')
 const UserDetailView = () => import('@/views/admin/user/DetailView.vue')
 
 const CartView = () => import('@/views/user/CartView.vue')
+const CheckoutView = () => import('@/views/user/CheckoutView.vue')
 
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -56,6 +57,12 @@ export const router = createRouter({
       path: '/cart',
       name: 'cart',
       component: CartView,
+      meta: { requiresAuth: true, role: ALL_ROLE }
+    },
+    {
+      path: '/checkout',
+      name: 'checkout',
+      component: CheckoutView,
       meta: { requiresAuth: true, role: ALL_ROLE }
     },
 

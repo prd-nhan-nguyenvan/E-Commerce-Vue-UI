@@ -11,10 +11,12 @@ import { getProductById } from '@/services/product.service'
 
 import {
   addToCart as addToCartService,
+  clearCart as clearCartService,
   fetchCart as fetchCartService,
   removeFromCart as removeFromCartService,
   updateQuantity as updateQuantityService
 } from '@/services/cart.service'
+import { placeOrder as placeOrderService } from '@/services/order.service'
 import { getProductById } from '@/services/product.service'
 
 import type { EnhancedProduct } from '@/services/product.service'
@@ -22,7 +24,7 @@ import type { EnhancedProduct } from '@/services/product.service'
 
 import type { EnhancedProduct } from '@/services/product.service'
 import type { CartItem } from '@/stores/types'
-
+import type { Order } from '@/services'
 export const useCartStore = defineStore('cart', {
   state: () => ({
     items: [] as Array<CartItem>
@@ -33,7 +35,6 @@ export const useCartStore = defineStore('cart', {
         const response = await fetchCartService()
         const items = response.items ?? []
 
-        // get product details for each item
         const productPromises = items.map((item) => getProductById(item.product as number))
 
         const products = await Promise.all(productPromises)
@@ -78,9 +79,7 @@ export const useCartStore = defineStore('cart', {
         throw new Error('Failed to remove from cart')
       }
     },
-    clearCart() {
-      this.items = []
-    },
+
     async updateQuantity(id: number, quantity: number) {
       try {
         await updateQuantityService(String(id), quantity)
@@ -91,6 +90,33 @@ export const useCartStore = defineStore('cart', {
       } catch (error) {
         console.error('Failed to update quantity:', error)
         throw new Error('Failed to update quantity')
+      }
+    },
+    async placeOrder(address: string | null) {
+      try {
+        const orderData: Order = {
+          address: address ?? '',
+          items: this.items.map((item) => ({
+            product: item.id,
+            quantity: item.quantity,
+            price_at_purchase: item.on_sell ? item.sell_price : item.price
+          }))
+        }
+        await placeOrderService(orderData)
+        this.clearCart()
+        return true
+      } catch (error) {
+        console.error('Failed to checkout:', error)
+        throw new Error('Failed to checkout')
+      }
+    },
+    async clearCart() {
+      this.items = []
+      try {
+        await clearCartService()
+      } catch (error) {
+        console.error('Failed to clear cart:', error)
+        throw new Error('Failed to clear cart')
       }
     }
   },

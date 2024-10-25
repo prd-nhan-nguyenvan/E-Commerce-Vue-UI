@@ -2,6 +2,8 @@
 <template>
   <div class="container my-5">
     <Cart />
+    <!-- Checkout button -->
+    <router-link class="btn btn-primary" :to="{ name: 'checkout' }">Checkout</router-link>
   </div>
 </template>
 
