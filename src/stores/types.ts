@@ -1,4 +1,4 @@
-import type { UserList, UserDetail } from '@/services'
+import type { UserList, UserDetail, Order as BaseOrder, OrderItem } from '@/services'
 import type { Category } from '@/services'
 import type { EnhancedProduct } from '@/services/product.service'
 import type { UserProfile } from '@/services'
@@ -13,6 +13,17 @@ export interface ProductListState {
   similarProducts: EnhancedProduct[]
   loading: boolean
   error: string | null
+}
+
+export interface Order extends BaseOrder {
+  id: number
+  user: number
+  status: 'pd' | 'sb' | 'pr' | 'de' | 'cp' | 'df' | 'cn'
+  total_price: string
+  address: string
+  created_at: string
+  updated_at: string
+  items: OrderItem[]
 }
 
 export interface CartItem extends EnhancedProduct {
@@ -41,4 +52,10 @@ export interface CategoryState {
   error: string | null
   isInitialFetch: boolean
   loading: boolean
+}
+
+export interface OrderState {
+  orders: Order[]
+  loading: boolean
+  error: string | null
 }
