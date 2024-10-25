@@ -151,11 +151,7 @@ export const useProductStore = defineStore('product', {
           this.selectedProduct = tempt
         } else {
           const response = await apiGetProductById(productId)
-          this.selectedProduct = {
-            id: response.id || 0,
-            slug: response.slug || '',
-            ...response
-          }
+          this.selectedProduct = convertProductToEnhanced(response)
         }
         return this.selectedProduct
       } catch (error) {
