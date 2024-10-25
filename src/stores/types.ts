@@ -58,4 +58,7 @@ export interface OrderState {
   orders: Order[]
   loading: boolean
   error: string | null
+  count: number
+  next: string | null | undefined
+  previous: string | null | undefined
 }
