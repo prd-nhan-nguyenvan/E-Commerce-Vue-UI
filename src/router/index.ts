@@ -97,38 +97,38 @@ export const router = createRouter({
           name: 'admin',
           path: '',
           component: DashboardView,
-          meta: { requiresAuth: true, role: [ROLE_ADMIN, ROLE_STAFF] } // Explicitly set role for admin
+          meta: { requiresAuth: true, role: [ROLE_ADMIN, ROLE_STAFF] }
         },
         {
           path: 'categories',
           name: 'categories',
           component: CategoryListView,
-          meta: { requiresAuth: true, role: [ROLE_ADMIN, ROLE_STAFF] } // Explicitly set role for categories
+          meta: { requiresAuth: true, role: [ROLE_ADMIN, ROLE_STAFF] }
         },
         {
           path: 'products',
           name: 'products',
           component: ListView,
-          meta: { requiresAuth: true, role: [ROLE_ADMIN, ROLE_STAFF] } // Explicitly set role for products
+          meta: { requiresAuth: true, role: [ROLE_ADMIN, ROLE_STAFF] }
         },
         {
           path: 'products/new',
           name: 'addProduct',
           component: ProductFormView,
-          meta: { requiresAuth: true, role: [ROLE_ADMIN, ROLE_STAFF] } // Explicitly set role for adding products
+          meta: { requiresAuth: true, role: [ROLE_ADMIN, ROLE_STAFF] }
         },
         {
           path: 'products/edit/:id',
           name: 'editProduct',
           component: ProductFormView,
-          meta: { requiresAuth: true, role: [ROLE_ADMIN, ROLE_STAFF] } // Explicitly set role for editing products
+          meta: { requiresAuth: true, role: [ROLE_ADMIN, ROLE_STAFF] }
         },
 
         {
           path: 'orders',
           name: 'adminOrders',
           component: OrderListView,
-          meta: { requiresAuth: true, role: [ROLE_ADMIN, ROLE_STAFF] } // Explicitly set role for orders
+          meta: { requiresAuth: true, role: [ROLE_ADMIN, ROLE_STAFF] }
         },
         {
           path: 'orders/:id',
@@ -141,18 +141,18 @@ export const router = createRouter({
           path: 'users',
           name: 'userManagement',
           component: UserListView,
-          meta: { requiresAuth: true, role: [ROLE_ADMIN] } // Explicitly set role for editing products
+          meta: { requiresAuth: true, role: [ROLE_ADMIN] }
         },
         {
           path: 'users/detail/:id',
           name: 'userDetail',
           component: UserDetailView,
-          meta: { requiresAuth: true, role: [ROLE_ADMIN] } // Explicitly set role for editing products
+          meta: { requiresAuth: true, role: [ROLE_ADMIN] }
         }
       ]
     },
     {
-      path: '/:pathMatch(.*)*', // Catch-all route for 404
+      path: '/:pathMatch(.*)*',
       name: 'notFound',
       component: NotFoundView
     }
