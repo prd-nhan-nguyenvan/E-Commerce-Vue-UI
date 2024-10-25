@@ -47,6 +47,7 @@
       <span class="me-3 fw-bold">Subtotal ({{ countItems }} items):</span>
       <span class="h4 text-primary">{{ formatCurrency(String(cartTotal)) }}</span>
     </div>
+    <slot></slot>
   </div>
 </template>
 
