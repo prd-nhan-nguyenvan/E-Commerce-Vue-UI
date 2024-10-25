@@ -44,37 +44,40 @@ export const router = createRouter({
 
     {
       path: '/user',
-      name: 'user',
-      component: ProfileView,
       meta: { requiresAuth: true, role: ALL_ROLE },
       children: [
         {
-          path: '/profile',
+          path: '',
+          name: 'user',
+          redirect: { name: 'profile' }
+        },
+        {
+          path: 'profile',
           name: 'profile',
           component: ProfileView,
           meta: { requiresAuth: true, role: ALL_ROLE }
         },
         {
-          path: '/password/change',
+          path: 'password/change',
           name: 'changePassword',
           component: ChangePasswordView,
           meta: { requiresAuth: true, role: ALL_ROLE }
         },
 
         {
-          path: '/cart',
+          path: 'cart',
           name: 'cart',
           component: CartView,
           meta: { requiresAuth: true, role: ALL_ROLE }
         },
         {
-          path: '/checkout',
+          path: 'checkout',
           name: 'checkout',
           component: CheckoutView,
           meta: { requiresAuth: true, role: ALL_ROLE }
         },
         {
-          path: '/orders',
+          path: 'orders',
           name: 'orders',
           component: OrderView
         }
