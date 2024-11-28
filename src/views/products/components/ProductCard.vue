@@ -14,7 +14,7 @@
       </div>
     </router-link>
     <div class="card-body d-flex flex-column">
-      <h5 class="card-title">{{ product.name }}</h5>
+      <h5 class="card-title text-truncate">{{ product.name }}</h5>
       <div class="d-flex flex-row align-items-center" v-if="product.on_sell">
         <h5 class="mb-1 me-2 text-success">{{ formatCurrency(Number(product.sell_price)) }}</h5>
         <span class="text-muted"
@@ -71,7 +71,7 @@ const handleAddToCard = (product: EnhancedProduct) => {
 }
 
 .card-img-top {
-  object-fit: cover;
+  object-fit: contain;
   width: 100%;
   height: 100%;
 }

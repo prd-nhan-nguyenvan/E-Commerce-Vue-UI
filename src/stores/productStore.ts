@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 
+import { convertProductToEnhanced } from '@/helpers'
 import {
   addNewProduct,
   bulkImportProduct as apiBulkImportProduct,
@@ -7,6 +8,7 @@ import {
   getAllProducts as apiFetchProducts,
   getProductById as apiGetProductById,
   getProductBySlug as apiGetProductBySlug,
+  getSimilarProducts as apiGetSimilarProducts,
   productSearch as apiSearchProducts,
   updateProduct as apiUpdateProduct
 } from '@/services/product.service'
@@ -14,7 +16,6 @@ import {
 import type { Product } from '@/services/api'
 import type { EnhancedProduct } from '@/services/product.service'
 import type { ProductListState } from '@/stores/types'
-
 export const useProductStore = defineStore('product', {
   state: (): ProductListState => ({
     products: [],
@@ -22,16 +23,21 @@ export const useProductStore = defineStore('product', {
     next: null,
     previous: null,
     selectedProduct: null,
+    similarProducts: [],
+    selectedCategory: null,
     loading: false,
     error: null
   }),
   actions: {
-    async fetchProducts(limit = 10, offset = 0) {
+    async fetchProducts(limit = 10, offset = 0, category = '') {
       this.loading = true
       this.error = null
 
       try {
-        const response = await apiFetchProducts({ limit, offset })
+        if (category === '') {
+          category = this.selectedCategory || ''
+        }
+        const response = await apiFetchProducts({ limit, offset, category })
 
         this.products = response.results
         this.count = response.count
@@ -44,23 +50,42 @@ export const useProductStore = defineStore('product', {
         this.loading = false
       }
     },
+    async loadMore(limit = 10, offset = 0, category = '') {
+      this.loading = true
+      this.error = null
 
-    async searchProducts(query: any) {
+      try {
+        if (category === '') {
+          category = this.selectedCategory || ''
+        }
+        const response = await apiFetchProducts({ limit, offset, category })
+
+        this.products = [...this.products, ...response.results]
+
+        this.count = response.count
+        this.next = response.next
+        this.previous = response.previous
+      } catch (error) {
+        this.error = 'Failed to load products'
+        console.error('Error fetching products:', error)
+      } finally {
+        this.loading = false
+      }
+    },
+    async fetchProductsByCategory(category: number) {
+      this.selectedCategory = String(category)
+      await this.fetchProducts(10, 0, String(category))
+    },
+
+    async searchProducts(query: { q: string; limit?: number; offset?: number }) {
       this.loading = true
       this.error = null
 
       try {
         const response = await apiSearchProducts(query)
-        this.products = response.results
-          .map((product: Product) => {
-            if (typeof product.id === 'number' && typeof product.slug === 'string') {
-              return {
-                ...product
-              }
-            }
-            return undefined
-          })
-          .filter((product): product is EnhancedProduct => product !== undefined)
+        this.products = response.results.map((product: Product) =>
+          convertProductToEnhanced(product)
+        )
         this.count = response.count
         this.next = response.next
         this.previous = response.previous
@@ -79,7 +104,6 @@ export const useProductStore = defineStore('product', {
       }
     },
 
-    // Add a function to load the previous page of products
     async loadPreviousPage() {
       if (this.previous) {
         const offset = new URL(this.previous).searchParams.get('offset') || '0'
@@ -152,16 +176,14 @@ export const useProductStore = defineStore('product', {
 
       try {
         const tempt = this.products.find((product) => product.slug === slug)
-        if (tempt) {
-          this.selectedProduct = tempt
-        } else {
-          const response = await apiGetProductBySlug(slug)
-          this.selectedProduct = {
-            id: response.id || 0,
-            slug: response.slug || '',
-            ...response
-          }
-        }
+        this.selectedProduct = convertProductToEnhanced(tempt || (await apiGetProductBySlug(slug)))
+
+        const similarProducts = await apiGetSimilarProducts(this.selectedProduct.id)
+        console.log('🚀 ~ getProductBySlug ~ similarProducts:', similarProducts)
+        this.similarProducts = similarProducts.results.map((product) =>
+          convertProductToEnhanced(product)
+        )
+
         return this.selectedProduct
       } catch (error) {
         this.error = 'Failed to load product'
@@ -176,12 +198,7 @@ export const useProductStore = defineStore('product', {
 
       try {
         const response = await apiUpdateProduct(product)
-        const index = this.products.findIndex((item) => item.id === response.id)
-        this.products[index] = {
-          id: response.id || 0,
-          slug: response.slug || '',
-          ...response
-        }
+        const index = this.products.findIndex((p) => p.id === response.id)
         this.selectedProduct = this.products[index]
         return this.selectedProduct
       } catch (error) {
@@ -206,12 +223,14 @@ export const useProductStore = defineStore('product', {
       }
     },
 
-    // Reset the state
     resetState() {
       this.products = []
       this.selectedProduct = null
       this.loading = false
       this.error = null
+    },
+    setCategory(category: string): void {
+      this.selectedCategory = category
     }
   }
 })

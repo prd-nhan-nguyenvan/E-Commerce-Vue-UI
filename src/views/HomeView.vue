@@ -1,15 +1,11 @@
 <template>
   <div class="container my-5">
-    <HeroSection />
-    <!-- System Message -->
-    <div v-if="message" class="alert alert-warning text-center" role="alert">
-      {{ message }}
-    </div>
-
-    <!-- Featured Products -->
+    <HeroSection @search="searchProduct"></HeroSection>
+    <!-- Category section -->
+    <CategorySection></CategorySection>
+    <!-- Product -->
     <div class="featured-products my-5">
-      <h2 class="text-center">Featured Products</h2>
-      <ProductListView></ProductListView>
+      <ProductListView :category="category"></ProductListView>
     </div>
 
     <!-- Testimonials -->
@@ -34,11 +30,27 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import HeroSection from '@/components/HeroSection.vue'
+import HeroSection from '@/components/home/HeroSection.vue'
 import ProductListView from './products/ListView.vue'
-import { useSystemMessageStore } from '@/stores'
+import { useProductStore } from '@/stores'
+import CategorySection from '@/components/home/CategorySection.vue'
+import { onMounted, onUpdated, ref } from 'vue'
 
-const systemMessageStore = useSystemMessageStore()
-const message = computed(() => systemMessageStore.message)
+const productStore = useProductStore()
+
+const category = ref('')
+
+const searchProduct = async (searchText: string) => {
+  if (!searchText.trim()) {
+    return
+  }
+  const query: { q: string; limit?: number; offset?: number } = {
+    q: searchText.trim()
+  }
+  await productStore.searchProducts(query)
+}
+
+onMounted(async () => {
+  await productStore.setCategory('')
+})
 </script>

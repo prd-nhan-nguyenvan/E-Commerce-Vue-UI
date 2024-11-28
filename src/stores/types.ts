@@ -9,6 +9,8 @@ export interface ProductListState {
   next: string | null | undefined
   previous: string | null | undefined
   selectedProduct: EnhancedProduct | null
+  selectedCategory: string | null
+  similarProducts: EnhancedProduct[]
   loading: boolean
   error: string | null
 }
@@ -36,6 +38,7 @@ export interface authState {
 
 export interface CategoryState {
   categories: Category[]
-  loading: boolean
   error: string | null
+  isInitialFetch: boolean
+  loading: boolean
 }

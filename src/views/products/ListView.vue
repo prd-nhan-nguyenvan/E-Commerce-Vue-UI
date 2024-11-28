@@ -3,7 +3,7 @@
   <div class="container py-5">
     <div class="row">
       <div class="col-12 text-center mb-4">
-        <h1 class="display-4">Our Products</h1>
+        <h1 class="display-4">{{ category ? category : 'Our Products' }}</h1>
         <p class="lead">Browse through our exclusive collection</p>
       </div>
     </div>
@@ -16,22 +16,72 @@
         <ProductCard :product="product" />
       </div>
     </div>
+
+    <div ref="sentinel" class="sentinel"></div>
   </div>
 </template>
 <script setup lang="ts">
 import { useCategoryStore, useProductStore } from '@/stores'
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import ProductCard from '@/views/products/components/ProductCard.vue'
+
+defineProps<{
+  category?: string
+}>()
 
 const productStore = useProductStore()
 const categoryStore = useCategoryStore()
 
 const products = computed(() => productStore.products)
+const currentPage = ref(1)
+const pageSize = 20
 
-onMounted(() => {
-  productStore.fetchProducts()
+const loadMore = async () => {
+  currentPage.value++
+  await productStore.loadMore(pageSize, currentPage.value * pageSize)
+}
 
-  categoryStore.fetchCategories()
+onMounted(async () => {
+  await productStore.fetchProducts(pageSize, 0)
+  await categoryStore.fetchCategories()
+
+  const sentinel = document.querySelector('.sentinel')
+  const observer = new IntersectionObserver(
+    async (entries) => {
+      if (entries[0].isIntersecting) {
+        await loadMore()
+      }
+    },
+    {
+      root: null,
+      rootMargin: '0px',
+      threshold: 1.0
+    }
+  )
+
+  if (sentinel) {
+    observer.observe(sentinel)
+  }
+})
+
+onUnmounted(() => {
+  const sentinel = document.querySelector('.sentinel')
+  const observer = new IntersectionObserver(
+    async (entries) => {
+      if (entries[0].isIntersecting) {
+        await loadMore()
+      }
+    },
+    {
+      root: null,
+      rootMargin: '0px',
+      threshold: 1.0
+    }
+  )
+
+  if (sentinel) {
+    observer.unobserve(sentinel)
+  }
 })
 </script>
 
@@ -40,5 +90,9 @@ onMounted(() => {
   transform: translateY(-5px);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease-in-out;
+}
+.sentinel {
+  height: 1px;
+  width: 300px;
 }
 </style>
