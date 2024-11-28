@@ -8,7 +8,7 @@
               ? product.image
               : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRdD7G7FFg1UKZFXhyP45b4AvY-qKEFvfjj3w&s'
           "
-          class="img-fluid rounded shadow-sm"
+          class="img-fluid rounded shadow-sm product-image"
           alt=""
         />
       </div>
@@ -134,3 +134,11 @@ watch(
   }
 )
 </script>
+
+<style scoped>
+.product-image {
+  object-fit: contain;
+  width: 500px;
+  height: 100%;
+}
+</style>
