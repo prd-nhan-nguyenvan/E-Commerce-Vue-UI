@@ -139,6 +139,21 @@ export interface Order {
    */
   address?: string
   items?: OrderItem[]
+  /**
+   * Created at
+   * @format date-time
+   */
+  created_at?: string
+  /**
+   * Updated at
+   * @format date-time
+   */
+  updated_at?: string
+}
+
+export interface OrderStatusUpdate {
+  /** Status */
+  status?: 'pd' | 'sb' | 'pr' | 'de' | 'cp' | 'df' | 'cn'
 }
 
 export interface AddOrderItem {
@@ -149,11 +164,6 @@ export interface AddOrderItem {
    * @min 1
    */
   quantity: number
-}
-
-export interface OrderStatusUpdate {
-  /** Status */
-  status?: 'pd' | 'sb' | 'pr' | 'de' | 'cp' | 'df' | 'cn'
 }
 
 export interface Category {
@@ -193,7 +203,7 @@ export interface Product {
   /**
    * Slug
    * @format slug
-   * @maxLength 50
+   * @maxLength 255
    * @pattern ^[-a-zA-Z0-9_]+$
    */
   slug?: string
@@ -343,16 +353,16 @@ export interface UserProfile {
   username?: string
   /**
    * First name
-   * @maxLength 30
+   * @minLength 1
    */
-  first_name?: string
+  first_name: string
   /**
    * Last name
-   * @maxLength 30
+   * @minLength 1
    */
-  last_name?: string
+  last_name: string
   /** Bio */
-  bio?: string
+  bio?: string | null
   /**
    * Profile picture
    * @format uri
@@ -776,6 +786,28 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
+     * @description Empty the cart
+     *
+     * @tags Cart
+     * @name CartsEmptyDelete
+     * @request DELETE:/carts/empty/
+     * @secure
+     */
+    cartsEmptyDelete: (params: RequestParams = {}) =>
+      this.request<
+        void,
+        {
+          /** @example "Authentication credentials were not provided." */
+          detail?: string
+        }
+      >({
+        path: `/carts/empty/`,
+        method: 'DELETE',
+        secure: true,
+        ...params
+      }),
+
+    /**
      * @description Add an item to the cart
      *
      * @tags Cart
@@ -914,8 +946,135 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     ordersCreate: (data: Order, params: RequestParams = {}) =>
-      this.request<Order, any>({
+      this.request<Order, void>({
         path: `/orders/`,
+        method: 'POST',
+        body: data,
+        secure: true,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Order
+     * @name OrdersAdminListsList
+     * @request GET:/orders/admin/lists/
+     * @secure
+     */
+    ordersAdminListsList: (
+      query?: {
+        /** Number of results to return per page. */
+        limit?: number
+        /** The initial index from which to return the results. */
+        offset?: number
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<
+        {
+          count: number
+          /** @format uri */
+          next?: string | null
+          /** @format uri */
+          previous?: string | null
+          results: Order[]
+        },
+        any
+      >({
+        path: `/orders/admin/lists/`,
+        method: 'GET',
+        query: query,
+        secure: true,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Order
+     * @name OrdersAdminListsRead
+     * @request GET:/orders/admin/lists/{id}/
+     * @secure
+     */
+    ordersAdminListsRead: (id: number, params: RequestParams = {}) =>
+      this.request<Order, any>({
+        path: `/orders/admin/lists/${id}/`,
+        method: 'GET',
+        secure: true,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Order
+     * @name OrdersAdminListsUpdate
+     * @request PUT:/orders/admin/lists/{id}/
+     * @secure
+     */
+    ordersAdminListsUpdate: (id: number, data: Order, params: RequestParams = {}) =>
+      this.request<Order, any>({
+        path: `/orders/admin/lists/${id}/`,
+        method: 'PUT',
+        body: data,
+        secure: true,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Order
+     * @name OrdersAdminListsPartialUpdate
+     * @request PATCH:/orders/admin/lists/{id}/
+     * @secure
+     */
+    ordersAdminListsPartialUpdate: (id: number, data: Order, params: RequestParams = {}) =>
+      this.request<Order, any>({
+        path: `/orders/admin/lists/${id}/`,
+        method: 'PATCH',
+        body: data,
+        secure: true,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Order
+     * @name OrdersAdminListsDelete
+     * @request DELETE:/orders/admin/lists/{id}/
+     * @secure
+     */
+    ordersAdminListsDelete: (id: number, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/orders/admin/lists/${id}/`,
+        method: 'DELETE',
+        secure: true,
+        ...params
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Order
+     * @name OrdersAdminListsUpdateStatusCreate
+     * @request POST:/orders/admin/lists/{order_id}/update-status/
+     * @secure
+     */
+    ordersAdminListsUpdateStatusCreate: (
+      orderId: string,
+      data: OrderStatusUpdate,
+      params: RequestParams = {}
+    ) =>
+      this.request<OrderStatusUpdate, any>({
+        path: `/orders/admin/lists/${orderId}/update-status/`,
         method: 'POST',
         body: data,
         secure: true,
@@ -1045,7 +1204,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'POST',
         body: data,
         secure: true,
-        type: ContentType.Json,
         format: 'json',
         ...params
       })
@@ -1235,7 +1393,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         name: string
         /**
          * @format slug
-         * @maxLength 50
+         * @maxLength 255
          * @pattern ^[-a-zA-Z0-9_]+$
          */
         slug?: string
@@ -1339,7 +1497,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * No description
+     * @description Retrieve product details.
      *
      * @tags Products
      * @name ProductsProductsRead
@@ -1357,7 +1515,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * No description
+     * @description Update product details.
      *
      * @tags Products
      * @name ProductsProductsUpdate
@@ -1375,7 +1533,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         name: string
         /**
          * @format slug
-         * @maxLength 50
+         * @maxLength 255
          * @pattern ^[-a-zA-Z0-9_]+$
          */
         slug?: string
@@ -1407,7 +1565,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * No description
+     * @description Partially update product details.
      *
      * @tags Products
      * @name ProductsProductsPartialUpdate
@@ -1425,7 +1583,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         name: string
         /**
          * @format slug
-         * @maxLength 50
+         * @maxLength 255
          * @pattern ^[-a-zA-Z0-9_]+$
          */
         slug?: string
@@ -1457,7 +1615,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * No description
+     * @description Delete a product.
      *
      * @tags Products
      * @name ProductsProductsDelete
@@ -1680,11 +1838,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     usersProfileUpdate: (
       data: {
-        /** @maxLength 30 */
-        first_name?: string
-        /** @maxLength 30 */
-        last_name?: string
-        bio?: string
+        /** @minLength 1 */
+        first_name: string
+        /** @minLength 1 */
+        last_name: string
+        bio?: string | null
         /** @format binary */
         profile_picture?: File | null
         /** @maxLength 15 */
@@ -1713,11 +1871,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      */
     usersProfilePartialUpdate: (
       data: {
-        /** @maxLength 30 */
-        first_name?: string
-        /** @maxLength 30 */
-        last_name?: string
-        bio?: string
+        /** @minLength 1 */
+        first_name: string
+        /** @minLength 1 */
+        last_name: string
+        bio?: string | null
         /** @format binary */
         profile_picture?: File | null
         /** @maxLength 15 */
