@@ -1218,11 +1218,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @secure
      */
     productsCategoriesList: (params: RequestParams = {}) =>
-      this.request<Category[], any>({
+      this.request<void, any>({
         path: `/products/categories/`,
         method: 'GET',
         secure: true,
-        format: 'json',
         ...params
       }),
 
@@ -1240,6 +1239,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         method: 'POST',
         body: data,
         secure: true,
+        type: ContentType.Json,
         format: 'json',
         ...params
       }),
@@ -1269,12 +1269,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request GET:/products/categories/{id}/
      * @secure
      */
-    productsCategoriesRead: (id: number, params: RequestParams = {}) =>
-      this.request<Category, any>({
+    productsCategoriesRead: (id: string, params: RequestParams = {}) =>
+      this.request<void, any>({
         path: `/products/categories/${id}/`,
         method: 'GET',
         secure: true,
-        format: 'json',
         ...params
       }),
 
@@ -1286,31 +1285,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request PUT:/products/categories/{id}/
      * @secure
      */
-    productsCategoriesUpdate: (id: number, data: Category, params: RequestParams = {}) =>
-      this.request<Category, any>({
+    productsCategoriesUpdate: (id: string, params: RequestParams = {}) =>
+      this.request<void, any>({
         path: `/products/categories/${id}/`,
         method: 'PUT',
-        body: data,
         secure: true,
-        format: 'json',
-        ...params
-      }),
-
-    /**
-     * No description
-     *
-     * @tags Categories
-     * @name ProductsCategoriesPartialUpdate
-     * @request PATCH:/products/categories/{id}/
-     * @secure
-     */
-    productsCategoriesPartialUpdate: (id: number, data: Category, params: RequestParams = {}) =>
-      this.request<Category, any>({
-        path: `/products/categories/${id}/`,
-        method: 'PATCH',
-        body: data,
-        secure: true,
-        format: 'json',
         ...params
       }),
 
@@ -1322,7 +1301,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @request DELETE:/products/categories/{id}/
      * @secure
      */
-    productsCategoriesDelete: (id: number, params: RequestParams = {}) =>
+    productsCategoriesDelete: (id: string, params: RequestParams = {}) =>
       this.request<void, any>({
         path: `/products/categories/${id}/`,
         method: 'DELETE',
