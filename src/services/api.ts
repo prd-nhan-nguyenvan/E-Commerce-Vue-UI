@@ -290,6 +290,10 @@ export interface Review {
   updated_at?: string
 }
 
+export interface SuggestionSearchResponse {
+  suggestions: string[]
+}
+
 export interface UserList {
   /** ID */
   id?: number
@@ -1693,18 +1697,29 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   }
   search = {
     /**
-     * No description
+     * @description Get suggestions for search query
      *
-     * @tags search
-     * @name SearchUserList
-     * @request GET:/search/user/
+     * @tags Search
+     * @name SearchSuggest
+     * @summary Get suggestions for search query
+     * @request GET:/search/suggest/
      * @secure
      */
-    searchUserList: (params: RequestParams = {}) =>
-      this.request<void, any>({
-        path: `/search/user/`,
+    searchSuggest: (
+      query?: {
+        /** Search query */
+        query?: string
+        /** Number of suggestions to return */
+        limit?: number
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<SuggestionSearchResponse, void>({
+        path: `/search/suggest/`,
         method: 'GET',
+        query: query,
         secure: true,
+        format: 'json',
         ...params
       })
   }

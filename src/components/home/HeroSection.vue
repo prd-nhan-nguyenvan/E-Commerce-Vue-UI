@@ -17,8 +17,21 @@
               aria-label="Search"
               v-model="searchText"
               @keydown.enter="search"
+              @input="handleInput"
             />
             <button class="btn btn-outline-light btn-lg" @click="search">Search</button>
+          </div>
+          <div class="suggestion-box" v-if="suggestionText.length">
+            <ul class="list-group mt-2">
+              <li
+                class="list-group-item list-group-item-action"
+                v-for="text in suggestionText"
+                :key="text"
+                @click="searchText = text"
+              >
+                {{ text }}
+              </li>
+            </ul>
           </div>
         </div>
       </div>
@@ -28,8 +41,27 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { getSuggestions } from '@/services/search.service'
 
 const searchText = ref('')
+
+const suggestionText = ref<string[]>([])
+
+let timeout: number | undefined
+const handleInput = () => {
+  // Clear previous timeout
+  if (timeout) clearTimeout(timeout)
+
+  // Set a new timeout for 300ms
+  timeout = setTimeout(async () => {
+    const res = await getSuggestions(searchText.value)
+
+    if (res) {
+      suggestionText.value = res.suggestions
+      return
+    }
+  }, 300)
+}
 
 const emit = defineEmits(['search'])
 const search = () => {
