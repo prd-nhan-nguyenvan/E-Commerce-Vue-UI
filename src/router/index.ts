@@ -17,6 +17,8 @@ const CategoryListView = () => import('@/views/admin/category/ListView.vue')
 const DetailView = () => import('@/views/products/DetailView.vue')
 const ListView = () => import('@/views/admin/product/ListView.vue')
 const ProductFormView = () => import('@/views/admin/product/DetailView.vue')
+const OrderListView = () => import('@/views/admin/order/ListView.vue')
+const OrderDetailView = () => import('@/views/admin/order/DetailView.vue')
 
 const UserDetailView = () => import('@/views/admin/user/DetailView.vue')
 const UserListView = () => import('@/views/admin/user/ListView.vue')
@@ -24,6 +26,8 @@ const UserListView = () => import('@/views/admin/user/ListView.vue')
 const CartView = () => import('@/views/user/CartView.vue')
 const CheckoutView = () => import('@/views/user/CheckoutView.vue')
 const OrderView = () => import('@/views/user/OrderView.vue')
+
+const NotFoundView = () => import('@/views/NotFoundView.vue')
 
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -79,7 +83,8 @@ export const router = createRouter({
         {
           path: 'orders',
           name: 'orders',
-          component: OrderView
+          component: OrderView,
+          meta: { requiresAuth: true, role: ALL_ROLE }
         }
       ]
     },
@@ -92,45 +97,64 @@ export const router = createRouter({
           name: 'admin',
           path: '',
           component: DashboardView,
-          meta: { requiresAuth: true, role: [ROLE_ADMIN, ROLE_STAFF] } // Explicitly set role for admin
+          meta: { requiresAuth: true, role: [ROLE_ADMIN, ROLE_STAFF] }
         },
         {
           path: 'categories',
           name: 'categories',
           component: CategoryListView,
-          meta: { requiresAuth: true, role: [ROLE_ADMIN, ROLE_STAFF] } // Explicitly set role for categories
+          meta: { requiresAuth: true, role: [ROLE_ADMIN, ROLE_STAFF] }
         },
         {
           path: 'products',
           name: 'products',
           component: ListView,
-          meta: { requiresAuth: true, role: [ROLE_ADMIN, ROLE_STAFF] } // Explicitly set role for products
+          meta: { requiresAuth: true, role: [ROLE_ADMIN, ROLE_STAFF] }
         },
         {
           path: 'products/new',
           name: 'addProduct',
           component: ProductFormView,
-          meta: { requiresAuth: true, role: [ROLE_ADMIN, ROLE_STAFF] } // Explicitly set role for adding products
+          meta: { requiresAuth: true, role: [ROLE_ADMIN, ROLE_STAFF] }
         },
         {
           path: 'products/edit/:id',
           name: 'editProduct',
           component: ProductFormView,
-          meta: { requiresAuth: true, role: [ROLE_ADMIN, ROLE_STAFF] } // Explicitly set role for editing products
+          meta: { requiresAuth: true, role: [ROLE_ADMIN, ROLE_STAFF] }
         },
+
+        {
+          path: 'orders',
+          name: 'adminOrders',
+          component: OrderListView,
+          meta: { requiresAuth: true, role: [ROLE_ADMIN, ROLE_STAFF] }
+        },
+        {
+          path: 'orders/:id',
+          name: 'orderDetail',
+          component: OrderDetailView,
+          meta: { requiresAuth: true, role: ALL_ROLE }
+        },
+
         {
           path: 'users',
           name: 'userManagement',
           component: UserListView,
-          meta: { requiresAuth: true, role: [ROLE_ADMIN] } // Explicitly set role for editing products
+          meta: { requiresAuth: true, role: [ROLE_ADMIN] }
         },
         {
           path: 'users/detail/:id',
           name: 'userDetail',
           component: UserDetailView,
-          meta: { requiresAuth: true, role: [ROLE_ADMIN] } // Explicitly set role for editing products
+          meta: { requiresAuth: true, role: [ROLE_ADMIN] }
         }
       ]
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'notFound',
+      component: NotFoundView
     }
   ]
 })

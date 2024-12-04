@@ -19,6 +19,7 @@
         <NavbarItem routeName="categories" label="Category" :roles="ADMIN_STAFF_ROLE" />
         <NavbarItem routeName="products" label="Product" :roles="ADMIN_STAFF_ROLE" />
         <NavbarItem routeName="userManagement" label="User" :roles="[ROLE_ADMIN]" />
+        <NavbarItem routeName="adminOrders" label="Order" :roles="[ROLE_ADMIN]" />
       </ul>
       <NavbarAvatar />
     </div>
