@@ -24,12 +24,12 @@ export interface ProductFile {
 
 // Fetch all products
 export const getAllProducts = async (query: {
-  category?: string
-  price?: string
-  ordering?: string
-  search?: string
   limit?: number
   offset?: number
+  category?: number
+  price?: number
+  name?: string
+  description?: string
 }): Promise<any> => {
   try {
     const response = await api.products.productsProductsList(query)
@@ -141,7 +141,7 @@ export const getAllCategories = async () => {
   }
 }
 
-export const getCategoryById = async (id: number) => {
+export const getCategoryById = async (id: string) => {
   try {
     const response = await api.products.productsCategoriesRead(id)
     return response.data
@@ -165,7 +165,7 @@ export const addNewCategory = async (category: Category) => {
   }
 }
 
-export const updateCategory = async (categoryId: number, category: Category) => {
+export const updateCategory = async (categoryId: string, category: Category) => {
   try {
     const response = await api.products.productsCategoriesUpdate(categoryId, category, {
       headers: {
@@ -179,7 +179,7 @@ export const updateCategory = async (categoryId: number, category: Category) => 
   }
 }
 
-export const deleteCategory = async (categoryId: number) => {
+export const deleteCategory = async (categoryId: string) => {
   try {
     const response = await api.products.productsCategoriesDelete(categoryId)
     return response.data

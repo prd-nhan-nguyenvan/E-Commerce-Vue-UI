@@ -189,6 +189,22 @@ export interface Category {
   description?: string | null
 }
 
+export interface PaginatedCategory {
+  /** Count */
+  count: number
+  /**
+   * Next
+   * @minLength 1
+   */
+  next: string
+  /**
+   * Previous
+   * @minLength 1
+   */
+  previous: string
+  results: Category[]
+}
+
 export interface Product {
   /** ID */
   id?: number
@@ -319,6 +335,16 @@ export interface UserList {
    * @format date-time
    */
   date_joined?: string
+}
+
+export interface PaginationUserList {
+  /** Count */
+  count: number
+  /** Next */
+  next: string
+  /** Previous */
+  previous: string
+  results: UserList[]
 }
 
 export interface ChangePassword {
@@ -676,10 +702,11 @@ export class HttpClient<SecurityDataType = unknown> {
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
   auth = {
     /**
-     * No description
+     * @description Authenticate a user and return access and refresh tokens.
      *
-     * @tags auth
+     * @tags Authentication
      * @name AuthLoginCreate
+     * @summary User Login
      * @request POST:/auth/login/
      * @secure
      */
@@ -695,15 +722,16 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * No description
+     * @description Revoke access and refresh tokens for the authenticated user, logging them out.
      *
-     * @tags auth
+     * @tags Authentication
      * @name AuthLogoutCreate
+     * @summary Logout
      * @request POST:/auth/logout/
      * @secure
      */
     authLogoutCreate: (params: RequestParams = {}) =>
-      this.request<void, any>({
+      this.request<void, void>({
         path: `/auth/logout/`,
         method: 'POST',
         secure: true,
@@ -711,33 +739,34 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * No description
+     * @description Register a new user account.
      *
-     * @tags auth
+     * @tags Authentication
      * @name AuthRegisterCreate
+     * @summary Register User
      * @request POST:/auth/register/
      * @secure
      */
     authRegisterCreate: (data: Register, params: RequestParams = {}) =>
-      this.request<Register, any>({
+      this.request<void, void>({
         path: `/auth/register/`,
         method: 'POST',
         body: data,
         secure: true,
-        format: 'json',
         ...params
       }),
 
     /**
-     * No description
+     * @description Allows admin users to create staff accounts.
      *
-     * @tags auth
+     * @tags Authentication
      * @name AuthRegisterStaffCreate
+     * @summary Create Staff Account
      * @request POST:/auth/register/staff/
      * @secure
      */
     authRegisterStaffCreate: (data: Register, params: RequestParams = {}) =>
-      this.request<Register, any>({
+      this.request<void, void>({
         path: `/auth/register/staff/`,
         method: 'POST',
         body: data,
@@ -747,15 +776,16 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * No description
+     * @description Provide a refresh token to generate a new access token. The refresh token remains valid for its lifetime.
      *
-     * @tags auth
+     * @tags Authentication
      * @name AuthTokenRefreshCreate
+     * @summary Refresh Access Token
      * @request POST:/auth/token/refresh/
      * @secure
      */
     authTokenRefreshCreate: (data: RefreshToken, params: RequestParams = {}) =>
-      this.request<RefreshToken, any>({
+      this.request<LoginResponse, void>({
         path: `/auth/token/refresh/`,
         method: 'POST',
         body: data,
@@ -1214,36 +1244,53 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   }
   products = {
     /**
-     * No description
+     * @description Returns a paginated list of all categories available in the system.
      *
      * @tags Categories
      * @name ProductsCategoriesList
+     * @summary Retrieve all categories
      * @request GET:/products/categories/
      * @secure
      */
-    productsCategoriesList: (params: RequestParams = {}) =>
-      this.request<void, any>({
+    productsCategoriesList: (
+      query?: {
+        /**
+         * Number of items to retrieve per page
+         * @default 10
+         */
+        limit?: number
+        /**
+         * Starting position of items to retrieve
+         * @default 0
+         */
+        offset?: number
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<PaginatedCategory, void>({
         path: `/products/categories/`,
         method: 'GET',
+        query: query,
         secure: true,
+        format: 'json',
         ...params
       }),
 
     /**
-     * No description
+     * @description Allows admin or staff to create a new category.
      *
      * @tags Categories
      * @name ProductsCategoriesCreate
+     * @summary Create a new category
      * @request POST:/products/categories/
      * @secure
      */
     productsCategoriesCreate: (data: Category, params: RequestParams = {}) =>
-      this.request<Category, any>({
+      this.request<Category, void>({
         path: `/products/categories/`,
         method: 'POST',
         body: data,
         secure: true,
-        type: ContentType.Json,
         format: 'json',
         ...params
       }),
@@ -1266,47 +1313,72 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * No description
+     * @description Fetch details of a category by its primary key (id).
      *
      * @tags Categories
      * @name ProductsCategoriesRead
+     * @summary Retrieve a specific category
      * @request GET:/products/categories/{id}/
      * @secure
      */
     productsCategoriesRead: (id: string, params: RequestParams = {}) =>
-      this.request<void, any>({
+      this.request<Category, void>({
         path: `/products/categories/${id}/`,
         method: 'GET',
         secure: true,
+        format: 'json',
         ...params
       }),
 
     /**
-     * No description
+     * @description Fully update an existing category using its primary key (PUT).
      *
      * @tags Categories
      * @name ProductsCategoriesUpdate
+     * @summary Fully update a category
      * @request PUT:/products/categories/{id}/
      * @secure
      */
-    productsCategoriesUpdate: (id: string, params: RequestParams = {}) =>
-      this.request<void, any>({
+    productsCategoriesUpdate: (id: string, data: Category, params: RequestParams = {}) =>
+      this.request<Category, void>({
         path: `/products/categories/${id}/`,
         method: 'PUT',
+        body: data,
         secure: true,
+        format: 'json',
         ...params
       }),
 
     /**
-     * No description
+     * @description Partially update an existing category using its primary key (PATCH).
+     *
+     * @tags Categories
+     * @name ProductsCategoriesPartialUpdate
+     * @summary Partially update a category
+     * @request PATCH:/products/categories/{id}/
+     * @secure
+     */
+    productsCategoriesPartialUpdate: (id: string, data: Category, params: RequestParams = {}) =>
+      this.request<Category, void>({
+        path: `/products/categories/${id}/`,
+        method: 'PATCH',
+        body: data,
+        secure: true,
+        format: 'json',
+        ...params
+      }),
+
+    /**
+     * @description Delete a category by its primary key (id).
      *
      * @tags Categories
      * @name ProductsCategoriesDelete
+     * @summary Delete a category
      * @request DELETE:/products/categories/{id}/
      * @secure
      */
     productsCategoriesDelete: (id: string, params: RequestParams = {}) =>
-      this.request<void, any>({
+      this.request<void, void>({
         path: `/products/categories/${id}/`,
         method: 'DELETE',
         secure: true,
@@ -1314,41 +1386,26 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * No description
+     * @description Retrieve a paginated list of products with filtering, ordering, and search capabilities.
      *
      * @tags Products
      * @name ProductsProductsList
+     * @summary List products
      * @request GET:/products/products/
      * @secure
      */
     productsProductsList: (
       query?: {
-        /** category */
-        category?: string
-        /** price */
-        price?: string
-        /** Which field to use when ordering the results. */
-        ordering?: string
-        /** A search term. */
-        search?: string
-        /** Number of results to return per page. */
         limit?: number
-        /** The initial index from which to return the results. */
         offset?: number
+        category?: number
+        price?: number
+        name?: string
+        description?: string
       },
       params: RequestParams = {}
     ) =>
-      this.request<
-        {
-          count: number
-          /** @format uri */
-          next?: string | null
-          /** @format uri */
-          previous?: string | null
-          results: Product[]
-        },
-        any
-      >({
+      this.request<Product[], any>({
         path: `/products/products/`,
         method: 'GET',
         query: query,
@@ -1359,10 +1416,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * No description
+     * @description Create a new product in the system.
      *
      * @tags Products
      * @name ProductsProductsCreate
+     * @summary Create a product
      * @request POST:/products/products/
      * @secure
      */
@@ -1397,7 +1455,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {}
     ) =>
-      this.request<Product, any>({
+      this.request<Product, void>({
         path: `/products/products/`,
         method: 'POST',
         body: data,
@@ -1480,15 +1538,16 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description Retrieve product details.
+     * @description Retrieve the details of a specific product by its ID.
      *
      * @tags Products
      * @name ProductsProductsRead
+     * @summary Retrieve product details
      * @request GET:/products/products/{id}/
      * @secure
      */
     productsProductsRead: (id: number, params: RequestParams = {}) =>
-      this.request<Product, any>({
+      this.request<Product, void>({
         path: `/products/products/${id}/`,
         method: 'GET',
         secure: true,
@@ -1498,10 +1557,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description Update product details.
+     * @description Update the details of a product. Includes validation for price and sell price.
      *
      * @tags Products
      * @name ProductsProductsUpdate
+     * @summary Update product details
      * @request PUT:/products/products/{id}/
      * @secure
      */
@@ -1537,7 +1597,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {}
     ) =>
-      this.request<Product, any>({
+      this.request<Product, void>({
         path: `/products/products/${id}/`,
         method: 'PUT',
         body: data,
@@ -1548,10 +1608,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description Partially update product details.
+     * @description Update specific fields of a product.
      *
      * @tags Products
      * @name ProductsProductsPartialUpdate
+     * @summary Partially update product details
      * @request PATCH:/products/products/{id}/
      * @secure
      */
@@ -1587,7 +1648,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {}
     ) =>
-      this.request<Product, any>({
+      this.request<Product, void>({
         path: `/products/products/${id}/`,
         method: 'PATCH',
         body: data,
@@ -1598,15 +1659,16 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * @description Delete a product.
+     * @description Delete a product by its ID. This action is irreversible.
      *
      * @tags Products
      * @name ProductsProductsDelete
+     * @summary Delete a product
      * @request DELETE:/products/products/{id}/
      * @secure
      */
     productsProductsDelete: (id: number, params: RequestParams = {}) =>
-      this.request<void, any>({
+      this.request<void, void>({
         path: `/products/products/${id}/`,
         method: 'DELETE',
         secure: true,
@@ -1725,41 +1787,32 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   }
   users = {
     /**
-     * No description
+     * @description Retrieve a list of all users. Supports filtering by fields like 'email' and 'is_active', searching by 'email' and 'username', and ordering by various fields.
      *
-     * @tags users
+     * @tags User
      * @name UsersList
+     * @summary List All Users
      * @request GET:/users/
      * @secure
      */
     usersList: (
       query?: {
-        /** email */
+        /** Filter by email */
         email?: string
-        /** is_active */
-        is_active?: string
-        /** A search term. */
+        /** Filter by active status */
+        is_active?: boolean
+        /** Search by email or username */
         search?: string
-        /** Which field to use when ordering the results. */
+        /** Order by fields (e.g., '-date_joined') */
         ordering?: string
-        /** Number of results to return per page. */
+        /** Number of results to return per page */
         limit?: number
-        /** The initial index from which to return the results. */
+        /** The initial index from which to return the results */
         offset?: number
       },
       params: RequestParams = {}
     ) =>
-      this.request<
-        {
-          count: number
-          /** @format uri */
-          next?: string | null
-          /** @format uri */
-          previous?: string | null
-          results: UserList[]
-        },
-        any
-      >({
+      this.request<PaginationUserList, void>({
         path: `/users/`,
         method: 'GET',
         query: query,
@@ -1769,51 +1822,35 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * No description
+     * @description Allow authenticated users to change their password. The current password must be provided for verification.
      *
-     * @tags users
-     * @name UsersPasswordChangeUpdate
-     * @request PUT:/users/password/change/
-     * @secure
-     */
-    usersPasswordChangeUpdate: (data: ChangePassword, params: RequestParams = {}) =>
-      this.request<ChangePassword, any>({
-        path: `/users/password/change/`,
-        method: 'PUT',
-        body: data,
-        secure: true,
-        format: 'json',
-        ...params
-      }),
-
-    /**
-     * No description
-     *
-     * @tags users
+     * @tags User
      * @name UsersPasswordChangePartialUpdate
+     * @summary Change Password
      * @request PATCH:/users/password/change/
      * @secure
      */
     usersPasswordChangePartialUpdate: (data: ChangePassword, params: RequestParams = {}) =>
-      this.request<ChangePassword, any>({
+      this.request<void, void>({
         path: `/users/password/change/`,
         method: 'PATCH',
         body: data,
         secure: true,
-        format: 'json',
+        type: ContentType.Json,
         ...params
       }),
 
     /**
-     * No description
+     * @description Retrieve the profile details of the authenticated user.
      *
      * @tags User
      * @name UsersProfileRead
+     * @summary Retrieve User Profile
      * @request GET:/users/profile/
      * @secure
      */
     usersProfileRead: (params: RequestParams = {}) =>
-      this.request<UserProfile, any>({
+      this.request<UserProfile, void>({
         path: `/users/profile/`,
         method: 'GET',
         secure: true,
@@ -1823,10 +1860,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * No description
+     * @description Update the profile details of the authenticated user. Certain fields like 'user' and 'role' are read-only.
      *
      * @tags User
      * @name UsersProfileUpdate
+     * @summary Update User Profile
      * @request PUT:/users/profile/
      * @secure
      */
@@ -1845,21 +1883,21 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {}
     ) =>
-      this.request<UserProfile, any>({
+      this.request<void, void>({
         path: `/users/profile/`,
         method: 'PUT',
         body: data,
         secure: true,
         type: ContentType.FormData,
-        format: 'json',
         ...params
       }),
 
     /**
-     * No description
+     * @description Partially update specific profile fields of the authenticated user.
      *
      * @tags User
      * @name UsersProfilePartialUpdate
+     * @summary Partially Update User Profile
      * @request PATCH:/users/profile/
      * @secure
      */
@@ -1878,26 +1916,26 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       },
       params: RequestParams = {}
     ) =>
-      this.request<UserProfile, any>({
+      this.request<void, void>({
         path: `/users/profile/`,
         method: 'PATCH',
         body: data,
         secure: true,
         type: ContentType.FormData,
-        format: 'json',
         ...params
       }),
 
     /**
-     * No description
+     * @description Retrieve detailed information about a specific user by their ID.
      *
-     * @tags users
+     * @tags User
      * @name UsersRead
+     * @summary Retrieve User Details
      * @request GET:/users/{id}/
      * @secure
      */
     usersRead: (id: number, params: RequestParams = {}) =>
-      this.request<UserDetail, any>({
+      this.request<UserDetail, void>({
         path: `/users/${id}/`,
         method: 'GET',
         secure: true,
@@ -1906,38 +1944,28 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
       }),
 
     /**
-     * No description
+     * @description Update user details. Supports actions like 'block' (deactivate user) and 'unblock' (reactivate user).
      *
-     * @tags users
-     * @name UsersUpdate
-     * @request PUT:/users/{id}/
-     * @secure
-     */
-    usersUpdate: (id: number, data: UserDetail, params: RequestParams = {}) =>
-      this.request<UserDetail, any>({
-        path: `/users/${id}/`,
-        method: 'PUT',
-        body: data,
-        secure: true,
-        format: 'json',
-        ...params
-      }),
-
-    /**
-     * No description
-     *
-     * @tags users
+     * @tags User
      * @name UsersPartialUpdate
+     * @summary Update User Details
      * @request PATCH:/users/{id}/
      * @secure
      */
-    usersPartialUpdate: (id: number, data: UserDetail, params: RequestParams = {}) =>
-      this.request<UserDetail, any>({
+    usersPartialUpdate: (
+      id: number,
+      data: {
+        /** Specify the action: 'block' or 'unblock'. */
+        action: 'block' | 'unblock'
+      },
+      params: RequestParams = {}
+    ) =>
+      this.request<void, void>({
         path: `/users/${id}/`,
         method: 'PATCH',
         body: data,
         secure: true,
-        format: 'json',
+        type: ContentType.Json,
         ...params
       })
   }

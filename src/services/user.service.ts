@@ -1,9 +1,10 @@
-import { api, ContentType, type ChangePassword } from '.'
+import { api, ContentType } from './'
 
+import type { ChangePassword } from './api'
 export interface userProfileUpdateInput {
-  first_name?: string
-  last_name?: string
-  bio?: string
+  first_name: string
+  last_name: string
+  bio?: string | null
   profile_picture?: File | null
   phone_number?: string
   address?: string
@@ -11,7 +12,7 @@ export interface userProfileUpdateInput {
 
 export interface userListQuery {
   email?: string
-  is_active?: string
+  is_active?: boolean
   search?: string
   ordering?: string
   limit?: number
@@ -41,7 +42,7 @@ export const updateProfile = async (profileData: userProfileUpdateInput) => {
 
 export const changePassword = async (changePassData: ChangePassword) => {
   try {
-    const response = await api.users.usersPasswordChangeUpdate(changePassData, {
+    const response = await api.users.usersPasswordChangePartialUpdate(changePassData, {
       headers: {
         'Content-Type': ContentType.Json
       }

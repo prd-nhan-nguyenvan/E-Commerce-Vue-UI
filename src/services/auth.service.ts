@@ -1,4 +1,4 @@
-import { api, ContentType } from '.'
+import { api, ContentType } from './'
 
 import type { Login, Register } from './api'
 
