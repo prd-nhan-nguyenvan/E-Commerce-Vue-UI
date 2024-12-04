@@ -4,24 +4,26 @@ import { ALL_ROLE, ROLE_ADMIN, ROLE_STAFF } from '@/helpers'
 
 import { authGuard } from './authGuard'
 
-const HomeView = () => import('@/views/HomeView.vue')
-const DashboardView = () => import('@/views/DashboardView.vue')
 const CategoryView = () => import('@/views/CategoryView.vue')
+const DashboardView = () => import('@/views/DashboardView.vue')
+const HomeView = () => import('@/views/HomeView.vue')
 
-const LoginView = () => import('@/views/auth/LoginView.vue')
-const SignUpView = () => import('@/views/auth/SignUpView.vue')
-const ProfileView = () => import('@/views/auth/ProfileView.vue')
 const ChangePasswordView = () => import('@/views/auth/ChangePasswordView.vue')
+const LoginView = () => import('@/views/auth/LoginView.vue')
+const ProfileView = () => import('@/views/auth/ProfileView.vue')
+const SignUpView = () => import('@/views/auth/SignUpView.vue')
 
-const ProductFormView = () => import('@/views/admin/product/DetailView.vue')
-const ListView = () => import('@/views/admin/product/ListView.vue')
-const DetailView = () => import('@/views/products/DetailView.vue')
 const CategoryListView = () => import('@/views/admin/category/ListView.vue')
+const DetailView = () => import('@/views/products/DetailView.vue')
+const ListView = () => import('@/views/admin/product/ListView.vue')
+const ProductFormView = () => import('@/views/admin/product/DetailView.vue')
 
-const UserListView = () => import('@/views/admin/user/ListView.vue')
 const UserDetailView = () => import('@/views/admin/user/DetailView.vue')
+const UserListView = () => import('@/views/admin/user/ListView.vue')
 
 const CartView = () => import('@/views/user/CartView.vue')
+const CheckoutView = () => import('@/views/user/CheckoutView.vue')
+const OrderView = () => import('@/views/user/OrderView.vue')
 
 export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -39,24 +41,47 @@ export const router = createRouter({
     },
     { path: '/login', name: 'login', component: LoginView },
     { path: '/signup', name: 'signup', component: SignUpView },
-    {
-      path: '/user/profile',
-      name: 'profile',
-      component: ProfileView,
-      meta: { requiresAuth: true, role: ALL_ROLE }
-    },
-    {
-      path: '/user/password/change',
-      name: 'changePassword',
-      component: ChangePasswordView,
-      meta: { requiresAuth: true, role: ALL_ROLE }
-    },
 
     {
-      path: '/cart',
-      name: 'cart',
-      component: CartView,
-      meta: { requiresAuth: true, role: ALL_ROLE }
+      path: '/user',
+      meta: { requiresAuth: true, role: ALL_ROLE },
+      children: [
+        {
+          path: '',
+          name: 'user',
+          redirect: { name: 'profile' }
+        },
+        {
+          path: 'profile',
+          name: 'profile',
+          component: ProfileView,
+          meta: { requiresAuth: true, role: ALL_ROLE }
+        },
+        {
+          path: 'password/change',
+          name: 'changePassword',
+          component: ChangePasswordView,
+          meta: { requiresAuth: true, role: ALL_ROLE }
+        },
+
+        {
+          path: 'cart',
+          name: 'cart',
+          component: CartView,
+          meta: { requiresAuth: true, role: ALL_ROLE }
+        },
+        {
+          path: 'checkout',
+          name: 'checkout',
+          component: CheckoutView,
+          meta: { requiresAuth: true, role: ALL_ROLE }
+        },
+        {
+          path: 'orders',
+          name: 'orders',
+          component: OrderView
+        }
+      ]
     },
 
     {

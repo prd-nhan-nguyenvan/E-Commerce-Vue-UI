@@ -47,13 +47,14 @@
       <span class="me-3 fw-bold">Subtotal ({{ countItems }} items):</span>
       <span class="h4 text-primary">{{ formatCurrency(String(cartTotal)) }}</span>
     </div>
+    <slot></slot>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useCartStore } from '@/stores'
 import type { CartItem } from '@/stores/types'
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 
 import { formatCurrency } from '@/helpers'
 import Swal from 'sweetalert2'
@@ -94,4 +95,8 @@ const decreaseQuantity = (item: CartItem) => {
 const increaseQuantity = (item: CartItem) => {
   cartStore.updateQuantity(item.id, item.quantity + 1)
 }
+
+onMounted(async () => {
+  await cartStore.fetchCart()
+})
 </script>

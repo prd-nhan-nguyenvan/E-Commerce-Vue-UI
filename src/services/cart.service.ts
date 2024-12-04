@@ -1,5 +1,6 @@
-import { api, type AddToCart } from '.'
+import { api } from './'
 
+import type { AddToCart } from '.'
 export const addToCart = async (addToCartData: AddToCart) => {
   try {
     const response = await api.carts.cartsItemsCreate(addToCartData)
@@ -37,5 +38,14 @@ export const removeFromCart = async (productId: string) => {
   } catch (error) {
     console.error('Failed to remove from cart:', error)
     throw new Error('Failed to remove from cart')
+  }
+}
+export const clearCart = async () => {
+  try {
+    const response = await api.carts.cartsEmptyDelete()
+    return response.data
+  } catch (error) {
+    console.error('Failed to clear cart:', error)
+    throw new Error('Failed to clear cart')
   }
 }

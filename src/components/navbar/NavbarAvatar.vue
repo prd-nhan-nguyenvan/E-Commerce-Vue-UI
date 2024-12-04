@@ -39,6 +39,9 @@
         <li>
           <router-link class="dropdown-item" :to="{ name: 'profile' }">Profile</router-link>
         </li>
+        <li>
+          <router-link class="dropdown-item" :to="{ name: 'orders' }">My Orders</router-link>
+        </li>
         <li><hr class="dropdown-divider" /></li>
         <li>
           <button @click="logout" class="dropdown-item">Logout</button>

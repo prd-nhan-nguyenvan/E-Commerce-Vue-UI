@@ -2,15 +2,10 @@ import { defineStore } from 'pinia'
 
 import { convertProductToEnhanced } from '@/helpers'
 import {
-  addNewProduct,
-  bulkImportProduct as apiBulkImportProduct,
-  deleteProduct as apiDeleteProduct,
-  getAllProducts as apiFetchProducts,
-  getProductById as apiGetProductById,
-  getProductBySlug as apiGetProductBySlug,
-  getSimilarProducts as apiGetSimilarProducts,
-  productSearch as apiSearchProducts,
-  updateProduct as apiUpdateProduct
+    addNewProduct, bulkImportProduct as apiBulkImportProduct, deleteProduct as apiDeleteProduct,
+    getAllProducts as apiFetchProducts, getProductById as apiGetProductById,
+    getProductBySlug as apiGetProductBySlug, getSimilarProducts as apiGetSimilarProducts,
+    productSearch as apiSearchProducts, updateProduct as apiUpdateProduct
 } from '@/services/product.service'
 
 import type { Product } from '@/services/api'
@@ -156,11 +151,7 @@ export const useProductStore = defineStore('product', {
           this.selectedProduct = tempt
         } else {
           const response = await apiGetProductById(productId)
-          this.selectedProduct = {
-            id: response.id || 0,
-            slug: response.slug || '',
-            ...response
-          }
+          this.selectedProduct = convertProductToEnhanced(response)
         }
         return this.selectedProduct
       } catch (error) {

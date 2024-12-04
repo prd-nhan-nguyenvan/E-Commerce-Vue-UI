@@ -25,7 +25,7 @@ export const useCategoryStore = defineStore('category', {
 
       try {
         const response = await getAllCategories()
-        this.categories = response
+        this.categories = response.results
       } catch (error) {
         this.error = 'Failed to load categories'
         console.error('Error fetching categories:', error)

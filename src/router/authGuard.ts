@@ -1,4 +1,5 @@
-import { useSystemMessageStore, useAuthStore } from '@/stores'
+import { useAuthStore, useSystemMessageStore } from '@/stores'
+
 import type { RouteLocationNormalized, NavigationGuardNext } from 'vue-router'
 
 export const authGuard = async (
@@ -11,11 +12,11 @@ export const authGuard = async (
 
   const userRole = authStore.user?.role
   if (to.matched.some((record) => record.meta.requiresAuth)) {
-    if (!authStore.isAuthenticated) {
+    const isAuth = await authStore.isAuthenticated
+    if (isAuth === false) {
       systemMessageStore.setMessage(
         `You must log in to access ${to.name?.toString().toUpperCase()} page!!!`
       )
-
       next(to.fullPath ? { name: 'login', query: { next: to.fullPath } } : { name: 'login' })
     } else {
       const allowedRoles: string[] = Array.isArray(to.meta.role) ? to.meta.role : []

@@ -23,6 +23,7 @@
     "@typescript-eslint/utils": "^8.11.0",
     "bootstrap": "^5.3.3",
     "pinia": "^2.2.4",
+    "pinia-plugin-persistedstate": "^4.1.2",
     "sweetalert2": "^11.14.4",
     "vue": "^3.5.12",
     "vue-router": "^4.4.5"
