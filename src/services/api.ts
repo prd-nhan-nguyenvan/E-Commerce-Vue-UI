@@ -251,6 +251,8 @@ export interface Product {
    * @format uri
    */
   image?: string | null
+  /** Image url */
+  image_url?: string
   /**
    * Created at
    * @format date-time
@@ -1399,7 +1401,8 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         limit?: number
         offset?: number
         category?: number
-        price?: number
+        price_lt?: number
+        price_gt?: number
         name?: string
         description?: string
       },
